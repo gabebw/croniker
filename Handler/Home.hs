@@ -15,10 +15,9 @@ import Text.Julius (RawJS (..))
 getHomeR :: Handler Html
 getHomeR = do
     (formWidget, formEnctype) <- generateFormPost sampleForm
-    let submission = Nothing :: Maybe (FileInfo, Text)
+    let submission = Nothing :: Maybe (Text, Text)
         handlerName = "getHomeR" :: Text
     defaultLayout $ do
-        let (commentFormId, commentTextareaId, commentListId) = commentIds
         aDomId <- newIdent
         setTitle "Welcome To Yesod!"
         $(widgetFile "homepage")
@@ -32,15 +31,11 @@ postHomeR = do
             _ -> Nothing
 
     defaultLayout $ do
-        let (commentFormId, commentTextareaId, commentListId) = commentIds
         aDomId <- newIdent
         setTitle "Welcome To Yesod!"
         $(widgetFile "homepage")
 
-sampleForm :: Form (FileInfo, Text)
+sampleForm :: Form (Text, Text)
 sampleForm = renderBootstrap3 BootstrapBasicForm $ (,)
-    <$> fileAFormReq "Choose a file"
-    <*> areq textField (withSmallInput "What's on the file?") Nothing
-
-commentIds :: (Text, Text, Text)
-commentIds = ("js-commentForm", "js-createCommentTextarea", "js-commentList")
+    <$> areq textField (withSmallInput "Name") Nothing
+    <*> areq textField (withSmallInput "Date") Nothing
