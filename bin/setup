@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+
+stack install yesod-bin cabal-install --install-ghc
+stack build
+
+echo "Run the server: stack exec -- yesod devel"
