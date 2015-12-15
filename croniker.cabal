@@ -84,6 +84,7 @@ library
                  , time
                  , case-insensitive
                  , wai
+                 , blaze-markup
 
 executable         croniker
     if flag(library-only)

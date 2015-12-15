@@ -3,7 +3,10 @@ module Handler.Home where
 import Import
 import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3,
                               withSmallInput)
-import Text.Julius (RawJS (..))
+import Text.Blaze (ToMarkup, toMarkup)
+
+instance ToMarkup Day where
+  toMarkup = toMarkup . show
 
 -- This is a handler function for the GET request method on the HomeR
 -- resource pattern. All of your resource patterns are defined in
@@ -15,7 +18,7 @@ import Text.Julius (RawJS (..))
 getHomeR :: Handler Html
 getHomeR = do
     (formWidget, formEnctype) <- generateFormPost sampleForm
-    let submission = Nothing :: Maybe (Text, Text)
+    let submission = Nothing :: Maybe (Text, Day)
         handlerName = "getHomeR" :: Text
     defaultLayout $ do
         aDomId <- newIdent
@@ -35,7 +38,7 @@ postHomeR = do
         setTitle "Welcome To Yesod!"
         $(widgetFile "homepage")
 
-sampleForm :: Form (Text, Text)
+sampleForm :: Form (Text, Day)
 sampleForm = renderBootstrap3 BootstrapBasicForm $ (,)
     <$> areq textField (withSmallInput "Name") Nothing
-    <*> areq textField (withSmallInput "Date") Nothing
+    <*> areq dayField (withSmallInput "Date") Nothing
