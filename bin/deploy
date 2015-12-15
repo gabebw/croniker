@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -e
+
+if (( $# != 1 )); then
+  echo "Usage: ./bin/deploy (staging|production)"
+  exit 1
+fi
+
+if [ "$(uname)" == "Darwin" ]; then
+  if [ "$(docker-machine status default)" != "Running" ]; then
+      docker-machine start default
+  fi
+
+  eval "$(docker-machine env default)"
+fi
+
+heroku docker:release --remote "$1"
+heroku open --remote "$1"

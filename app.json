@@ -1,0 +1,4 @@
+{
+  "name": "Croniker",
+  "addons": ["heroku-postgresql", "papertrail:choklad", "scheduler"]
+}

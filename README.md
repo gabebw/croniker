@@ -32,3 +32,13 @@ can run it with `stack exec new-executable`.
 
 If you add a new file in `static/`, run `touch Settings/StaticFiles.hs` to have
 Yesod pick up the routes for the new files.
+
+## Deploying
+
+To deploy to staging:
+
+    ./bin/deploy staging
+
+To deploy to production:
+
+    ./bin/deploy production
