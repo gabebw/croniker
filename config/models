@@ -1,3 +1,10 @@
+-- By default this file is used in Model.hs (which is imported by Foundation.hs)
+
+-- Adding "json" causes ToJSON and FromJSON instances to be derived.
+-- Like:
+-- Name json
+-- instead of
+-- Name
 User
     ident Text
     password Text Maybe
@@ -8,5 +15,7 @@ Email
     userId UserId Maybe
     verkey Text Maybe
     UniqueEmail email
-
- -- By default this file is used in Model.hs (which is imported by Foundation.hs)
+Moniker
+    name Text
+    date Day
+    deriving Show
