@@ -4,6 +4,8 @@ set -e
 
 stack install yesod-bin cabal-install --install-ghc
 stack build
-createdb croniker_development
+if ! psql -l | cut -d'|' -f1 | grep -qF croniker_development; then
+  createdb croniker_development
+fi
 
 echo "Run the server: stack exec -- yesod devel"
