@@ -1,6 +1,6 @@
 <h1.jumbotron>
-  Croniker
+    Croniker
 
 $maybe msg <- mmsg
-  <div #message>#{msg}
+  <div .alert .alert-info>#{msg}
 ^{widget}

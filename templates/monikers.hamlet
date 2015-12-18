@@ -1,12 +1,14 @@
-<section.page-header>
-  <div>
-    Try the
-    <a href="http://www.yesodweb.com/book/forms">Forms chapter</a> #
-    in the Yesod book.
-    $maybe (name, date) <- submission
-      <div .message .alert .alert-success>
-        Your name was <em>#{name}</em>. Your date was <em>#{date}</em>
-    <form method=post action=@{MonikerR}#form enctype=#{formEnctype}>
-      ^{formWidget}
-      <button .btn .btn-primary type="submit">
-         Submit
+$if null monikers
+    <div>No monikers found!
+$else
+    <table .table .table-striped .table-bordered>
+        <tr>
+            <td>Name
+            <td>Date
+        $forall monikerEntity <- monikers
+            ^{showMonikerEntity monikerEntity}
+
+<form method=post action=@{MonikerR}#form enctype=#{formEnctype}>
+    ^{formWidget}
+    <button .btn .btn-primary type="submit">
+        Submit

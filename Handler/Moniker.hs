@@ -10,24 +10,36 @@ instance ToMarkup Day where
 
 getMonikerR :: Handler Html
 getMonikerR = do
-    (formWidget, formEnctype) <- generateFormPost monikerForm
-    let submission = Nothing :: Maybe (Text, Day)
-    defaultLayout $ do
-        setTitle "Croniker"
-        $(widgetFile "monikers")
+    (formWidget, formEnctype) <- generateFormPost bootstrapMonikerForm
+    monikers <- runDB $ selectList [] [Asc MonikerDate]
+    defaultLayout $(widgetFile "monikers")
 
 postMonikerR :: Handler Html
 postMonikerR = do
-    ((result, formWidget), formEnctype) <- runFormPost monikerForm
-    let submission = case result of
-            FormSuccess res -> Just res
-            _ -> Nothing
+    ((result, formWidget), formEnctype) <- runFormPost bootstrapMonikerForm
+    case result of
+        FormSuccess moniker -> do
+            void $ runDB $ insert moniker
+            setMessage "Moniker created"
+            redirect MonikerR
+        _ -> do
+            setMessage "Oops, something went wrong"
+            monikers <- runDB $ selectList [] [Asc MonikerDate]
+            defaultLayout $(widgetFile "monikers")
 
-    defaultLayout $ do
-        setTitle "Croniker"
-        $(widgetFile "monikers")
 
-monikerForm :: Form (Text, Day)
-monikerForm = renderBootstrap3 BootstrapBasicForm $ (,)
-    <$> areq textField (withSmallInput "Name") Nothing
-    <*> areq dayField (withSmallInput "Date") Nothing
+monikerForm :: AForm Handler Moniker
+monikerForm = Moniker
+       <$> areq textField (withSmallInput "Name") Nothing
+       <*> areq dayField (withSmallInput "Date") Nothing
+
+bootstrapMonikerForm :: Form Moniker
+bootstrapMonikerForm = renderBootstrap3 BootstrapBasicForm monikerForm
+
+showMonikerEntity :: Entity Moniker -> Widget
+showMonikerEntity (Entity _monikerId (Moniker name date)) = do
+    [whamlet|
+        <tr>
+            <td>#{name}
+            <td>#{date}
+    |]
