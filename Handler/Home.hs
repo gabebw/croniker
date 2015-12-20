@@ -20,7 +20,7 @@ getHomeR = do
     (formWidget, formEnctype) <- generateFormPost sampleForm
     let submission = Nothing :: Maybe (Text, Day)
     defaultLayout $ do
-        setTitle "Welcome To Yesod!"
+        setTitle "Croniker"
         $(widgetFile "homepage")
 
 postHomeR :: Handler Html
@@ -31,7 +31,7 @@ postHomeR = do
             _ -> Nothing
 
     defaultLayout $ do
-        setTitle "Welcome To Yesod!"
+        setTitle "Croniker"
         $(widgetFile "homepage")
 
 sampleForm :: Form (Text, Day)
