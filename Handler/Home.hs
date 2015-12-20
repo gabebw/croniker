@@ -20,7 +20,6 @@ getHomeR = do
     (formWidget, formEnctype) <- generateFormPost sampleForm
     let submission = Nothing :: Maybe (Text, Day)
     defaultLayout $ do
-        aDomId <- newIdent
         setTitle "Welcome To Yesod!"
         $(widgetFile "homepage")
 
@@ -32,7 +31,6 @@ postHomeR = do
             _ -> Nothing
 
     defaultLayout $ do
-        aDomId <- newIdent
         setTitle "Welcome To Yesod!"
         $(widgetFile "homepage")
 
