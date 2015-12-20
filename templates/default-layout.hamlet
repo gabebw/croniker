@@ -1,3 +1,6 @@
+<h1.jumbotron>
+  Croniker
+
 $maybe msg <- mmsg
   <div #message>#{msg}
 ^{widget}

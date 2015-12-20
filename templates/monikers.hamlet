@@ -1,6 +1,3 @@
-<h1.jumbotron>
-  Croniker
-
 <section.page-header>
   <div>
     Try the
@@ -9,7 +6,7 @@
     $maybe (name, date) <- submission
       <div .message .alert .alert-success>
         Your name was <em>#{name}</em>. Your date was <em>#{date}</em>
-    <form method=post action=@{HomeR}#form enctype=#{formEnctype}>
+    <form method=post action=@{MonikerR}#form enctype=#{formEnctype}>
       ^{formWidget}
       <button .btn .btn-primary type="submit">
          Submit
