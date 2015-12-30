@@ -1,12 +1,24 @@
-$if null monikers
+<div>Today is #{day}, at least in UTC
+$if null todaysMonikers
+    <div>No monikers for today
+$else
+    <h3>Monikers for today
+    <table .table .table-striped .table-bordered>
+        <tr>
+            <td>Name
+            <td>Date
+        $forall moniker <- todaysMonikers
+            ^{showMonikerEntity moniker}
+
+$if null allMonikers
     <div>No monikers found!
 $else
     <table .table .table-striped .table-bordered>
         <tr>
             <td>Name
             <td>Date
-        $forall monikerEntity <- monikers
-            ^{showMonikerEntity monikerEntity}
+        $forall moniker <- allMonikers
+            ^{showMonikerEntity moniker}
 
 <form method=post action=@{MonikerR}#form enctype=#{formEnctype}>
     ^{formWidget}

@@ -11,7 +11,9 @@ instance ToMarkup Day where
 getMonikerR :: Handler Html
 getMonikerR = do
     (formWidget, formEnctype) <- generateFormPost bootstrapMonikerForm
-    monikers <- runDB $ selectList [] [Asc MonikerDate]
+    day <- today
+    allMonikers <- runDB $ selectList [] [Asc MonikerDate]
+    todaysMonikers <- runDB $ selectList [MonikerDate ==. day] [Asc MonikerDate]
     defaultLayout $(widgetFile "monikers")
 
 postMonikerR :: Handler Html
@@ -24,7 +26,9 @@ postMonikerR = do
             redirect MonikerR
         _ -> do
             setMessage "Oops, something went wrong"
-            monikers <- runDB $ selectList [] [Asc MonikerDate]
+            day <- today
+            allMonikers <- runDB $ selectList [] [Asc MonikerDate]
+            todaysMonikers <- runDB $ selectList [MonikerDate ==. day] [Asc MonikerDate]
             defaultLayout $(widgetFile "monikers")
 
 
@@ -43,3 +47,6 @@ showMonikerEntity (Entity _monikerId (Moniker name date)) = do
             <td>#{name}
             <td>#{date}
     |]
+
+today :: HandlerT App IO Day
+today = liftIO $ getCurrentTime >>= return . utctDay
