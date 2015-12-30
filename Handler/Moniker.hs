@@ -50,3 +50,13 @@ showMonikerEntity (Entity _monikerId (Moniker name date)) = do
 
 today :: HandlerT App IO Day
 today = liftIO $ getCurrentTime >>= return . utctDay
+
+monikersTable :: [Entity Moniker] -> Widget
+monikersTable monikers = [whamlet|
+    <table .table .table-striped .table-bordered>
+        <tr>
+            <td>Name
+            <td>Date
+        $forall moniker <- monikers
+            ^{showMonikerEntity moniker}
+    |]
