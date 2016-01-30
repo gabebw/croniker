@@ -22,6 +22,7 @@ library
                      Settings.StaticFiles
                      Handler.Common
                      Handler.Moniker
+                     Handler.HelloTask
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
@@ -94,6 +95,16 @@ executable         croniker
     build-depends:     base, croniker
 
     ghc-options:       -threaded -rtsopts -with-rtsopts=-N
+
+executable         hello
+    if flag(library-only)
+        Buildable: False
+
+    main-is:           TaskMain.hs
+    hs-source-dirs:    app
+    build-depends:     base, croniker
+
+    ghc-options:       -threaded -O2 -rtsopts -with-rtsopts=-N
 
 test-suite test
     type:              exitcode-stdio-1.0

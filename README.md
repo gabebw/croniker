@@ -16,3 +16,8 @@ Then run `./bin/setup`.
     stack exec -- yesod devel
 
 Then visit http://localhost:3000.
+
+## Adding a new executable
+
+If you add a new `executable` in `croniker.cabal`, run `stack build` so that you
+can run it with `stack exec new-executable`.
