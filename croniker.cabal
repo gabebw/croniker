@@ -23,7 +23,7 @@ library
                      Settings.StaticFiles
                      Handler.Common
                      Handler.Moniker
-                     Handler.HelloTask
+                     Handler.TodaysMonikersTask
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
@@ -99,7 +99,7 @@ executable         croniker
 
     ghc-options:       -threaded -rtsopts -with-rtsopts=-N
 
-executable         hello
+executable         todays-monikers
     if flag(library-only)
         Buildable: False
 

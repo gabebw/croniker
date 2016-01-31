@@ -1,5 +1,4 @@
-import Prelude     (IO)
-import Application (sayHello)
+import Application (todaysMonikersTaskMain)
 
 main :: IO ()
-main = sayHello
+main = todaysMonikersTaskMain
