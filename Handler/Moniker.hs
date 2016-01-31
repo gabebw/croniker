@@ -36,12 +36,17 @@ postMonikerR = do
             defaultLayout $(widgetFile "monikers")
 
 bootstrapMonikerForm :: Day -> Form Moniker
-bootstrapMonikerForm day = renderBootstrap3 BootstrapBasicForm (monikerForm day)
+bootstrapMonikerForm tomorrow = renderBootstrap3 BootstrapBasicForm (monikerForm tomorrow)
 
 monikerForm :: Day -> AForm Handler Moniker
-monikerForm day = Moniker
+monikerForm tomorrow = Moniker
        <$> areq textField (withSmallInput "Name") Nothing
-       <*> areq dayField (withSmallInput "Date") (Just day)
+       <*> areq dateField (withSmallInput "Date") (Just tomorrow)
+    where
+        dateField = check futureDate dayField
+        futureDate date
+            | date < tomorrow = Left ("You must select a future date" :: Text)
+            | otherwise = Right date
 
 showMonikerEntity :: Entity Moniker -> Widget
 showMonikerEntity (Entity _monikerId (Moniker name date)) = do
