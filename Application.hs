@@ -11,7 +11,7 @@ module Application
     -- * for GHCI
     , handler
     , db
-    , hello
+    , sayHello
     ) where
 
 import Control.Monad.Logger                 (liftLoc, runLoggingT)
