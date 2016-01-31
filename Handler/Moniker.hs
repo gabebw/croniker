@@ -12,15 +12,17 @@ instance ToMarkup Day where
 
 getMonikerR :: Handler Html
 getMonikerR = do
-    (formWidget, formEnctype) <- generateFormPost bootstrapMonikerForm
-    day <- liftIO M.today
+    today <- liftIO M.today
+    tomorrow <- liftIO M.tomorrow
+    (formWidget, formEnctype) <- generateFormPost (bootstrapMonikerForm tomorrow)
     allMonikers <- runDB $ M.allMonikers
     todaysMonikers <- runDB $ M.monikersFromToday
     defaultLayout $(widgetFile "monikers")
 
 postMonikerR :: Handler Html
 postMonikerR = do
-    ((result, formWidget), formEnctype) <- runFormPost bootstrapMonikerForm
+    tomorrow <- liftIO M.tomorrow
+    ((result, formWidget), formEnctype) <- runFormPost (bootstrapMonikerForm tomorrow)
     case result of
         FormSuccess moniker -> do
             void $ runDB $ insert moniker
@@ -28,18 +30,18 @@ postMonikerR = do
             redirect MonikerR
         _ -> do
             setMessage "Oops, something went wrong"
-            day <- liftIO M.today
+            today <- liftIO M.today
             allMonikers <- runDB $ M.allMonikers
             todaysMonikers <- runDB $ M.monikersFromToday
             defaultLayout $(widgetFile "monikers")
 
-monikerForm :: AForm Handler Moniker
-monikerForm = Moniker
-       <$> areq textField (withSmallInput "Name") Nothing
-       <*> areq dayField (withSmallInput "Date") Nothing
+bootstrapMonikerForm :: Day -> Form Moniker
+bootstrapMonikerForm day = renderBootstrap3 BootstrapBasicForm (monikerForm day)
 
-bootstrapMonikerForm :: Form Moniker
-bootstrapMonikerForm = renderBootstrap3 BootstrapBasicForm monikerForm
+monikerForm :: Day -> AForm Handler Moniker
+monikerForm day = Moniker
+       <$> areq textField (withSmallInput "Name") Nothing
+       <*> areq dayField (withSmallInput "Date") (Just day)
 
 showMonikerEntity :: Entity Moniker -> Widget
 showMonikerEntity (Entity _monikerId (Moniker name date)) = do

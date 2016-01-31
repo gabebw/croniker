@@ -1,4 +1,4 @@
-<div>Today is #{day}, at least in UTC
+<div>Today is #{today}, at least in UTC
 
 $if null todaysMonikers
     <div>No monikers for today
