@@ -1,9 +1,11 @@
 module Handler.TodaysMonikersTask where
 
 import Import
-import Model.Moniker
+import Model.Moniker (monikersFromToday)
+import TwitterClient (updateTwitterName)
 
-printTodaysMonikers :: Handler ()
-printTodaysMonikers = do
-    todaysMonikers <- runDB monikersFromToday
-    print $ map entityVal todaysMonikers
+updateTodaysMonikers :: Handler ()
+updateTodaysMonikers = do
+    monikers <- runDB monikersFromToday
+    let monikerNames = map (monikerName . entityVal) monikers
+    liftIO $ mapM_ updateTwitterName monikerNames

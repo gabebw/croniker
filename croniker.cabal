@@ -24,6 +24,7 @@ library
                      Handler.Common
                      Handler.Moniker
                      Handler.TodaysMonikersTask
+                     TwitterClient
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
@@ -88,6 +89,13 @@ library
                  , case-insensitive
                  , wai
                  , blaze-markup
+
+                 , base64-bytestring
+                 , dotenv
+                 , lens
+                 , lens-aeson
+                 , network-uri
+                 , wreq-sb
 
 executable         croniker
     if flag(library-only)
