@@ -1,9 +1,11 @@
 module Handler.Moniker where
 
 import Import
+
 import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3,
                               withSmallInput)
 import Text.Blaze (ToMarkup, toMarkup)
+import qualified Model.Moniker as M
 
 instance ToMarkup Day where
   toMarkup = toMarkup . show
@@ -12,8 +14,8 @@ getMonikerR :: Handler Html
 getMonikerR = do
     (formWidget, formEnctype) <- generateFormPost bootstrapMonikerForm
     day <- today
-    allMonikers <- runDB $ selectList [] [Asc MonikerDate]
-    todaysMonikers <- runDB $ selectList [MonikerDate ==. day] [Asc MonikerDate]
+    allMonikers <- runDB $ M.allMonikers
+    todaysMonikers <- runDB $ M.monikersFrom day
     defaultLayout $(widgetFile "monikers")
 
 postMonikerR :: Handler Html
@@ -27,10 +29,9 @@ postMonikerR = do
         _ -> do
             setMessage "Oops, something went wrong"
             day <- today
-            allMonikers <- runDB $ selectList [] [Asc MonikerDate]
-            todaysMonikers <- runDB $ selectList [MonikerDate ==. day] [Asc MonikerDate]
+            allMonikers <- runDB $ M.allMonikers
+            todaysMonikers <- runDB $ M.monikersFrom day
             defaultLayout $(widgetFile "monikers")
-
 
 monikerForm :: AForm Handler Moniker
 monikerForm = Moniker
@@ -48,9 +49,6 @@ showMonikerEntity (Entity _monikerId (Moniker name date)) = do
             <td>#{date}
     |]
 
-today :: HandlerT App IO Day
-today = liftIO $ getCurrentTime >>= return . utctDay
-
 monikersTable :: [Entity Moniker] -> Widget
 monikersTable monikers = [whamlet|
     <table .table .table-striped .table-bordered>
@@ -60,3 +58,6 @@ monikersTable monikers = [whamlet|
         $forall moniker <- monikers
             ^{showMonikerEntity moniker}
     |]
+
+today :: HandlerT App IO Day
+today = liftIO $ getCurrentTime >>= return . utctDay
