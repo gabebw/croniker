@@ -19,6 +19,13 @@ import Yesod.Default.Config2       (applyEnvValue, configSettingsYml)
 import Yesod.Default.Util          (WidgetFileSettings, widgetFileNoReload,
                                     widgetFileReload)
 
+-- | Actions which only require access to the database connection can be given
+--   type @DB a@ (as opposed to @YesodDB App a@). This allows them to also be
+--   called in tests.
+--   Stolen from https://github.com/thoughtbot/carnival
+type DB a = forall (m :: * -> *).
+    (MonadIO m, Functor m) => ReaderT SqlBackend m a
+
 -- | Runtime settings to configure this application. These settings can be
 -- loaded from various sources: defaults, environment variables, config files,
 -- theoretically even a database.
