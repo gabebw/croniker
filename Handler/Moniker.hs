@@ -13,9 +13,9 @@ instance ToMarkup Day where
 getMonikerR :: Handler Html
 getMonikerR = do
     (formWidget, formEnctype) <- generateFormPost bootstrapMonikerForm
-    day <- today
+    day <- liftIO M.today
     allMonikers <- runDB $ M.allMonikers
-    todaysMonikers <- runDB $ M.monikersFrom day
+    todaysMonikers <- runDB $ M.monikersFromToday
     defaultLayout $(widgetFile "monikers")
 
 postMonikerR :: Handler Html
@@ -28,9 +28,9 @@ postMonikerR = do
             redirect MonikerR
         _ -> do
             setMessage "Oops, something went wrong"
-            day <- today
+            day <- liftIO M.today
             allMonikers <- runDB $ M.allMonikers
-            todaysMonikers <- runDB $ M.monikersFrom day
+            todaysMonikers <- runDB $ M.monikersFromToday
             defaultLayout $(widgetFile "monikers")
 
 monikerForm :: AForm Handler Moniker
@@ -58,6 +58,3 @@ monikersTable monikers = [whamlet|
         $forall moniker <- monikers
             ^{showMonikerEntity moniker}
     |]
-
-today :: HandlerT App IO Day
-today = liftIO $ getCurrentTime >>= return . utctDay
