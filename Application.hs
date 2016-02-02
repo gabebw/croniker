@@ -30,6 +30,9 @@ import Network.Wai.Middleware.RequestLogger (Destination (Logger),
                                              mkRequestLogger, outputFormat)
 import System.Log.FastLogger                (defaultBufSize, newStdoutLoggerSet,
                                              toLogStr)
+import Configuration.Dotenv (loadFile)
+import System.Environment (getEnv)
+import qualified Data.ByteString.Char8 as BSC
 
 -- Import all relevant handler modules here.
 -- Don't forget to add new modules to your cabal file!
@@ -55,6 +58,10 @@ makeFoundation appSettings = do
     appStatic <-
         (if appMutableStatic appSettings then staticDevel else static)
         (appStaticDir appSettings)
+    loadFile False ".env"
+    twitterConsumerKey <- BSC.pack <$> getEnv "TWITTER_CONSUMER_KEY"
+    twitterConsumerSecret <- BSC.pack <$> getEnv "TWITTER_CONSUMER_SECRET"
+    let sessionKey = "twitterUserId"
 
     -- We need a log function to create a connection pool. We need a connection
     -- pool to create our foundation. And we need our foundation to get a

@@ -19,6 +19,7 @@ library
                      Import.NoFoundation
                      Model
                      Model.Moniker
+                     Model.User
                      Settings
                      Settings.StaticFiles
                      Handler.Common
@@ -96,6 +97,7 @@ library
                  , lens-aeson
                  , network-uri
                  , wreq-sb
+                 , yesod-auth-oauth
 
 executable         croniker
     if flag(library-only)

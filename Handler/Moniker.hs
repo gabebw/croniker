@@ -13,6 +13,8 @@ instance ToMarkup Day where
 
 getMonikerR :: Handler Html
 getMonikerR = do
+    (Entity _ user) <- requireAuth
+    liftIO $ print user
     today <- liftIO M.today
     tomorrow <- liftIO M.tomorrow
     (formWidget, formEnctype) <- generateFormPost (bootstrapMonikerForm tomorrow)
@@ -22,6 +24,7 @@ getMonikerR = do
 
 postMonikerR :: Handler Html
 postMonikerR = do
+    (Entity _ user) <- requireAuth
     tomorrow <- liftIO M.tomorrow
     ((result, formWidget), formEnctype) <- runFormPost (bootstrapMonikerForm tomorrow)
     case result of

@@ -4,24 +4,29 @@ import Import.NoFoundation
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
-import Yesod.Auth.BrowserId (authBrowserId)
-import Yesod.Auth.Message   (AuthMessage (InvalidLogin))
+import Yesod.Auth.OAuth     (authTwitter, twitterUrl)
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
 import qualified Yesod.Core.Unsafe as Unsafe
 import qualified Data.CaseInsensitive as CI
 import qualified Data.Text.Encoding as TE
 
+import Model.User (authenticateUser, findSessionUser)
+import Data.Maybe (fromJust)
+
 -- | The foundation datatype for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
 -- starts running, such as database connections. Every handler will have
 -- access to the data present here.
 data App = App
-    { appSettings    :: AppSettings
-    , appStatic      :: Static -- ^ Settings for static file serving.
-    , appConnPool    :: ConnectionPool -- ^ Database connection pool.
-    , appHttpManager :: Manager
-    , appLogger      :: Logger
+    { appSettings           :: AppSettings
+    , appStatic             :: Static -- ^ Settings for static file serving.
+    , appConnPool           :: ConnectionPool -- ^ Database connection pool.
+    , appHttpManager        :: Manager
+    , appLogger             :: Logger
+    , twitterConsumerKey    :: ByteString
+    , twitterConsumerSecret :: ByteString
+    , sessionKey            :: Text
     }
 
 -- This is where we define all of the routes in our application. For a full
@@ -83,11 +88,9 @@ instance Yesod App where
     -- The page to be redirected to when authentication is required.
     authRoute _ = Just $ AuthR LoginR
 
-    -- Routes not requiring authentication.
-    isAuthorized (AuthR _) _ = return Authorized
-    isAuthorized FaviconR _ = return Authorized
-    isAuthorized RobotsR _ = return Authorized
-    -- Default to Authorized for now.
+    -- Must be signed in to see their own monikers
+    isAuthorized MonikerR _ = isSignedIn
+    -- All other routes are authorized
     isAuthorized _ _ = return Authorized
 
     -- This function creates static content files in the static folder
@@ -137,16 +140,31 @@ instance YesodAuth App where
     -- Override the above two destinations when a Referer: header is present
     redirectToReferer _ = True
 
-    authenticate creds = runDB $ do
-        x <- getBy $ UniqueUser $ credsIdent creds
-        return $ case x of
-            Just (Entity uid _) -> Authenticated uid
-            Nothing -> UserError InvalidLogin
+    -- This is a callback function that gets called with the credentials
+    -- obtained by authenticating to Twitter.
+    authenticate creds = do
+        app <- getYesod
+        let twitterId = fromJust $ lookup "user_id" (credsExtra creds)
+        setSession (sessionKey app) twitterId
+        runDB $ authenticateUser creds
 
-    -- You can add other plugins like BrowserID, email or OAuth here
-    authPlugins _ = [authBrowserId def]
+    maybeAuthId = getYesod >>= lookupSession . sessionKey >>= runDB . findSessionUser
+
+    authPlugins app = [authTwitter (twitterConsumerKey app) (twitterConsumerSecret app)]
 
     authHttpManager = getHttpManager
+
+    loginHandler = lift $ do
+        defaultLayout $ do
+            setTitle "Croniker - Login"
+            $(widgetFile "login")
+
+isSignedIn :: Handler AuthResult
+isSignedIn = do
+    maid <- maybeAuthId
+    return $ case maid of
+        Nothing -> AuthenticationRequired
+        Just _ -> Authorized
 
 instance YesodAuthPersist App
 

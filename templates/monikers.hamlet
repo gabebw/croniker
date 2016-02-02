@@ -1,3 +1,5 @@
+<h2>Hello, #{userTwitterUsername user}!
+
 <div>Today is #{today}, at least in UTC
 
 $if null todaysMonikers

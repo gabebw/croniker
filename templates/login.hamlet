@@ -1,0 +1,6 @@
+<div .login>
+  <h2>
+    Please sign in
+  <div .login-button>
+    <a .button href=@{AuthR twitterUrl}>
+      Sign in with Twitter
