@@ -25,4 +25,4 @@ credsToUser credsExtra = fromJust $ User
 findSessionUser :: Maybe Text -> DB (Maybe UserId)
 findSessionUser mTwitterId = do
     muser <- maybe (return Nothing) (getBy . UniqueUser) mTwitterId
-    return $ maybe Nothing (Just . entityKey) muser
+    return $ entityKey <$> muser
