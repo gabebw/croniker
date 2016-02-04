@@ -14,7 +14,6 @@ instance ToMarkup Day where
 getMonikerR :: Handler Html
 getMonikerR = do
     (Entity _ user) <- requireAuth
-    liftIO $ print user
     today <- liftIO M.today
     tomorrow <- liftIO M.tomorrow
     (formWidget, formEnctype) <- generateFormPost (bootstrapMonikerForm tomorrow)
