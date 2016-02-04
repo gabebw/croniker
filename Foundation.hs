@@ -11,8 +11,7 @@ import qualified Yesod.Core.Unsafe as Unsafe
 import qualified Data.CaseInsensitive as CI
 import qualified Data.Text.Encoding as TE
 
-import Model.User (authenticateUser, findSessionUser)
-import Data.Maybe (fromJust)
+import Model.User (authenticateUser)
 
 -- | The foundation datatype for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -26,7 +25,6 @@ data App = App
     , appLogger             :: Logger
     , twitterConsumerKey    :: ByteString
     , twitterConsumerSecret :: ByteString
-    , sessionKey            :: Text
     }
 
 -- This is where we define all of the routes in our application. For a full
@@ -142,13 +140,7 @@ instance YesodAuth App where
 
     -- This is a callback function that gets called with the credentials
     -- obtained by authenticating to Twitter.
-    authenticate creds = do
-        app <- getYesod
-        let twitterId = fromJust $ lookup "user_id" (credsExtra creds)
-        setSession (sessionKey app) twitterId
-        runDB $ authenticateUser creds
-
-    maybeAuthId = getYesod >>= lookupSession . sessionKey >>= runDB . findSessionUser
+    authenticate = runDB . authenticateUser
 
     authPlugins app = [authTwitter (twitterConsumerKey app) (twitterConsumerSecret app)]
 

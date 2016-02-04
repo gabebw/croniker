@@ -61,7 +61,6 @@ makeFoundation appSettings = do
     loadFile False ".env"
     twitterConsumerKey <- BSC.pack <$> getEnv "TWITTER_CONSUMER_KEY"
     twitterConsumerSecret <- BSC.pack <$> getEnv "TWITTER_CONSUMER_SECRET"
-    let sessionKey = "twitterUserId"
 
     -- We need a log function to create a connection pool. We need a connection
     -- pool to create our foundation. And we need our foundation to get a

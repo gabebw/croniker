@@ -1,6 +1,5 @@
 module Model.User
     ( authenticateUser
-    , findSessionUser
     ) where
 
 import Import.NoFoundation
@@ -21,8 +20,3 @@ credsToUser credsExtra = fromJust $ User
     <*> (lookup "screen_name" credsExtra)
     <*> (lookup "oauth_token" credsExtra)
     <*> (lookup "oauth_token_secret" credsExtra)
-
-findSessionUser :: Maybe Text -> DB (Maybe UserId)
-findSessionUser mTwitterId = do
-    muser <- maybe (return Nothing) (getBy . UniqueUser) mTwitterId
-    return $ entityKey <$> muser
