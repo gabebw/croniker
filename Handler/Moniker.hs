@@ -13,19 +13,19 @@ instance ToMarkup Day where
 
 getMonikerR :: Handler Html
 getMonikerR = do
-    (Entity _ user) <- requireAuth
+    (Entity userId user) <- requireAuth
     today <- liftIO M.today
     tomorrow <- liftIO M.tomorrow
-    (formWidget, formEnctype) <- generateFormPost (bootstrapMonikerForm tomorrow)
+    (formWidget, formEnctype) <- generateFormPost (bootstrapMonikerForm tomorrow userId)
     allMonikers <- runDB $ M.allMonikers
     todaysMonikers <- runDB $ M.monikersFromToday
     defaultLayout $(widgetFile "monikers")
 
 postMonikerR :: Handler Html
 postMonikerR = do
-    (Entity _ user) <- requireAuth
+    (Entity userId user) <- requireAuth
     tomorrow <- liftIO M.tomorrow
-    ((result, formWidget), formEnctype) <- runFormPost (bootstrapMonikerForm tomorrow)
+    ((result, formWidget), formEnctype) <- runFormPost (bootstrapMonikerForm tomorrow userId)
     case result of
         FormSuccess moniker -> do
             void $ runDB $ insert moniker
@@ -38,13 +38,14 @@ postMonikerR = do
             todaysMonikers <- runDB $ M.monikersFromToday
             defaultLayout $(widgetFile "monikers")
 
-bootstrapMonikerForm :: Day -> Form Moniker
-bootstrapMonikerForm tomorrow = renderBootstrap3 BootstrapBasicForm (monikerForm tomorrow)
+bootstrapMonikerForm :: Day -> UserId -> Form Moniker
+bootstrapMonikerForm tomorrow userId = renderBootstrap3 BootstrapBasicForm (monikerForm tomorrow userId)
 
-monikerForm :: Day -> AForm Handler Moniker
-monikerForm tomorrow = Moniker
+monikerForm :: Day -> UserId -> AForm Handler Moniker
+monikerForm tomorrow userId = Moniker
        <$> areq textField (withSmallInput "Name") Nothing
        <*> areq dateField (withSmallInput "Date") (Just tomorrow)
+       <*> pure userId
     where
         dateField = check futureDate dayField
         futureDate date
@@ -52,7 +53,7 @@ monikerForm tomorrow = Moniker
             | otherwise = Right date
 
 showMonikerEntity :: Entity Moniker -> Widget
-showMonikerEntity (Entity _monikerId (Moniker name date)) = do
+showMonikerEntity (Entity _monikerId (Moniker name date _)) = do
     [whamlet|
         <tr>
             <td>#{name}

@@ -15,5 +15,6 @@ User
 Moniker
     name Text
     date Day
-    UniqueDate date
+    userId UserId
+    UniqueUserDate userId date
     deriving Show
