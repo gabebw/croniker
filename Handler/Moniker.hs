@@ -16,7 +16,7 @@ getMonikerR = do
     (Entity userId user) <- requireAuth
     today <- liftIO M.today
     tomorrow <- liftIO M.tomorrow
-    (formWidget, formEnctype) <- generateFormPost (bootstrapMonikerForm tomorrow userId)
+    (formWidget, formEnctype) <- generateFormPost (monikerForm tomorrow userId)
     allMonikers <- runDB $ M.allMonikers
     todaysMonikers <- runDB $ M.monikersFromToday
     defaultLayout $(widgetFile "monikers")
@@ -25,7 +25,7 @@ postMonikerR :: Handler Html
 postMonikerR = do
     (Entity userId user) <- requireAuth
     tomorrow <- liftIO M.tomorrow
-    ((result, formWidget), formEnctype) <- runFormPost (bootstrapMonikerForm tomorrow userId)
+    ((result, formWidget), formEnctype) <- runFormPost (monikerForm tomorrow userId)
     case result of
         FormSuccess moniker -> do
             void $ runDB $ insert moniker
@@ -38,11 +38,8 @@ postMonikerR = do
             todaysMonikers <- runDB $ M.monikersFromToday
             defaultLayout $(widgetFile "monikers")
 
-bootstrapMonikerForm :: Day -> UserId -> Form Moniker
-bootstrapMonikerForm tomorrow userId = renderBootstrap3 BootstrapBasicForm (monikerForm tomorrow userId)
-
-monikerForm :: Day -> UserId -> AForm Handler Moniker
-monikerForm tomorrow userId = Moniker
+monikerForm :: Day -> UserId -> Form Moniker
+monikerForm tomorrow userId = renderBootstrap3 BootstrapBasicForm $ Moniker
        <$> areq textField (withSmallInput "Name") Nothing
        <*> areq dateField (withSmallInput "Date") (Just tomorrow)
        <*> pure userId
