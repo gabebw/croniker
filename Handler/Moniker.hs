@@ -17,8 +17,8 @@ getMonikerR = do
     today <- liftIO M.today
     tomorrow <- liftIO M.tomorrow
     (formWidget, formEnctype) <- generateFormPost (monikerForm tomorrow userId)
-    allMonikers <- runDB $ M.allMonikers
-    todaysMonikers <- runDB $ M.monikersFromToday
+    allMonikers <- runDB $ M.monikersFor userId
+    todaysMonikers <- runDB $ M.monikersFromTodayFor userId
     defaultLayout $(widgetFile "monikers")
 
 postMonikerR :: Handler Html
@@ -34,8 +34,8 @@ postMonikerR = do
         _ -> do
             setMessage "Oops, something went wrong"
             today <- liftIO M.today
-            allMonikers <- runDB $ M.allMonikers
-            todaysMonikers <- runDB $ M.monikersFromToday
+            allMonikers <- runDB $ M.monikersFor userId
+            todaysMonikers <- runDB $ M.monikersFromTodayFor userId
             defaultLayout $(widgetFile "monikers")
 
 monikerForm :: Day -> UserId -> Form Moniker

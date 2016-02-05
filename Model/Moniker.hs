@@ -1,6 +1,7 @@
 module Model.Moniker
-    ( allMonikers
-    , monikersFromToday
+    ( monikersFor
+    , monikersFromTodayFor
+    , allMonikersFromToday
     , today
     , tomorrow
     ) where
@@ -9,14 +10,18 @@ import Import
 
 import Data.Time.Clock (addUTCTime)
 
-allMonikers :: DB [Entity Moniker]
-allMonikers = selectList [] [Asc MonikerDate]
+monikersFor :: UserId -> DB [Entity Moniker]
+monikersFor userId = selectList [MonikerUserId ==. userId] [Asc MonikerDate]
 
-monikersFromToday :: DB [Entity Moniker]
-monikersFromToday = (liftIO today) >>= monikersFrom
+monikersFromTodayFor :: UserId -> DB [Entity Moniker]
+monikersFromTodayFor userId = do
+    day <- liftIO today
+    selectList [MonikerUserId ==. userId, MonikerDate ==. day] [Asc MonikerDate]
 
-monikersFrom :: Day -> DB [Entity Moniker]
-monikersFrom day = selectList [MonikerDate ==. day] [Asc MonikerDate]
+allMonikersFromToday :: DB [Entity Moniker]
+allMonikersFromToday = do
+    day <- liftIO today
+    selectList [MonikerDate ==. day] [Asc MonikerDate]
 
 today :: IO Day
 today = getCurrentTime >>= return . utctDay
