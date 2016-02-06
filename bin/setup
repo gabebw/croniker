@@ -8,4 +8,7 @@ if ! psql -l | cut -d'|' -f1 | grep -qF croniker_development; then
   createdb croniker_development
 fi
 
+heroku git:remote --remote staging --app croniker-staging
+heroku git:remote --remote production --app croniker-production
+
 echo "Run the server: stack exec -- yesod devel"
