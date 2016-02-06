@@ -3,8 +3,7 @@ module Handler.Moniker where
 
 import Import
 
-import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3,
-                              withSmallInput)
+import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3)
 import Text.Blaze (ToMarkup, toMarkup)
 import qualified Model.Moniker as M
 
@@ -44,14 +43,28 @@ postMonikerR = do
 
 monikerForm :: Day -> UserId -> Form Moniker
 monikerForm tomorrow userId = renderBootstrap3 BootstrapBasicForm $ Moniker
-       <$> areq textField (withSmallInput "Name") Nothing
-       <*> areq dateField (withSmallInput "Date") (Just tomorrow)
+       <$> areq nameField (fs "Name" [("maxlength", "20")]) Nothing
+       <*> areq dateField (fs "Date" []) (Just tomorrow)
        <*> pure userId
     where
         dateField = check futureDate dayField
+        nameField = check maxLength textField
+        futureDate :: Day -> Either Text Day
         futureDate date
-            | date < tomorrow = Left ("You must select a future date" :: Text)
+            | date < tomorrow = Left "You must select a future date"
             | otherwise = Right date
+        maxLength :: Text -> Either Text Text
+        maxLength name
+            | length name > 20 = Left "Twitter doesn't allow monikers longer than 20 characters"
+            | otherwise = Right name
+        fs :: Text -> [(Text, Text)] -> FieldSettings site
+        fs label attrs = FieldSettings
+            { fsLabel = SomeMessage label
+            , fsTooltip = Nothing
+            , fsId = Nothing
+            , fsName = Nothing
+            , fsAttrs = [("class", "input-sm")] ++ attrs
+            }
 
 showMonikerEntity :: Entity Moniker -> Widget
 showMonikerEntity (Entity _monikerId (Moniker name date _)) = do
