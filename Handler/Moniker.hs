@@ -19,7 +19,9 @@ getMonikerR = do
     (formWidget, formEnctype) <- generateFormPost (monikerForm tomorrow userId)
     allMonikers <- runDB $ M.monikersFor userId
     todaysMonikers <- runDB $ M.monikersFromTodayFor userId
-    defaultLayout $(widgetFile "monikers")
+    defaultLayout $ do
+        setTitle "Croniker"
+        $(widgetFile "monikers")
 
 postMonikerR :: Handler Html
 postMonikerR = do
@@ -36,7 +38,9 @@ postMonikerR = do
             today <- liftIO M.today
             allMonikers <- runDB $ M.monikersFor userId
             todaysMonikers <- runDB $ M.monikersFromTodayFor userId
-            defaultLayout $(widgetFile "monikers")
+            defaultLayout $ do
+                setTitle "Croniker"
+                $(widgetFile "monikers")
 
 monikerForm :: Day -> UserId -> Form Moniker
 monikerForm tomorrow userId = renderBootstrap3 BootstrapBasicForm $ Moniker
