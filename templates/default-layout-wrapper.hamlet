@@ -31,7 +31,6 @@ $newline never
       var csrfCookieName = "#{TE.decodeUtf8 defaultCsrfCookieName}";
       var csrfToken = Cookies.get(csrfCookieName);
 
-
       if (csrfToken) {
       \  $.ajaxPrefilter(function( options, originalOptions, jqXHR ) {
       \      if (!options.crossDomain) {
@@ -43,9 +42,17 @@ $newline never
     <script>
       document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/,'js');
   <body>
-    <div class="container">
+    <div id="container">
       <header>
-      <div id="main" role="main">
+        <a href=@{MonikerR}>
+            Croniker
+        $if isNothing maid
+            <ul.header__items>
+                <li.header__item>
+                    <a href=@{AuthR twitterUrl}>
+                        Sign in
+
+      <main>
         ^{pageBody pc}
       <footer>
         #{appCopyright $ appSettings master}

@@ -1,6 +1,9 @@
-<div .login>
-  <h2>
-    Please sign in
-  <div .login-button>
-    <a .button href=@{AuthR twitterUrl}>
-      Sign in with Twitter
+<div.page-login>
+    <h2>
+        Schedule changes to your Twitter name with Croniker
+    <p>
+        Schedule up to one new moniker per day and Croniker will automatically
+        update your Twitter name on that day.
+    <div>
+        <a .button href=@{AuthR twitterUrl}>
+            Sign up now with Twitter

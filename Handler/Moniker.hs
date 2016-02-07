@@ -3,7 +3,6 @@ module Handler.Moniker where
 
 import Import
 
-import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3)
 import Text.Blaze (ToMarkup, toMarkup)
 import qualified Model.Moniker as M
 
@@ -17,7 +16,6 @@ getMonikerR = do
     tomorrow <- liftIO M.tomorrow
     (formWidget, formEnctype) <- generateFormPost (monikerForm tomorrow userId)
     allMonikers <- runDB $ M.monikersFor userId
-    todaysMonikers <- runDB $ M.monikersFromTodayFor userId
     defaultLayout $ do
         setTitle "Croniker"
         $(widgetFile "monikers")
@@ -36,13 +34,12 @@ postMonikerR = do
             setMessage "Oops, something went wrong"
             today <- liftIO M.today
             allMonikers <- runDB $ M.monikersFor userId
-            todaysMonikers <- runDB $ M.monikersFromTodayFor userId
             defaultLayout $ do
                 setTitle "Croniker"
                 $(widgetFile "monikers")
 
 monikerForm :: Day -> UserId -> Form Moniker
-monikerForm tomorrow userId = renderBootstrap3 BootstrapBasicForm $ Moniker
+monikerForm tomorrow userId = renderDivs $ Moniker
        <$> areq nameField (fs "Name" [("maxlength", "20")]) Nothing
        <*> areq dateField (fs "Date" []) (Just tomorrow)
        <*> pure userId
@@ -63,7 +60,7 @@ monikerForm tomorrow userId = renderBootstrap3 BootstrapBasicForm $ Moniker
             , fsTooltip = Nothing
             , fsId = Nothing
             , fsName = Nothing
-            , fsAttrs = [("class", "input-sm")] ++ attrs
+            , fsAttrs = attrs
             }
 
 showMonikerEntity :: Entity Moniker -> Widget
@@ -72,14 +69,4 @@ showMonikerEntity (Entity _monikerId (Moniker name date _)) = do
         <tr>
             <td>#{name}
             <td>#{date}
-    |]
-
-monikersTable :: [Entity Moniker] -> Widget
-monikersTable monikers = [whamlet|
-    <table .table .table-striped .table-bordered>
-        <tr>
-            <td>Name
-            <td>Date
-        $forall moniker <- monikers
-            ^{showMonikerEntity moniker}
     |]

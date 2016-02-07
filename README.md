@@ -21,3 +21,14 @@ Then visit http://localhost:3000.
 
 If you add a new `executable` in `croniker.cabal`, run `stack build` so that you
 can run it with `stack exec new-executable`.
+
+## Sass
+
+* In a separate terminal, run `sass --watch sass:static/css`
+* Edit files under `sass/`
+* Commit both the Sass files and the generated CSS files
+
+## Static Files
+
+If you add a new file in `static/`, run `touch Settings/StaticFiles.hs` to have
+Yesod pick up the routes for the new files.

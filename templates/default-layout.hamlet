@@ -1,6 +1,3 @@
-<h1.jumbotron>
-    Croniker
-
-$maybe msg <- mmsg
-  <div .alert .alert-info>#{msg}
+$maybe message <- mmessage
+  <div .flash-notice>#{message}
 ^{widget}

@@ -1,19 +1,17 @@
-<h2>Hello, #{userTwitterUsername user}!
+<div.page-monikers>
+    <h2>Hello, #{userTwitterUsername user}! Today is #{today} in UTC.
 
-<div>Today is #{today}, at least in UTC
+    <form method=post action=@{MonikerR}#form enctype=#{formEnctype}>
+        ^{formWidget}
+        <button type="submit">
+            Submit
 
-$if null todaysMonikers
-    <div>No monikers for today
-$else
-    <h3>Monikers for today
-    ^{monikersTable todaysMonikers}
-
-$if null allMonikers
-    <div>No monikers found!
-$else
-    ^{monikersTable allMonikers}
-
-<form method=post action=@{MonikerR}#form enctype=#{formEnctype}>
-    ^{formWidget}
-    <button .btn .btn-primary type="submit">
-        Submit
+    <div.monikers>
+        $if null allMonikers
+            <p>You don't have any monikers :/
+        $else
+            <h3>Your upcoming monikers
+            $forall (Entity _ (Moniker name date _)) <- allMonikers
+                <p.moniker>
+                    <strong>#{name}
+                    on #{date}
