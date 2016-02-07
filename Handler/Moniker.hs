@@ -40,7 +40,7 @@ postMonikerR = do
 
 monikerForm :: Day -> UserId -> Form Moniker
 monikerForm tomorrow userId = renderDivs $ Moniker
-       <$> areq nameField (fs "Name" [("maxlength", "20")]) Nothing
+       <$> areq nameField (fs "New Name" [("maxlength", "20")]) Nothing
        <*> areq dateField (fs "Date" []) (Just tomorrow)
        <*> pure userId
     where
