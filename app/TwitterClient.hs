@@ -3,7 +3,6 @@ module TwitterClient (
     ) where
 
 import Import
-import Configuration.Dotenv (loadFile)
 import Control.Lens ((.~), (&), (?~))
 import Network.Wreq as Wreq (auth, defaults, postWith, param, oauth1Auth, Auth)
 import System.Environment (getEnv)
@@ -21,7 +20,6 @@ updateTwitterName newName = do
 
 twitterAuthentication :: IO Wreq.Auth
 twitterAuthentication = do
-    loadFile False ".env"
     consumerKey <- BSC.pack <$> getEnv "TWITTER_CONSUMER_KEY"
     consumerSecret <- BSC.pack <$> getEnv "TWITTER_CONSUMER_SECRET"
     accessKey <- BSC.pack <$> getEnv "TWITTER_ACCESS_KEY"
