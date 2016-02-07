@@ -15,7 +15,7 @@ getMonikerR = do
     today <- liftIO M.today
     tomorrow <- liftIO M.tomorrow
     (formWidget, formEnctype) <- generateFormPost (monikerForm tomorrow userId)
-    allMonikers <- runDB $ M.monikersFor userId
+    allMonikers <- runDB $ M.futureMonikersFor userId
     defaultLayout $ do
         setTitle "Croniker"
         $(widgetFile "monikers")
@@ -33,7 +33,7 @@ postMonikerR = do
         _ -> do
             setMessage "Oops, something went wrong"
             today <- liftIO M.today
-            allMonikers <- runDB $ M.monikersFor userId
+            allMonikers <- runDB $ M.futureMonikersFor userId
             defaultLayout $ do
                 setTitle "Croniker"
                 $(widgetFile "monikers")

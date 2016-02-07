@@ -1,5 +1,5 @@
 module Model.Moniker
-    ( monikersFor
+    ( futureMonikersFor
     , monikersFromTodayFor
     , allMonikersFromToday
     , today
@@ -10,8 +10,10 @@ import Import
 
 import Data.Time.Clock (addUTCTime)
 
-monikersFor :: UserId -> DB [Entity Moniker]
-monikersFor userId = selectList [MonikerUserId ==. userId] [Asc MonikerDate]
+futureMonikersFor :: UserId -> DB [Entity Moniker]
+futureMonikersFor userId = do
+    day <- liftIO today
+    selectList [MonikerUserId ==. userId, MonikerDate >=. day] [Asc MonikerDate]
 
 monikersFromTodayFor :: UserId -> DB [Entity Moniker]
 monikersFromTodayFor userId = do
