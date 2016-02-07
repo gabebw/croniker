@@ -30,6 +30,7 @@ import Network.Wai.Middleware.RequestLogger (Destination (Logger),
                                              mkRequestLogger, outputFormat)
 import System.Log.FastLogger                (defaultBufSize, newStdoutLoggerSet,
                                              toLogStr)
+import System.Directory (doesFileExist)
 import Configuration.Dotenv (loadFile)
 import System.Environment (getEnv)
 import qualified Data.ByteString.Char8 as BSC
@@ -58,7 +59,9 @@ makeFoundation appSettings = do
     appStatic <-
         (if appMutableStatic appSettings then staticDevel else static)
         (appStaticDir appSettings)
-    loadFile False ".env"
+    exists <- doesFileExist ".env"
+    when exists $ loadFile False ".env"
+
     twitterConsumerKey <- BSC.pack <$> getEnv "TWITTER_CONSUMER_KEY"
     twitterConsumerSecret <- BSC.pack <$> getEnv "TWITTER_CONSUMER_SECRET"
 
