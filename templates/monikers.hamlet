@@ -11,7 +11,12 @@
             <h2>You don't have any monikers :/
         $else
             <ul>
-                $forall (Entity _ (Moniker name date _)) <- allMonikers
+                $forall (Entity monikerId (Moniker name date _)) <- allMonikers
                     <li.moniker>
+                        <form #moniker-delete method=post action=@{DeleteMonikerR monikerId}>
+                            <input type="hidden" name="_token" value="#{csrfToken}">
+                            <button type="submit" value="">
+                                Delete
+
                         <strong>#{name}
                         on #{date}

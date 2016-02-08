@@ -15,6 +15,7 @@ library
     hs-source-dirs: ., app
     exposed-modules: Application
                      Foundation
+                     Helper.Request
                      Import
                      Import.NoFoundation
                      Model

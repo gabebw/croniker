@@ -88,6 +88,7 @@ instance Yesod App where
     authRoute _ = Just $ AuthR LoginR
 
     isAuthorized MonikerR _ = isSignedIn
+    isAuthorized (DeleteMonikerR _) _ = isSignedIn
     -- All other routes are authorized
     isAuthorized _ _ = return Authorized
 

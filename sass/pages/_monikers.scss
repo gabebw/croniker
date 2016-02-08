@@ -1,10 +1,6 @@
 .page-monikers {
   .form {
-    @include span-columns(3);
-  }
-
-  h2 {
-    margin-bottom: $base-spacing;
+    @include span-columns(4);
   }
 
   .monikers {
@@ -14,10 +10,24 @@
 
   .moniker {
     margin-bottom: $large-spacing;
-    position: relative;
 
     form, button {
       display: inline;
+    }
+
+    button {
+      background-color: $white;
+      border-bottom: 1px solid $action-color;
+      border-radius: 0;
+      color: $black;
+      margin-right: $base-spacing;
+      padding: 0 0 $tiny-spacing 0;
+      vertical-align: baseline;
+
+      &:hover {
+        border-color: $red;
+        color: $red;
+      }
     }
   }
 }

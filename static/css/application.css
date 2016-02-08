@@ -323,7 +323,7 @@ picture {
   background-color: #fff6bf;
   color: #8c7800;
   display: block;
-  margin-bottom: 0.75em;
+  margin-bottom: 3em;
   padding: 0.75em;
   text-align: center; }
   .flash-alert a {
@@ -336,7 +336,7 @@ picture {
   background-color: #fbe3e4;
   color: #97161b;
   display: block;
-  margin-bottom: 0.75em;
+  margin-bottom: 3em;
   padding: 0.75em;
   text-align: center; }
   .flash-error a {
@@ -349,7 +349,7 @@ picture {
   background-color: #e5edf8;
   color: #244e87;
   display: block;
-  margin-bottom: 0.75em;
+  margin-bottom: 3em;
   padding: 0.75em;
   text-align: center; }
   .flash-notice a {
@@ -362,7 +362,7 @@ picture {
   background-color: #e6efc2;
   color: #56651a;
   display: block;
-  margin-bottom: 0.75em;
+  margin-bottom: 3em;
   padding: 0.75em;
   text-align: center; }
   .flash-success a {
@@ -401,11 +401,9 @@ header {
   float: left;
   display: block;
   margin-right: 2.35765%;
-  width: 23.23176%; }
+  width: 31.76157%; }
   .page-monikers .form:last-child {
     margin-right: 0; }
-.page-monikers h2 {
-  margin-bottom: 1.5em; }
 .page-monikers .monikers {
   margin-left: 8.5298%;
   float: left;
@@ -415,10 +413,20 @@ header {
   .page-monikers .monikers:last-child {
     margin-right: 0; }
 .page-monikers .moniker {
-  margin-bottom: 3em;
-  position: relative; }
+  margin-bottom: 3em; }
   .page-monikers .moniker form, .page-monikers .moniker button {
     display: inline; }
+  .page-monikers .moniker button {
+    background-color: white;
+    border-bottom: 1px solid #00a0b0;
+    border-radius: 0;
+    color: #1a1a1a;
+    margin-right: 1.5em;
+    padding: 0 0 0.5em 0;
+    vertical-align: baseline; }
+    .page-monikers .moniker button:hover {
+      border-color: #d9534f;
+      color: #d9534f; }
 
 main {
   max-width: 68em;

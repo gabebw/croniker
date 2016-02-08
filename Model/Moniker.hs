@@ -2,6 +2,7 @@ module Model.Moniker
     ( futureMonikersFor
     , monikersFromTodayFor
     , allMonikersFromToday
+    , findMonikerFor
     , today
     , tomorrow
     ) where
@@ -9,6 +10,9 @@ module Model.Moniker
 import Import
 
 import Data.Time.Clock (addUTCTime)
+
+findMonikerFor :: UserId -> MonikerId -> DB (Maybe (Entity Moniker))
+findMonikerFor userId monikerId = selectFirst [MonikerUserId ==. userId, MonikerId ==. monikerId] []
 
 futureMonikersFor :: UserId -> DB [Entity Moniker]
 futureMonikersFor userId = do
