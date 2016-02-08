@@ -24,6 +24,7 @@ library
                      Settings.StaticFiles
                      Handler.Common
                      Handler.Moniker
+                     Handler.Root
                      Handler.TodaysMonikersTask
                      TwitterClient
 

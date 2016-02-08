@@ -87,7 +87,6 @@ instance Yesod App where
     -- The page to be redirected to when authentication is required.
     authRoute _ = Just $ AuthR LoginR
 
-    -- Must be signed in to see their own monikers
     isAuthorized MonikerR _ = isSignedIn
     -- All other routes are authorized
     isAuthorized _ _ = return Authorized
@@ -147,10 +146,7 @@ instance YesodAuth App where
 
     authHttpManager = getHttpManager
 
-    loginHandler = lift $ do
-        defaultLayout $ do
-            setTitle "Croniker - Login"
-            $(widgetFile "login")
+    loginHandler = lift $ redirect RootR
 
 isSignedIn :: Handler AuthResult
 isSignedIn = do

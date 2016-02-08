@@ -4,4 +4,5 @@
 /favicon.ico FaviconR GET
 /robots.txt RobotsR GET
 
-/ MonikerR GET POST
+/ RootR GET
+/monikers MonikerR GET POST
