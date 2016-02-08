@@ -9,6 +9,6 @@ getRootR = do
 
     case maid of
         Nothing -> defaultLayout $ do
-            setTitle "Carnival"
+            setTitle "Croniker"
             $(widgetFile "root")
         (Just  _) -> redirect MonikerR

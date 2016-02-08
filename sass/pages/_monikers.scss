@@ -1,9 +1,23 @@
 .page-monikers {
+  .form {
+    @include span-columns(3);
+  }
+
+  h2 {
+    margin-bottom: $base-spacing;
+  }
+
   .monikers {
-    margin-top: $base-spacing;
+    @include shift(1);
+    @include span-columns(5);
   }
 
   .moniker {
-    margin-bottom: $base-spacing;
+    margin-bottom: $large-spacing;
+    position: relative;
+
+    form, button {
+      display: inline;
+    }
   }
 }

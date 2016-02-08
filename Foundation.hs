@@ -71,7 +71,7 @@ instance Yesod App where
     defaultLayout widget = do
         master <- getYesod
         mmessage <- getMessage
-        maid <- maybeAuthId
+        muser <- maybeAuth
 
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and

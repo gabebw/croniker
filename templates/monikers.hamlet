@@ -1,17 +1,17 @@
 <div.page-monikers>
-    <h2>Hello, #{userTwitterUsername user}! Today is #{today} in UTC.
-
-    <form method=post action=@{MonikerR}#form enctype=#{formEnctype}>
-        ^{formWidget}
-        <button type="submit">
-            Submit
+    <div.form>
+        <form method=post action=@{MonikerR}#form enctype=#{formEnctype}>
+            ^{formWidget}
+            <p>(Today is #{today} in UTC.)
+            <button type="submit">
+                Submit
 
     <div.monikers>
         $if null allMonikers
-            <p>You don't have any monikers :/
+            <h2>You don't have any monikers :/
         $else
-            <h3>Your upcoming monikers
-            $forall (Entity _ (Moniker name date _)) <- allMonikers
-                <p.moniker>
-                    <strong>#{name}
-                    on #{date}
+            <ul>
+                $forall (Entity _ (Moniker name date _)) <- allMonikers
+                    <li.moniker>
+                        <strong>#{name}
+                        on #{date}

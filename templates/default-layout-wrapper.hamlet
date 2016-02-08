@@ -46,11 +46,14 @@ $newline never
       <header>
         <a href=@{MonikerR}>
             Croniker
-        $if isNothing maid
-            <ul.header__items>
-                <li.header__item>
-                    <a href=@{AuthR twitterUrl}>
-                        Sign in
+        <ul.header__items>
+            <li.header__item>
+                $case muser
+                    $of (Just (Entity _ user))
+                        Hi, #{userTwitterUsername user}
+                    $of Nothing
+                        <a href=@{AuthR twitterUrl}>
+                            Sign in
 
       <main>
         ^{pageBody pc}

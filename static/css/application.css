@@ -148,7 +148,7 @@ html {
 
 button, input[type="button"], input[type="reset"], input[type="submit"], .button {
   appearance: none;
-  background-color: #00A0B0;
+  background-color: #00a0b0;
   border: 0;
   border-radius: 3px;
   color: #fff;
@@ -172,7 +172,7 @@ button, input[type="button"], input[type="reset"], input[type="submit"], .button
     cursor: not-allowed;
     opacity: 0.5; }
     button:disabled:hover, input[type="button"]:disabled:hover, input[type="reset"]:disabled:hover, input[type="submit"]:disabled:hover, .button:disabled:hover {
-      background-color: #00A0B0; }
+      background-color: #00a0b0; }
 
 fieldset {
   background-color: transparent;
@@ -214,7 +214,7 @@ select[multiple] {
     border-color: #b1b1b1; }
   input[type="color"]:focus, input[type="date"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="email"]:focus, input[type="month"]:focus, input[type="number"]:focus, input[type="password"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="text"]:focus, input[type="time"]:focus, input[type="url"]:focus, input[type="week"]:focus, input:not([type]):focus, textarea:focus,
   select[multiple]:focus {
-    border-color: #00A0B0;
+    border-color: #00a0b0;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06), 0 0 5px rgba(0, 137, 151, 0.7);
     outline: none; }
   input[type="color"]:disabled, input[type="date"]:disabled, input[type="datetime"]:disabled, input[type="datetime-local"]:disabled, input[type="email"]:disabled, input[type="month"]:disabled, input[type="number"]:disabled, input[type="password"]:disabled, input[type="search"]:disabled, input[type="tel"]:disabled, input[type="text"]:disabled, input[type="time"]:disabled, input[type="url"]:disabled, input[type="week"]:disabled, input:not([type]):disabled, textarea:disabled,
@@ -301,7 +301,7 @@ p {
   margin: 0 0 0.75em; }
 
 a {
-  color: #00A0B0;
+  color: #00a0b0;
   text-decoration: none;
   transition: color 150ms ease; }
   a:active, a:focus, a:hover {
@@ -372,7 +372,7 @@ picture {
       color: black; }
 
 header {
-  background-color: #490A3D;
+  background-color: #490a3d;
   color: white;
   float: right;
   font-weight: bold;
@@ -397,10 +397,28 @@ header {
   .page-login .hero {
     font-size: 1.5rem; }
 
-.page-monikers .monikers {
-  margin-top: 1.5em; }
-.page-monikers .moniker {
+.page-monikers .form {
+  float: left;
+  display: block;
+  margin-right: 2.35765%;
+  width: 23.23176%; }
+  .page-monikers .form:last-child {
+    margin-right: 0; }
+.page-monikers h2 {
   margin-bottom: 1.5em; }
+.page-monikers .monikers {
+  margin-left: 8.5298%;
+  float: left;
+  display: block;
+  margin-right: 2.35765%;
+  width: 40.29137%; }
+  .page-monikers .monikers:last-child {
+    margin-right: 0; }
+.page-monikers .moniker {
+  margin-bottom: 3em;
+  position: relative; }
+  .page-monikers .moniker form, .page-monikers .moniker button {
+    display: inline; }
 
 main {
   max-width: 68em;
