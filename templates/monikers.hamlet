@@ -19,4 +19,5 @@
                                 Delete
 
                         <strong>#{name}
-                        on #{date}
+                        on
+                        #{formatTime defaultTimeLocale "%B %d, %Y" date}
