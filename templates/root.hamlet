@@ -6,4 +6,4 @@
         update your Twitter name on that day.
     <div>
         <a .button href=@{AuthR twitterUrl}>
-            Sign up now with Twitter
+            Sign in now with Twitter
