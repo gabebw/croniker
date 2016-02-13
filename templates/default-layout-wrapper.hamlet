@@ -50,7 +50,7 @@ $newline never
             <li.header__item>
                 $case muser
                     $of (Just (Entity _ user))
-                        Hi, #{userTwitterUsername user}
+                        Hi, #{userTwitterUsername user}!
                     $of Nothing
                         <a href=@{AuthR twitterUrl}>
                             Sign in
