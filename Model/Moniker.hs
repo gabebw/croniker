@@ -1,7 +1,7 @@
 module Model.Moniker
     ( futureMonikersFor
     , monikersFromTodayFor
-    , allMonikersFromToday
+    , allMonikersForUpdate
     , findMonikerFor
     ) where
 
@@ -22,7 +22,10 @@ monikersFromTodayFor userId = do
     day <- today
     selectList [MonikerUserId ==. userId, MonikerDate ==. day] [Asc MonikerDate]
 
-allMonikersFromToday :: DB [Entity Moniker]
-allMonikersFromToday = do
-    day <- today
-    selectList [MonikerDate ==. day] [Asc MonikerDate]
+-- Due to time zones, we need to find monikers from yesterday/today/tomorrow (in
+-- UTC) because "yesterday"/"tomorrow" in UTC may be "today" in a user's time
+-- zone.
+allMonikersForUpdate :: DB [Entity Moniker]
+allMonikersForUpdate = do
+    days <- sequence [yesterday, today, tomorrow]
+    selectList [MonikerDate <-. days] [Asc MonikerDate]
