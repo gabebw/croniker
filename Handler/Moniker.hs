@@ -77,11 +77,3 @@ monikerForm tomorrow userId = renderDivs $ Moniker
             , fsName = Nothing
             , fsAttrs = attrs
             }
-
-showMonikerEntity :: Entity Moniker -> Widget
-showMonikerEntity (Entity _monikerId (Moniker name date _)) = do
-    [whamlet|
-        <tr>
-            <td>#{name}
-            <td>#{date}
-    |]
