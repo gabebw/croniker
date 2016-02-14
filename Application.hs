@@ -33,6 +33,7 @@ import System.Log.FastLogger                (defaultBufSize, newStdoutLoggerSet,
 import System.Directory (doesFileExist)
 import Configuration.Dotenv (loadFile)
 import System.Environment (getEnv)
+import Web.Heroku.Persist.Postgresql (postgresConf)
 import qualified Data.ByteString.Char8 as BSC
 
 -- Import all relevant handler modules here.
@@ -66,6 +67,10 @@ makeFoundation appSettings = do
     twitterConsumerKey <- BSC.pack <$> getEnv "TWITTER_CONSUMER_KEY"
     twitterConsumerSecret <- BSC.pack <$> getEnv "TWITTER_CONSUMER_SECRET"
 
+    dbconf <- if appDatabaseUrl appSettings
+        then postgresConf $ pgPoolSize $ appDatabaseConf appSettings
+        else return $ appDatabaseConf appSettings
+
     -- We need a log function to create a connection pool. We need a connection
     -- pool to create our foundation. And we need our foundation to get a
     -- logging function. To get out of this loop, we initially create a
@@ -80,8 +85,8 @@ makeFoundation appSettings = do
 
     -- Create the database connection pool
     pool <- flip runLoggingT logFunc $ createPostgresqlPool
-        (pgConnStr  $ appDatabaseConf appSettings)
-        (pgPoolSize $ appDatabaseConf appSettings)
+        (pgConnStr dbconf)
+        (pgPoolSize dbconf)
 
     -- Perform database migration using our application's logging settings.
     runLoggingT (runSqlPool (runMigration migrateAll) pool) logFunc

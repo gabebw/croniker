@@ -95,6 +95,7 @@ library
 
                  , base64-bytestring
                  , dotenv
+                 , heroku-persistent
                  , lens
                  , lens-aeson
                  , network-uri

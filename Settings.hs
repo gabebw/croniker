@@ -61,6 +61,8 @@ data AppSettings = AppSettings
     -- ^ Copyright text to appear in the footer of the page
     , appAnalytics              :: Maybe Text
     -- ^ Google Analytics code
+    , appDatabaseUrl            :: Bool
+    -- ^ Parse database info from DATABASE_URL?
     }
 
 instance FromJSON AppSettings where
@@ -86,6 +88,7 @@ instance FromJSON AppSettings where
 
         appCopyright              <- o .: "copyright"
         appAnalytics              <- o .:? "analytics"
+        appDatabaseUrl            <- o .:? "database-url"     .!= (not defaultDev)
 
         return AppSettings {..}
 

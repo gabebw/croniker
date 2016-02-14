@@ -14,6 +14,8 @@ extra-deps:
 - base-orphans-0.5.0
 - dotenv-0.1.0.9
 - email-validate-2.2.0
+- heroku-0.1.2.3
+- heroku-persistent-0.1.0
 - mono-traversable-0.10.1
 - optparse-applicative-0.12.1.0
 - persistent-2.2.4
