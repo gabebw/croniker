@@ -14,14 +14,9 @@ instance ToMarkup Day where
 getMonikerR :: Handler Html
 getMonikerR = do
     (Entity userId _) <- requireAuth
-    csrfToken <- fromJust . reqToken <$> getRequest
-    today <- liftIO M.today
     tomorrow <- liftIO M.tomorrow
     (formWidget, formEnctype) <- generateFormPost (monikerForm tomorrow userId)
-    allMonikers <- runDB $ M.futureMonikersFor userId
-    defaultLayout $ do
-        setTitle "Croniker"
-        $(widgetFile "monikers")
+    monikersTemplate userId formWidget formEnctype
 
 postMonikerR :: Handler Html
 postMonikerR = do
@@ -35,12 +30,16 @@ postMonikerR = do
             redirect MonikerR
         _ -> do
             setMessage "Oops, something went wrong"
-            csrfToken <- fromJust . reqToken <$> getRequest
-            today <- liftIO M.today
-            allMonikers <- runDB $ M.futureMonikersFor userId
-            defaultLayout $ do
-                setTitle "Croniker"
-                $(widgetFile "monikers")
+            monikersTemplate userId formWidget formEnctype
+
+monikersTemplate :: (ToWidget App fw) => UserId -> fw -> Enctype -> Handler Html
+monikersTemplate userId formWidget formEnctype = do
+    csrfToken <- fromJust . reqToken <$> getRequest
+    today <- liftIO M.today
+    allMonikers <- runDB $ M.futureMonikersFor userId
+    defaultLayout $ do
+        setTitle "Croniker"
+        $(widgetFile "monikers")
 
 postDeleteMonikerR :: MonikerId -> Handler ()
 postDeleteMonikerR monikerId = do
