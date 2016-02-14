@@ -2,6 +2,7 @@
     <div.form>
         <form method=post action=@{UpdateUserR userId}#form enctype=#{tzEnc}>
             ^{tzWidget}
+            <p>(It's #{timeZoneName $ timeZoneForUTCTime (tzByLabel $ userTzLabel user) now} where you are.)
             <button type="submit">
                 Submit
 
