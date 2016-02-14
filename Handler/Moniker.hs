@@ -3,24 +3,27 @@ module Handler.Moniker where
 
 import Import
 
-import Helper.Request (fromMaybe404)
-import Text.Blaze (ToMarkup, toMarkup)
-import qualified Model.Moniker as M
 import Data.Maybe (fromJust)
+import Text.Blaze (ToMarkup, toMarkup)
+import Helper.Request (fromMaybe404)
+import Handler.UpdateUser (timezoneForm)
+import qualified Model.Moniker as M
+import qualified Model.User as U
 
 instance ToMarkup Day where
   toMarkup = toMarkup . show
 
 getMonikerR :: Handler Html
 getMonikerR = do
-    (Entity userId _) <- requireAuth
+    euser@(Entity userId user) <- requireAuth
     tomorrow <- liftIO M.tomorrow
-    (formWidget, formEnctype) <- generateFormPost (monikerForm tomorrow userId)
-    monikersTemplate userId formWidget formEnctype
+    monikerFormPost <- generateFormPost (monikerForm tomorrow userId)
+    timezoneFormPost <- generateFormPost (timezoneForm user)
+    monikersTemplate euser monikerFormPost timezoneFormPost
 
 postMonikerR :: Handler Html
 postMonikerR = do
-    (Entity userId _) <- requireAuth
+    euser@(Entity userId user) <- requireAuth
     tomorrow <- liftIO M.tomorrow
     ((result, formWidget), formEnctype) <- runFormPost (monikerForm tomorrow userId)
     case result of
@@ -30,12 +33,14 @@ postMonikerR = do
             redirect MonikerR
         _ -> do
             setMessage "Oops, something went wrong"
-            monikersTemplate userId formWidget formEnctype
+            timezoneFormPost <- generateFormPost (timezoneForm user)
+            monikersTemplate euser (formWidget, formEnctype) timezoneFormPost
 
-monikersTemplate :: (ToWidget App fw) => UserId -> fw -> Enctype -> Handler Html
-monikersTemplate userId formWidget formEnctype = do
+monikersTemplate :: (ToWidget App w) => Entity User -> (w, Enctype) -> (w, Enctype) -> Handler Html
+monikersTemplate (Entity userId user) (monikerWidget, monikerEnc) (tzWidget, tzEnc) = do
     csrfToken <- fromJust . reqToken <$> getRequest
-    today <- liftIO M.today
+    now <- liftIO $ getCurrentTime
+    let today = U.localTime now user
     allMonikers <- runDB $ M.futureMonikersFor userId
     defaultLayout $ do
         setTitle "Croniker"

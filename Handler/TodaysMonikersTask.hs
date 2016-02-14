@@ -1,10 +1,11 @@
 module Handler.TodaysMonikersTask where
 
 import Import
-import Model.Moniker (allMonikersFromToday)
-import TwitterClient (updateTwitterName)
+
 import qualified Data.ByteString.Char8 as BSC
 import qualified Data.Text as T
+import Model.Moniker (allMonikersFromToday)
+import TwitterClient (updateTwitterName)
 
 updateTodaysMonikers :: Handler ()
 updateTodaysMonikers = do

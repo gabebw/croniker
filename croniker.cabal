@@ -29,6 +29,7 @@ library
                      Handler.Moniker
                      Handler.Root
                      Handler.TodaysMonikersTask
+                     Handler.UpdateUser
                      TwitterClient
 
     if flag(dev) || flag(library-only)

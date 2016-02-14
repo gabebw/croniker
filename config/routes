@@ -7,3 +7,4 @@
 / RootR GET
 /monikers MonikerR GET POST
 /monikers/#MonikerId/delete DeleteMonikerR POST
+/user/#UserId/update UpdateUserR POST

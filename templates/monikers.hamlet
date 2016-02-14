@@ -1,8 +1,13 @@
 <div.page-monikers>
     <div.form>
-        <form method=post action=@{MonikerR}#form enctype=#{formEnctype}>
-            ^{formWidget}
-            <p>(Today is #{today} in UTC.)
+        <form method=post action=@{UpdateUserR userId}#form enctype=#{tzEnc}>
+            ^{tzWidget}
+            <button type="submit">
+                Submit
+
+        <form method=post action=@{MonikerR}#form enctype=#{monikerEnc}>
+            ^{monikerWidget}
+            <p>(It's #{formatTime defaultTimeLocale "%B %e" today} where you are.)
             <button type="submit">
                 Submit
 
