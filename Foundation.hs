@@ -89,10 +89,9 @@ instance Yesod App where
     -- The page to be redirected to when authentication is required.
     authRoute _ = Just $ AuthR LoginR
 
-    isAuthorized MonikerR _ = isSignedIn
-    isAuthorized (DeleteMonikerR _) _ = isSignedIn
-    -- All other routes are authorized
-    isAuthorized _ _ = return Authorized
+    -- Everything but RootR requires login
+    isAuthorized RootR _ = return Authorized
+    isAuthorized _ _ = isSignedIn
 
     -- This function creates static content files in the static folder
     -- and names them based on a hash of their content. This allows
