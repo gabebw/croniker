@@ -10,6 +10,7 @@ User
     twitterUsername Text
     twitterOauthToken Text
     twitterOauthTokenSecret Text
+    tzLabel TZLabel default='Etc/UTC'
     UniqueUser twitterUserId
     deriving Typeable Show
 Moniker

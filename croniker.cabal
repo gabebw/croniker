@@ -14,8 +14,10 @@ Flag library-only
 library
     hs-source-dirs: ., app
     exposed-modules: Application
+                     Data.TZLabel
                      Foundation
                      Helper.Request
+                     Helper.TextConversion
                      Import
                      Import.NoFoundation
                      Model
@@ -99,6 +101,7 @@ library
                  , lens
                  , lens-aeson
                  , network-uri
+                 , tz
                  , wreq-sb
                  , yesod-auth-oauth
 
