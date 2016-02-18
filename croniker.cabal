@@ -16,6 +16,12 @@ library
     exposed-modules: Application
                      Data.TZLabel
                      Foundation
+                     Handler.Common
+                     Handler.DeleteMoniker
+                     Handler.Moniker
+                     Handler.Root
+                     Handler.TodaysMonikersTask
+                     Handler.UpdateUser
                      Helper.Request
                      Helper.TextConversion
                      Import
@@ -25,12 +31,6 @@ library
                      Model.User
                      Settings
                      Settings.StaticFiles
-                     Handler.Common
-                     Handler.DeleteMoniker
-                     Handler.Moniker
-                     Handler.Root
-                     Handler.TodaysMonikersTask
-                     Handler.UpdateUser
                      TwitterClient
 
     if flag(dev) || flag(library-only)
