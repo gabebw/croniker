@@ -11,6 +11,7 @@ User
     twitterOauthToken Text
     twitterOauthTokenSecret Text
     tzLabel TZLabel default='Etc/UTC'
+    choseTimezone Bool default=False
     UniqueUser twitterUserId
     deriving Typeable Show
 Moniker

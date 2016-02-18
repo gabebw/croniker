@@ -14,7 +14,7 @@ postUpdateUserR userId = do
     ((result, _), _) <- runFormPost (timezoneForm user)
     case result of
         FormSuccess newUser -> do
-            void $ runDB $ replace userId newUser
+            void $ runDB $ replace userId $ newUser { userChoseTimezone = True }
             setMessage "Time zone updated"
             redirect RootR
         _ -> do
@@ -27,7 +27,8 @@ timezoneForm User{..} = renderDivs $ User
        <*> pure userTwitterUsername
        <*> pure userTwitterOauthToken
        <*> pure userTwitterOauthTokenSecret
-       <*> areq (selectFieldList selectTZs) "Choose your timezone" (Just userTzLabel)
+       <*> areq (selectFieldList selectTZs) "" (Just userTzLabel)
+       <*> pure False
     where
         selectTZs :: [(Text, TZLabel)]
         selectTZs = map (\tzlabel -> (b2t $ toTZName tzlabel, tzlabel)) [Africa__Abidjan .. Root__WET]

@@ -9,30 +9,34 @@ import Import
 
 import Data.Maybe (fromJust)
 import Text.Blaze (ToMarkup, toMarkup)
-import Data.Time.Zones
-import Data.Time.Zones.All
-import Data.Time.LocalTime
 import Helper.Request (fromMaybe404)
-import Handler.UpdateUser (timezoneForm)
 import qualified Model.Moniker as M
 import qualified Model.User as U
 
 instance ToMarkup Day where
   toMarkup = toMarkup . show
 
+prerequisites :: Handler (Entity User)
+prerequisites = do
+    euser@(Entity _ user) <- requireAuth
+    requireSetTimezone user
+    return euser
+
 getMonikerR :: Handler Html
 getMonikerR = do
-    euser@(Entity userId user) <- requireAuth
+    euser@(Entity userId _) <- prerequisites
     tomorrow <- liftIO M.tomorrow
-    monikerFormPost <- generateFormPost (monikerForm tomorrow userId)
-    timezoneFormPost <- generateFormPost (timezoneForm user)
-    monikersTemplate euser monikerFormPost timezoneFormPost
+    monikerFormPost <- generateFormPost $ monikerForm tomorrow userId
+    monikersTemplate euser monikerFormPost
+
+requireSetTimezone :: User -> Handler ()
+requireSetTimezone user = when (not $ userChoseTimezone user) (redirect ChooseTimezoneR)
 
 postMonikerR :: Handler Html
 postMonikerR = do
-    euser@(Entity userId user) <- requireAuth
+    euser@(Entity userId _) <- prerequisites
     tomorrow <- liftIO M.tomorrow
-    ((result, formWidget), formEnctype) <- runFormPost (monikerForm tomorrow userId)
+    ((result, formWidget), formEnctype) <- runFormPost $ monikerForm tomorrow userId
     case result of
         FormSuccess moniker -> do
             void $ runDB $ insert moniker
@@ -40,13 +44,12 @@ postMonikerR = do
             redirect MonikerR
         _ -> do
             setMessage "Oops, something went wrong"
-            timezoneFormPost <- generateFormPost (timezoneForm user)
-            monikersTemplate euser (formWidget, formEnctype) timezoneFormPost
+            monikersTemplate euser (formWidget, formEnctype)
 
-monikersTemplate :: (ToWidget App w) => Entity User -> (w, Enctype) -> (w, Enctype) -> Handler Html
-monikersTemplate (Entity userId user) (monikerWidget, monikerEnc) (tzWidget, tzEnc) = do
+monikersTemplate :: (ToWidget App w) => Entity User -> (w, Enctype) -> Handler Html
+monikersTemplate (Entity userId user) (monikerWidget, monikerEnc) = do
     csrfToken <- fromJust . reqToken <$> getRequest
-    now <- liftIO $ getCurrentTime
+    now <- liftIO getCurrentTime
     let today = U.localTime now user
     allMonikers <- runDB $ M.futureMonikersFor userId
     defaultLayout $ do

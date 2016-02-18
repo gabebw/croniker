@@ -16,6 +16,7 @@ library
     exposed-modules: Application
                      Data.TZLabel
                      Foundation
+                     Handler.ChooseTimezone
                      Handler.Common
                      Handler.DeleteMoniker
                      Handler.Moniker

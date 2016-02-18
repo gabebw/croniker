@@ -38,6 +38,7 @@ import qualified Data.ByteString.Char8 as BSC
 
 -- Import all relevant handler modules here.
 -- Don't forget to add new modules to your cabal file!
+import Handler.ChooseTimezone
 import Handler.Common
 import Handler.Moniker
 import Handler.Root

@@ -5,6 +5,7 @@
 /robots.txt RobotsR GET
 
 / RootR GET
+/timezone ChooseTimezoneR GET
 /monikers MonikerR GET POST
 /monikers/#MonikerId/delete DeleteMonikerR POST
 /user/#UserId/update UpdateUserR POST

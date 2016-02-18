@@ -1,0 +1,10 @@
+<div>
+    <h2>Hi!
+    <p>
+        Croniker will set your name at 5am on the day you choose. In order to
+        know when 5am is for you, please choose your timezone.
+    <div.form>
+        <form method=post action=@{UpdateUserR userId} enctype=#{tzEnc}>
+            ^{tzWidget}
+            <button type="submit">
+                Submit

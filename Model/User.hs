@@ -28,6 +28,7 @@ credsToUser credsExtra = User
     <*> (lookup "oauth_token" credsExtra)
     <*> (lookup "oauth_token_secret" credsExtra)
     <*> pure defaultTZLabel
+    <*> pure False
 
 defaultTZLabel :: TZLabel
 defaultTZLabel = Etc__UTC
