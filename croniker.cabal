@@ -26,6 +26,7 @@ library
                      Settings
                      Settings.StaticFiles
                      Handler.Common
+                     Handler.DeleteMoniker
                      Handler.Moniker
                      Handler.Root
                      Handler.TodaysMonikersTask
