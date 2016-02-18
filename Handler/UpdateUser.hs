@@ -1,4 +1,7 @@
-module Handler.UpdateUser where
+module Handler.UpdateUser
+    ( postUpdateUserR
+    , timezoneForm
+    ) where
 
 import Import
 

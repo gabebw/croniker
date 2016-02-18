@@ -1,4 +1,6 @@
-module Handler.Root where
+module Handler.Root
+    ( getRootR
+    ) where
 
 import Import
 import Yesod.Auth.OAuth (twitterUrl)

@@ -1,4 +1,6 @@
-module Handler.TodaysMonikersTask where
+module Handler.TodaysMonikersTask
+    ( updateTodaysMonikers
+    ) where
 
 import Import
 

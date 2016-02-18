@@ -1,5 +1,9 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-module Handler.Moniker where
+module Handler.Moniker
+    ( getMonikerR
+    , postDeleteMonikerR
+    , postMonikerR
+    ) where
 
 import Import
 
