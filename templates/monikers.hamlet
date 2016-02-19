@@ -14,7 +14,7 @@
 
     <div.monikers>
         $if null allMonikers
-            <h2>You don't have any monikers :/
+            <h2>You don't have any monikers
         $else
             <ul>
                 $forall (Entity monikerId (Moniker name date _)) <- allMonikers
