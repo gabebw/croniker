@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Export a session key so that Yesod doesn't generate a new one every time it
+# runs, forcing you to log in again.
+# It doesn't matter what the key is, though Yesod will silently ignore it if
+# it's too short.
+
+export SESSION_KEY=85QYP9klzWngrah4PKH8KHUNsBAFPNO4ckkR6cUrHwAvxJ/EWXFOkBLzAYhJlfN8LJkg8GJlmX2f0dRlSq/YGxuBKvocuBU5Qhx2u8ttPZj7CqDyv7sKXxF806Gnd21E
+stack exec -- yesod devel
