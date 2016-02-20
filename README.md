@@ -13,7 +13,7 @@ Then run `./bin/setup`.
 
 ## Running the server
 
-    stack exec -- yesod devel
+    ./bin/run
 
 Then visit http://localhost:3000.
 
