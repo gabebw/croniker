@@ -12,7 +12,6 @@ import Data.Time.Format (FormatTime)
 import Text.Blaze (ToMarkup, toMarkup)
 import Helper.Request (fromMaybe404)
 import qualified Model.Moniker as M
-import qualified Model.User as U
 import qualified Croniker.Time as CT
 
 instance ToMarkup Day where
@@ -52,7 +51,7 @@ monikersTemplate :: (ToWidget App w) => Entity User -> (w, Enctype) -> Handler H
 monikersTemplate (Entity userId user) (monikerWidget, monikerEnc) = do
     csrfToken <- fromJust . reqToken <$> getRequest
     now <- liftIO getCurrentTime
-    let today = U.localTime now user
+    let today = CT.localTime now user
     allMonikers <- runDB $ M.futureMonikersFor userId
     defaultLayout $ do
         setTitle "Croniker"

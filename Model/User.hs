@@ -1,13 +1,10 @@
 module Model.User
     ( authenticateUser
-    , localTime
     ) where
 
 import Import.NoFoundation
 
-import Data.Time.LocalTime
-import Data.Time.Zones
-import Data.Time.Zones.All(TZLabel(Etc__UTC), tzByLabel)
+import Data.Time.Zones.All (TZLabel(Etc__UTC))
 
 authenticateUser :: AuthId m ~ UserId => Creds m -> DB (AuthenticationResult m)
 authenticateUser Creds{..} = do
@@ -32,9 +29,3 @@ credsToUser credsExtra = User
 
 defaultTZLabel :: TZLabel
 defaultTZLabel = Etc__UTC
-
-localTime :: UTCTime -> User -> LocalTime
-localTime utcNow user = utcToLocalTime timezone utcNow
-    where
-        timezone = timeZoneForUTCTime tz utcNow
-        tz = tzByLabel $ userTzLabel user
