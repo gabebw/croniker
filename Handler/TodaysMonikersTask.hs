@@ -15,7 +15,7 @@ import TwitterClient (updateTwitterName)
 updateTodaysMonikers :: Handler ()
 updateTodaysMonikers = do
     App{..} <- getYesod
-    now <- liftIO $ getCurrentTime
+    now <- liftIO getCurrentTime
     monikers <- map entityVal <$> runDB allMonikersForUpdate
     filteredMonikers <- filterM (isTime now) monikers
     mapM_ (updateName twitterConsumerKey twitterConsumerSecret) filteredMonikers
@@ -35,7 +35,7 @@ isTime utcNow (Moniker _ monikerDay userId) = do
     muser <- runDB $ get userId
     return $ case muser of
       Nothing -> False
-      (Just user) -> (userDay utcNow user) == monikerDay
+      (Just user) -> userDay utcNow user == monikerDay
 
 -- Convert the current time in UTC into the user's current day.
 -- For example, if it's February 22nd in UTC, it may be February 21 in PST.
