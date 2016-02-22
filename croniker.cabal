@@ -14,6 +14,7 @@ Flag library-only
 library
     hs-source-dirs: ., app
     exposed-modules: Application
+                     Data.RelativeTimes
                      Data.TZLabel
                      Foundation
                      Handler.ChooseTimezone

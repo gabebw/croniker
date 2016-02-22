@@ -12,6 +12,7 @@ import Text.Blaze (ToMarkup, toMarkup)
 import Helper.Request (fromMaybe404)
 import qualified Model.Moniker as M
 import qualified Model.User as U
+import qualified Data.RelativeTimes as RT
 
 instance ToMarkup Day where
   toMarkup = toMarkup . show
@@ -25,7 +26,7 @@ prerequisites = do
 getMonikerR :: Handler Html
 getMonikerR = do
     euser@(Entity userId _) <- prerequisites
-    tomorrow <- liftIO M.tomorrow
+    tomorrow <- RT.tomorrow
     monikerFormPost <- generateFormPost $ monikerForm tomorrow userId
     monikersTemplate euser monikerFormPost
 
@@ -35,7 +36,7 @@ requireSetTimezone user = when (not $ userChoseTimezone user) (redirect ChooseTi
 postMonikerR :: Handler Html
 postMonikerR = do
     euser@(Entity userId _) <- prerequisites
-    tomorrow <- liftIO M.tomorrow
+    tomorrow <- RT.tomorrow
     ((result, formWidget), formEnctype) <- runFormPost $ monikerForm tomorrow userId
     case result of
         FormSuccess moniker -> do
