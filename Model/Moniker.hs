@@ -7,7 +7,7 @@ module Model.Moniker
 
 import Import
 
-import Data.RelativeTimes
+import Croniker.Time
 
 findMonikerFor :: UserId -> MonikerId -> DB (Maybe (Entity Moniker))
 findMonikerFor userId monikerId = selectFirst [MonikerUserId ==. userId, MonikerId ==. monikerId] []

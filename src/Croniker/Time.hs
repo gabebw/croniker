@@ -1,4 +1,4 @@
-module Data.RelativeTimes
+module Croniker.Time
     ( today
     , tomorrow
     , yesterday
