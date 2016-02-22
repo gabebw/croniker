@@ -8,6 +8,7 @@ module Handler.Moniker
 import Import
 
 import Data.Maybe (fromJust)
+import Data.Time.Format (FormatTime)
 import Text.Blaze (ToMarkup, toMarkup)
 import Helper.Request (fromMaybe404)
 import qualified Model.Moniker as M
@@ -93,3 +94,6 @@ monikerForm tomorrow userId = renderDivs $ Moniker
             , fsName = Nothing
             , fsAttrs = attrs
             }
+
+prettyTime :: (FormatTime t) => t -> String
+prettyTime = formatTime defaultTimeLocale "%B %d, %Y"

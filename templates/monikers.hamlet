@@ -2,7 +2,7 @@
     <div.form>
         <form method=post action=@{MonikerR}#form enctype=#{monikerEnc}>
             ^{monikerWidget}
-            <p>(It's #{formatTime defaultTimeLocale "%B %e %H:%M:%S" today} where you are.)
+            <p>(It's #{prettyTime today} where you are.)
             <button type="submit">
                 Submit
 
@@ -20,4 +20,4 @@
 
                         <strong>#{name}
                         on
-                        #{formatTime defaultTimeLocale "%B %d, %Y" date}
+                        #{prettyTime date}
