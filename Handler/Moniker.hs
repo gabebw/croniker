@@ -25,8 +25,8 @@ prerequisites = do
 
 getMonikerR :: Handler Html
 getMonikerR = do
-    euser@(Entity userId _) <- prerequisites
-    tomorrow <- CT.tomorrow
+    euser@(Entity userId user) <- prerequisites
+    tomorrow <- CT.localTomorrow user
     monikerFormPost <- generateFormPost $ monikerForm tomorrow userId
     monikersTemplate euser monikerFormPost
 
@@ -35,8 +35,8 @@ requireSetTimezone user = when (not $ userChoseTimezone user) (redirect ChooseTi
 
 postMonikerR :: Handler Html
 postMonikerR = do
-    euser@(Entity userId _) <- prerequisites
-    tomorrow <- CT.tomorrow
+    euser@(Entity userId user) <- prerequisites
+    tomorrow <- CT.localTomorrow user
     ((result, formWidget), formEnctype) <- runFormPost $ monikerForm tomorrow userId
     case result of
         FormSuccess moniker -> do
@@ -50,8 +50,7 @@ postMonikerR = do
 monikersTemplate :: (ToWidget App w) => Entity User -> (w, Enctype) -> Handler Html
 monikersTemplate (Entity userId user) (monikerWidget, monikerEnc) = do
     csrfToken <- fromJust . reqToken <$> getRequest
-    now <- liftIO getCurrentTime
-    let today = CT.localTime now user
+    today <- CT.localToday user
     allMonikers <- runDB $ M.futureMonikersFor userId
     defaultLayout $ do
         setTitle "Croniker"
