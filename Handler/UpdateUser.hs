@@ -5,7 +5,7 @@ module Handler.UpdateUser
 
 import Import
 
-import Data.Time.Zones.All
+import Data.Time.Zones.All (TZLabel(..), toTZName)
 import Helper.TextConversion
 
 postUpdateUserR :: UserId -> Handler Html
