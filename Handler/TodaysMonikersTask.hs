@@ -1,3 +1,5 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Handler.TodaysMonikersTask
     ( updateTodaysMonikers
     ) where
@@ -14,21 +16,21 @@ import TwitterClient (updateTwitterName)
 
 updateTodaysMonikers :: Handler ()
 updateTodaysMonikers = do
-    App{..} <- getYesod
     now <- liftIO getCurrentTime
     monikers <- map entityVal <$> runDB allMonikersForUpdate
     filteredMonikers <- filterM (isTime now) monikers
-    mapM_ (updateName twitterConsumerKey twitterConsumerSecret) filteredMonikers
+    mapM_ updateName filteredMonikers
 
-updateName :: ByteString -> ByteString -> Moniker -> Handler ()
-updateName consumerKey consumerSecret (Moniker name _ userId) = do
+updateName :: Moniker -> Handler ()
+updateName (Moniker name _ userId) = do
+    App{twitterConsumerKey, twitterConsumerSecret} <- getYesod
     muser <- runDB $ get userId
     case muser of
         Nothing -> return ()
         (Just user) -> do
             let accessKey = BSC.pack $ T.unpack $ userTwitterOauthToken user
             let accessSecret = BSC.pack $ T.unpack $ userTwitterOauthTokenSecret user
-            liftIO $ updateTwitterName name consumerKey consumerSecret accessKey accessSecret
+            liftIO $ updateTwitterName name twitterConsumerKey twitterConsumerSecret accessKey accessSecret
 
 isTime :: UTCTime -> Moniker -> Handler Bool
 isTime utcNow (Moniker _ monikerDay userId) = do
