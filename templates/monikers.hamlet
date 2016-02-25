@@ -2,7 +2,6 @@
     <div.form>
         <form method=post action=@{MonikerR}#form enctype=#{monikerEnc}>
             ^{monikerWidget}
-            <p>(It's #{prettyTime today} where you are.)
             <button type="submit">
                 Submit
 

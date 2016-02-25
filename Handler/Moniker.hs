@@ -48,9 +48,8 @@ postMonikerR = do
             monikersTemplate euser (formWidget, formEnctype)
 
 monikersTemplate :: (ToWidget App w) => Entity User -> (w, Enctype) -> Handler Html
-monikersTemplate (Entity userId user) (monikerWidget, monikerEnc) = do
+monikersTemplate (Entity userId _) (monikerWidget, monikerEnc) = do
     csrfToken <- fromJust . reqToken <$> getRequest
-    today <- CT.localToday user
     allMonikers <- runDB $ M.futureMonikersFor userId
     defaultLayout $ do
         setTitle "Croniker"
