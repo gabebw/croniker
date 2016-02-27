@@ -20,3 +20,4 @@
                         <strong>#{name}
                         on
                         #{prettyTime date}
+                        at midnight
