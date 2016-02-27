@@ -15,7 +15,6 @@ postUpdateUserR userId = do
     case result of
         FormSuccess newUser -> do
             void $ runDB $ replace userId $ newUser { userChoseTimezone = True }
-            setMessage "Time zone updated"
             redirect RootR
         _ -> do
             setMessage "Oops, something went wrong"
@@ -27,7 +26,7 @@ timezoneForm User{..} = renderDivs $ User
        <*> pure userTwitterUsername
        <*> pure userTwitterOauthToken
        <*> pure userTwitterOauthTokenSecret
-       <*> areq (selectFieldList selectTZs) "" (Just userTzLabel)
+       <*> areq (selectFieldList selectTZs) "" Nothing
        <*> pure False
     where
         selectTZs :: [(Text, TZLabel)]

@@ -68,6 +68,7 @@ makeFoundation appSettings = do
 
     twitterConsumerKey <- BSC.pack <$> getEnv "TWITTER_CONSUMER_KEY"
     twitterConsumerSecret <- BSC.pack <$> getEnv "TWITTER_CONSUMER_SECRET"
+    googleApiKey <- getEnv "GOOGLE_API_KEY"
 
     dbconf <- if appDatabaseUrl appSettings
         then postgresConf $ pgPoolSize $ appDatabaseConf appSettings

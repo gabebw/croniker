@@ -25,6 +25,7 @@ data App = App
     , appLogger             :: Logger
     , twitterConsumerKey    :: ByteString
     , twitterConsumerSecret :: ByteString
+    , googleApiKey          :: String
     }
 
 -- This is where we define all of the routes in our application. For a full

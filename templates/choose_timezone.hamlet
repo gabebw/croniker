@@ -1,9 +1,10 @@
 <div>
-    <h2>Hi!
+    <h2>Welcome!
     <p>
-        Croniker will set your name at 5am on the day you choose. In order to
-        know when 5am is for you, please choose your timezone.
+        Croniker will set your name at 1 AM on the day you choose. In order to
+        know when 1 AM is for you, please choose your timezone.
     <div.form>
+        <p#spinning>Trying to find your timezone, please wait...
         <form method=post action=@{UpdateUserR userId} enctype=#{tzEnc}>
             ^{tzWidget}
             <button type="submit">

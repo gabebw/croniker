@@ -12,4 +12,5 @@ getChooseTimezoneR = do
     (tzWidget, tzEnc) <- generateFormPost (timezoneForm user)
     defaultLayout $ do
         setTitle "Croniker"
+        addScript $ StaticR javascript_selectTimezone_js
         $(widgetFile "choose_timezone")
