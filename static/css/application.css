@@ -390,6 +390,19 @@ header {
     .header__items .header__item:not(:last-child) {
       margin-right: 1.5em; }
 
+html, body {
+  height: 100%; }
+
+#container {
+  min-height: 100%;
+  margin: 0 auto -2.5rem; }
+
+footer, .push {
+  height: 2.5rem; }
+
+footer {
+  text-align: center; }
+
 .page-login {
   text-align: center; }
   .page-login * {

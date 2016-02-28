@@ -1,0 +1,19 @@
+// http://ryanfait.com/resources/footer-stick-to-bottom-of-page/
+$footer-height: 2.5rem;
+
+html, body {
+  height: 100%;
+}
+
+#container {
+  min-height: 100%;
+  margin: 0 auto (-1 * $footer-height);
+}
+
+footer, .push {
+  height: $footer-height;
+}
+
+footer {
+  text-align: center;
+}

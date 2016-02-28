@@ -32,7 +32,7 @@ $doctype 5
       \  });
       }
   <body>
-    <div id="container">
+    <div#container>
       <header>
         <a href=@{MonikerR}>
             Croniker
@@ -43,8 +43,12 @@ $doctype 5
 
       <main>
         ^{pageBody pc}
-      <footer>
-        #{appCopyright $ appSettings master}
+      <div.push>
+
+    <footer>
+      <p>Praise? Feedback? Let me know at #
+        <a href="https://twitter.com/gabebw">@gabebw
+        .
 
     $maybe analytics <- appAnalytics $ appSettings master
       <script>
