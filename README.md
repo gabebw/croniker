@@ -13,9 +13,12 @@ Then run `./bin/setup`.
 
 ## Running the server
 
-    ./bin/run
+    foreman start -f Procfile.local
 
-Then visit http://localhost:3000.
+This will start Yesod and tell Sass to recompile the CSS whenever a file in
+`sass/` changes.
+
+Now visit http://localhost:3000.
 
 ## Adding a new executable
 

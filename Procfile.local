@@ -1,0 +1,2 @@
+yesod_devel: ./bin/run-yesod
+sass: sass --watch sass:static/css
