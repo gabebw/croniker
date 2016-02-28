@@ -16,4 +16,3 @@ if [ "$(uname)" == "Darwin" ]; then
 fi
 
 heroku docker:release --remote "$1"
-heroku open --remote "$1"
