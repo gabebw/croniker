@@ -20,4 +20,4 @@
                         <strong>#{name}
                         on
                         #{prettyTime date}
-                        at midnight
+                        at 1 AM
