@@ -2,8 +2,10 @@
     <h2>
         Schedule changes to your Twitter name with Croniker
     <p>
-        Schedule up to one new moniker per day and Croniker will automatically
-        update your Twitter name on that day.
+        Croniker makes it super easy to schedule changes to your Twitter name in advance.
+    <p>
+        Pick a name and a day and Croniker will automatically update your
+        Twitter name on that day.
     <div>
         <a .button href=@{AuthR twitterUrl}>
             Sign in now with Twitter
