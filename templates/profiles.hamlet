@@ -1,18 +1,18 @@
-<div.page-monikers>
+<div.page-profiles>
     <div.form>
-        <form method=post action=@{MonikerR}#form enctype=#{monikerEnc}>
-            ^{monikerWidget}
+        <form method=post action=@{ProfileR}#form enctype=#{profileEnc}>
+            ^{profileWidget}
             <button type="submit">
                 Submit
 
-    <div.monikers>
-        $if null allMonikers
-            <h2>You don't have any monikers
+    <div.profiles>
+        $if null allProfiles
+            <h2>You don't have any profiles
         $else
             <ul>
-                $forall (Entity monikerId (Moniker name date _)) <- allMonikers
-                    <li.moniker>
-                        <form #moniker-delete method=post action=@{DeleteMonikerR monikerId}>
+                $forall (Entity profileId (Profile name date _)) <- allProfiles
+                    <li.profile>
+                        <form #profile-delete method=post action=@{DeleteProfileR profileId}>
                             <input type="hidden" name="_token" value="#{csrfToken}">
                             <button type="submit" value="">
                                 Delete

@@ -5,13 +5,13 @@ import TestImport
 spec :: Spec
 spec = withApp $ do
     it "loads the index and checks it looks right" $ do
-        get MonikerR
+        get ProfileR
         statusIs 200
         htmlAllContain "h1" "Welcome to Yesod"
 
         request $ do
             setMethod "POST"
-            setUrl MonikerR
+            setUrl ProfileR
             addToken
             fileByLabel "Choose a file" "test/Spec.hs" "text/plain" -- talk about self-reference
             byLabel "What's on the file?" "Some Content"
@@ -26,7 +26,7 @@ spec = withApp $ do
     -- test will succeed for a fresh scaffolded site with an empty database,
     -- but will fail on an existing database with a non-empty user table.
     it "leaves the user table empty" $ do
-        get MonikerR
+        get ProfileR
         statusIs 200
         users <- runDB $ selectList ([] :: [Filter User]) []
         assertEqual "user table empty" 0 $ length users

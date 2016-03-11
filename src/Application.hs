@@ -11,7 +11,7 @@ module Application
     -- * for GHCI
     , handler
     , db
-    , todaysMonikersTaskMain
+    , todaysProfilesTaskMain
     ) where
 
 import Control.Monad.Logger                 (liftLoc, runLoggingT)
@@ -40,9 +40,9 @@ import qualified Data.ByteString.Char8 as BSC
 -- Don't forget to add new modules to your cabal file!
 import Handler.ChooseTimezone
 import Handler.Common
-import Handler.Moniker
+import Handler.Profile
 import Handler.Root
-import Handler.TodaysMonikersTask (updateTodaysMonikers)
+import Handler.TodaysProfilesTask (updateTodaysProfiles)
 import Handler.UpdateUser
 
 -- This line actually creates our YesodDispatch instance. It is the second half
@@ -184,8 +184,8 @@ getApplicationRepl = do
 shutdownApp :: App -> IO ()
 shutdownApp _ = return ()
 
-todaysMonikersTaskMain :: IO ()
-todaysMonikersTaskMain = handler updateTodaysMonikers
+todaysProfilesTaskMain :: IO ()
+todaysProfilesTaskMain = handler updateTodaysProfiles
 
 ---------------------------------------------
 -- Functions for use in development with GHCi

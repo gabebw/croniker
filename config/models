@@ -14,7 +14,7 @@ User
     choseTimezone Bool default=False
     UniqueUser twitterUserId
     deriving Typeable Show
-Moniker
+Profile
     name Text
     date Day
     userId UserId

@@ -1,14 +1,14 @@
-.page-monikers {
+.page-profiles {
   .form {
     @include span-columns(4);
   }
 
-  .monikers {
+  .profiles {
     @include shift(1);
     @include span-columns(5);
   }
 
-  .moniker {
+  .profile {
     margin-bottom: $large-spacing;
 
     form, button {

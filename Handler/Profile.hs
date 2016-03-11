@@ -1,8 +1,8 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-module Handler.Moniker
-    ( getMonikerR
-    , postDeleteMonikerR
-    , postMonikerR
+module Handler.Profile
+    ( getProfileR
+    , postDeleteProfileR
+    , postProfileR
     ) where
 
 import Import
@@ -11,7 +11,7 @@ import Data.Maybe (fromJust)
 import Data.Time.Format (FormatTime)
 import Text.Blaze (ToMarkup, toMarkup)
 import Helper.Request (fromMaybe404)
-import qualified Model.Moniker as M
+import qualified Model.Profile as M
 import qualified Croniker.Time as CT
 
 instance ToMarkup Day where
@@ -23,53 +23,53 @@ prerequisites = do
     requireSetTimezone user
     return euser
 
-getMonikerR :: Handler Html
-getMonikerR = do
+getProfileR :: Handler Html
+getProfileR = do
     euser@(Entity userId user) <- prerequisites
     tomorrow <- CT.localTomorrow user
-    monikerFormPost <- generateFormPost $ monikerForm tomorrow userId
-    monikersTemplate euser monikerFormPost
+    profileFormPost <- generateFormPost $ profileForm tomorrow userId
+    profilesTemplate euser profileFormPost
 
 requireSetTimezone :: User -> Handler ()
 requireSetTimezone user = when (not $ userChoseTimezone user) (redirect ChooseTimezoneR)
 
-postMonikerR :: Handler Html
-postMonikerR = do
+postProfileR :: Handler Html
+postProfileR = do
     euser@(Entity userId user) <- prerequisites
     tomorrow <- CT.localTomorrow user
-    ((result, formWidget), formEnctype) <- runFormPost $ monikerForm tomorrow userId
+    ((result, formWidget), formEnctype) <- runFormPost $ profileForm tomorrow userId
     case result of
-        FormSuccess moniker -> do
-            void $ runDB $ insert moniker
-            setMessage "Moniker created"
-            redirect MonikerR
+        FormSuccess profile -> do
+            void $ runDB $ insert profile
+            setMessage "Profile created"
+            redirect ProfileR
         _ -> do
             setMessage "Oops, something went wrong"
-            monikersTemplate euser (formWidget, formEnctype)
+            profilesTemplate euser (formWidget, formEnctype)
 
-monikersTemplate :: (ToWidget App w) => Entity User -> (w, Enctype) -> Handler Html
-monikersTemplate (Entity userId _) (monikerWidget, monikerEnc) = do
+profilesTemplate :: (ToWidget App w) => Entity User -> (w, Enctype) -> Handler Html
+profilesTemplate (Entity userId _) (profileWidget, profileEnc) = do
     csrfToken <- fromJust . reqToken <$> getRequest
-    allMonikers <- runDB $ M.futureMonikersFor userId
+    allProfiles <- runDB $ M.futureProfilesFor userId
     defaultLayout $ do
         setTitle "Croniker"
-        $(widgetFile "monikers")
+        $(widgetFile "profiles")
 
-postDeleteMonikerR :: MonikerId -> Handler ()
-postDeleteMonikerR monikerId = do
-    requireOwnedMoniker monikerId
-    runDB $ delete monikerId
-    setMessage "Moniker deleted!"
-    redirect MonikerR
+postDeleteProfileR :: ProfileId -> Handler ()
+postDeleteProfileR profileId = do
+    requireOwnedProfile profileId
+    runDB $ delete profileId
+    setMessage "Profile deleted!"
+    redirect ProfileR
 
-requireOwnedMoniker :: MonikerId -> Handler ()
-requireOwnedMoniker monikerId = do
+requireOwnedProfile :: ProfileId -> Handler ()
+requireOwnedProfile profileId = do
     userId <- requireAuthId
-    void $ fromMaybe404 $ runDB $ M.findMonikerFor userId monikerId
+    void $ fromMaybe404 $ runDB $ M.findProfileFor userId profileId
 
-monikerForm :: Day -> UserId -> Form Moniker
-monikerForm tomorrow userId = renderDivs $ Moniker
-       <$> areq nameField (fs "New moniker" [("maxlength", "20")]) Nothing
+profileForm :: Day -> UserId -> Form Profile
+profileForm tomorrow userId = renderDivs $ Profile
+       <$> areq nameField (fs "New profile" [("maxlength", "20")]) Nothing
        <*> areq dateField (fs "Date" []) (Just tomorrow)
        <*> pure userId
     where
@@ -81,7 +81,7 @@ monikerForm tomorrow userId = renderDivs $ Moniker
             | otherwise = Right date
         maxLength :: Text -> Either Text Text
         maxLength name
-            | length name > 20 = Left "Twitter doesn't allow monikers longer than 20 characters"
+            | length name > 20 = Left "Twitter doesn't allow profiles longer than 20 characters"
             | otherwise = Right name
         fs :: Text -> [(Text, Text)] -> FieldSettings site
         fs label attrs = FieldSettings

@@ -34,7 +34,7 @@ $doctype 5
   <body>
     <div#container>
       <header>
-        <a href=@{MonikerR}>
+        <a href=@{ProfileR}>
             Croniker
         <ul.header__items>
             <li.header__item>

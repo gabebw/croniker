@@ -1,25 +1,25 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module Handler.TodaysMonikersTask
-    ( updateTodaysMonikers
+module Handler.TodaysProfilesTask
+    ( updateTodaysProfiles
     ) where
 
 import Import
 
 import qualified Data.ByteString.Char8 as BSC
 import qualified Data.Text as T
-import Model.Moniker (allMonikersForUpdate)
+import Model.Profile (allProfilesForUpdate)
 import qualified Croniker.Time as CT
 import TwitterClient (updateTwitterName)
 
-updateTodaysMonikers :: Handler ()
-updateTodaysMonikers = do
-    monikers <- map entityVal <$> runDB allMonikersForUpdate
-    filteredMonikers <- filterM isTime monikers
-    mapM_ updateName filteredMonikers
+updateTodaysProfiles :: Handler ()
+updateTodaysProfiles = do
+    profiles <- map entityVal <$> runDB allProfilesForUpdate
+    filteredProfiles <- filterM isTime profiles
+    mapM_ updateName filteredProfiles
 
-updateName :: Moniker -> Handler ()
-updateName (Moniker name _ userId) = do
+updateName :: Profile -> Handler ()
+updateName (Profile name _ userId) = do
     App{twitterConsumerKey, twitterConsumerSecret} <- getYesod
     muser <- runDB $ get userId
     case muser of
@@ -29,9 +29,9 @@ updateName (Moniker name _ userId) = do
             let accessSecret = BSC.pack $ T.unpack $ userTwitterOauthTokenSecret user
             liftIO $ updateTwitterName name twitterConsumerKey twitterConsumerSecret accessKey accessSecret
 
-isTime :: Moniker -> Handler Bool
-isTime (Moniker _ monikerDay userId) = do
+isTime :: Profile -> Handler Bool
+isTime (Profile _ profileDay userId) = do
     muser <- runDB $ get userId
     case muser of
       Nothing -> return False
-      (Just user) -> (monikerDay ==) <$> CT.localToday user
+      (Just user) -> (profileDay ==) <$> CT.localToday user

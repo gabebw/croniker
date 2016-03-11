@@ -13,4 +13,4 @@ getRootR = do
         Nothing -> defaultLayout $ do
             setTitle "Croniker"
             $(widgetFile "root")
-        (Just  _) -> redirect MonikerR
+        (Just  _) -> redirect ProfileR

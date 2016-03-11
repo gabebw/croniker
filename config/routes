@@ -6,6 +6,6 @@
 
 / RootR GET
 /timezone ChooseTimezoneR GET
-/monikers MonikerR GET POST
-/monikers/#MonikerId/delete DeleteMonikerR POST
+/profiles ProfileR GET POST
+/profiles/#ProfileId/delete DeleteProfileR POST
 /user/#UserId/update UpdateUserR POST

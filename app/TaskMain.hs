@@ -1,4 +1,4 @@
-import Application (todaysMonikersTaskMain)
+import Application (todaysProfilesTaskMain)
 
 main :: IO ()
-main = todaysMonikersTaskMain
+main = todaysProfilesTaskMain
