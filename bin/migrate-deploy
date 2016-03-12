@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# usage: ./bin/migrate-deploy [APP] [migrations/something.sql migrations/something-else.sql, ...]
+# usage: ./bin/migrate-deploy [staging|production] [migrations/something.sql migrations/something-else.sql, ...]
 #
 ###
 set -e
@@ -10,7 +10,7 @@ if [ $# -lt 2 ]; then
   exit 64
 fi
 
-app="$1"; shift
+remote="$1"; shift
 
 cat <<EOF
 Running a migration deploy to $app. This will:
@@ -31,14 +31,14 @@ EOF
 
 sleep 3
 
-heroku maintenance:on --app "$app"
-heroku pg:backups capture --app "$app" DATABASE_URL
+heroku maintenance:on --remote "$remote"
+heroku pg:backups capture --remote "$remote" DATABASE_URL
 
 for migration; do
   printf "Migrate: %s\n" "$migration"
-  heroku pg:psql --app "$app" < "$migration"
+  heroku pg:psql --remote "$remote" < "$migration"
 done
 
-./bin/deploy "$app"
+./bin/deploy "$remote"
 
-heroku maintenance:off --app "$app"
+heroku maintenance:off --remote "$remote"
