@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# usage: ./bin/migrate-deploy [APP] [MIGRATION, ...]
+# usage: ./bin/migrate-deploy [APP] [migrations/something.sql migrations/something-else.sql, ...]
 #
 ###
 set -e
@@ -32,7 +32,7 @@ EOF
 sleep 3
 
 heroku maintenance:on --app "$app"
-heroku pgbackups:capture --app "$app" --expire
+heroku pg:backups capture --app "$app" DATABASE_URL
 
 for migration; do
   printf "Migrate: %s\n" "$migration"
