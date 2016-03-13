@@ -1,6 +1,6 @@
 <div.page-profiles>
     <div.profile-form>
-        <form method=post action=@{ProfileR}#form enctype=#{profileEnc}>
+        <form method=post action=@{ProfileR}#form enctype=#{Multipart}>
             ^{profileWidget}
             <button type="submit">
                 Submit
@@ -11,8 +11,11 @@
         $else
             <ul>
                 <div.banner>All changes will happen at 1am on the scheduled day.
-                $forall (Entity profileId (Profile name date _)) <- allProfiles
+                $forall (Entity profileId (Profile name date _ picture)) <- allProfiles
                     <li.profile>
+                        $maybe b64data <- picture
+                            <div.profile-picture>
+                                <img src="data:;base64,#{b64data}">
                         <strong>#{name}
                         <div>#{prettyTime date}
                         <form method=post action=@{DeleteProfileR profileId}>

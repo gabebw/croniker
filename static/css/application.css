@@ -450,6 +450,17 @@ footer {
     .page-profiles .profile button:hover {
       border-color: #d9534f;
       color: #d9534f; }
+.page-profiles .profile-picture {
+  float: left;
+  display: block;
+  margin-right: 5.85151%;
+  width: 15.3188%; }
+  .page-profiles .profile-picture:last-child {
+    margin-right: 0; }
+  .page-profiles .profile-picture img {
+    height: 72px;
+    min-width: 72px;
+    width: 72px; }
 
 main {
   max-width: 68em;

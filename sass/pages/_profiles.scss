@@ -38,4 +38,16 @@
       }
     }
   }
+
+  .profile-picture {
+    @include span-columns(1 of 5);
+
+    img {
+      $small-twitter-profile-size: 72px;
+
+      height: $small-twitter-profile-size;
+      min-width: $small-twitter-profile-size;
+      width: $small-twitter-profile-size;
+    }
+  }
 }

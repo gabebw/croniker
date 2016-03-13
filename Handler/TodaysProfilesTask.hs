@@ -6,19 +6,20 @@ module Handler.TodaysProfilesTask
 
 import Import
 
+import Data.Maybe (fromJust)
 import Model.Profile (allProfilesForUpdate)
 import qualified Croniker.Time as CT
-import TwitterClient (updateTwitterName)
+import TwitterClient (updateTwitterName, updateTwitterPicture)
 import Helper.TextConversion
 
 updateTodaysProfiles :: Handler ()
 updateTodaysProfiles = do
     profiles <- map entityVal <$> runDB allProfilesForUpdate
     filteredProfiles <- filterM isTime profiles
-    mapM_ updateName filteredProfiles
+    mapM_ updateProfile filteredProfiles
 
-updateName :: Profile -> Handler ()
-updateName (Profile name _ userId) = do
+updateProfile :: Profile -> Handler ()
+updateProfile (Profile name _ userId picture) = do
     App{twitterConsumerKey, twitterConsumerSecret} <- getYesod
     muser <- runDB $ get userId
     case muser of
@@ -27,9 +28,10 @@ updateName (Profile name _ userId) = do
             let accessKey = t2b $ userTwitterOauthToken user
             let accessSecret = t2b $ userTwitterOauthTokenSecret user
             liftIO $ updateTwitterName name twitterConsumerKey twitterConsumerSecret accessKey accessSecret
+            when (isJust picture) $ liftIO $ updateTwitterPicture (fromJust picture) twitterConsumerKey twitterConsumerSecret accessKey accessSecret
 
 isTime :: Profile -> Handler Bool
-isTime (Profile _ profileDay userId) = do
+isTime (Profile _ profileDay userId _) = do
     muser <- runDB $ get userId
     case muser of
       Nothing -> return False

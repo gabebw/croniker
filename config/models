@@ -18,5 +18,6 @@ Profile
     name Text
     date Day
     userId UserId
+    picture Text Maybe
     UniqueUserDate userId date
     deriving Show

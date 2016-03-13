@@ -108,6 +108,7 @@ library
                  , tz
                  , wreq-sb
                  , yesod-auth-oauth
+                 , conduit-extra
 
 executable         croniker
     if flag(library-only)

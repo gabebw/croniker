@@ -10,7 +10,12 @@ import Import
 import Data.Maybe (fromJust)
 import Data.Time.Format (FormatTime)
 import Text.Blaze (ToMarkup, toMarkup)
+import qualified Data.ByteString.Base64 as B64
+import Data.Conduit.Binary (sinkLbs)
+import qualified Data.ByteString.Lazy as L
+
 import Helper.Request (fromMaybe404)
+import Helper.TextConversion (b2t)
 import qualified Model.Profile as M
 import qualified Croniker.Time as CT
 
@@ -27,17 +32,38 @@ getProfileR :: Handler Html
 getProfileR = do
     euser@(Entity userId user) <- prerequisites
     tomorrow <- CT.localTomorrow user
-    profileFormPost <- generateFormPost $ profileForm tomorrow userId
-    profilesTemplate euser profileFormPost
+    (widget, _) <- generateFormPost $ profileForm tomorrow userId
+    profilesTemplate euser widget
 
 requireSetTimezone :: User -> Handler ()
 requireSetTimezone user = when (not $ userChoseTimezone user) (redirect ChooseTimezoneR)
+
+fileContents :: (Text, FileInfo) -> Handler L.ByteString
+fileContents (_, fi) = runResourceT $ (fileSource fi) $$ sinkLbs
+
+-- If there's a profile picture in the HTTP request, set the Profile's
+-- profilePicture field to the Base64-encoded contents of that file.
+--
+-- If there's no profile picture, don't do anything.
+withPossibleProfilePicture :: FormResult Profile -> Handler (FormResult Profile)
+withPossibleProfilePicture (FormSuccess profile) = do
+    (_, files) <- runRequestBody
+    contents <- mapM fileContents files
+    return $ FormSuccess $ profileWithPicture contents profile
+    where
+        profileWithPicture (f:_) p = p { profilePicture = Just $ base64text f }
+        profileWithPicture _ p = p
+        base64text = b2t . B64.encode . toStrict
+
+withPossibleProfilePicture result = return result
 
 postProfileR :: Handler Html
 postProfileR = do
     euser@(Entity userId user) <- prerequisites
     tomorrow <- CT.localTomorrow user
-    ((result, formWidget), formEnctype) <- runFormPost $ profileForm tomorrow userId
+    ((resultWithoutProfilePicture, formWidget), _) <- runFormPost $ profileForm tomorrow userId
+    result <- withPossibleProfilePicture resultWithoutProfilePicture
+
     case result of
         FormSuccess profile -> do
             void $ runDB $ insert profile
@@ -45,10 +71,10 @@ postProfileR = do
             redirect ProfileR
         _ -> do
             setMessage "Oops, something went wrong"
-            profilesTemplate euser (formWidget, formEnctype)
+            profilesTemplate euser formWidget
 
-profilesTemplate :: (ToWidget App w) => Entity User -> (w, Enctype) -> Handler Html
-profilesTemplate (Entity userId _) (profileWidget, profileEnc) = do
+profilesTemplate :: (ToWidget App w) => Entity User -> w -> Handler Html
+profilesTemplate (Entity userId _) profileWidget = do
     csrfToken <- fromJust . reqToken <$> getRequest
     allProfiles <- runDB $ M.futureProfilesFor userId
     defaultLayout $ do
@@ -67,30 +93,52 @@ requireOwnedProfile profileId = do
     userId <- requireAuthId
     void $ fromMaybe404 $ runDB $ M.findProfileFor userId profileId
 
-profileForm :: Day -> UserId -> Form Profile
-profileForm tomorrow userId = renderDivs $ Profile
-       <$> areq nameField (fs "New profile" [("maxlength", "20")]) Nothing
-       <*> areq dateField (fs "Date" []) (Just tomorrow)
-       <*> pure userId
+profileForm :: Day -> UserId -> Html -> MForm Handler (FormResult Profile, Widget)
+profileForm tomorrow userId extra = do
+    (nameRes, nameView) <- mreq nameField (fs "New moniker" [("maxlength", "20")]) Nothing
+    (dayRes, dayView) <- mreq (dateField tomorrow) (fs "When should it be changed?" []) (Just tomorrow)
+    (_, profilePictureView) <- mopt fileField (fs "Profile picture (optional)" []) Nothing
+    let widget = [whamlet|
+        #{extra}
+        ^{display nameView}
+        ^{display profilePictureView}
+        ^{display dayView}
+    |]
+    let profile = Profile <$> nameRes <*> dayRes <*> pure userId <*> pure Nothing
+    return (profile, widget)
+
     where
-        dateField = check futureDate dayField
-        nameField = check maxLength textField
-        futureDate :: Day -> Either Text Day
-        futureDate date
-            | date < tomorrow = Left "You must select a future date"
-            | otherwise = Right date
-        maxLength :: Text -> Either Text Text
-        maxLength name
-            | length name > 20 = Left "Twitter doesn't allow profiles longer than 20 characters"
-            | otherwise = Right name
-        fs :: Text -> [(Text, Text)] -> FieldSettings site
-        fs label attrs = FieldSettings
-            { fsLabel = SomeMessage label
-            , fsTooltip = Nothing
-            , fsId = Nothing
-            , fsName = Nothing
-            , fsAttrs = attrs
-            }
+        display view = [whamlet|
+            <strong>^{fvLabel view}
+            ^{fvInput view}
+            $maybe errors <- fvErrors view
+                <div.errors>#{errors}
+        |]
+
+fs :: Text -> [(Text, Text)] -> FieldSettings site
+fs label attrs = FieldSettings
+    { fsLabel = SomeMessage label
+    , fsTooltip = Nothing
+    , fsId = Nothing
+    , fsName = Nothing
+    , fsAttrs = attrs
+    }
 
 prettyTime :: (FormatTime t) => t -> String
 prettyTime = formatTime defaultTimeLocale "%B %d, %Y"
+
+nameField :: Field Handler Text
+nameField = check maxLength textField
+
+maxLength :: Text -> Either Text Text
+maxLength name
+    | length name > 20 = Left "Twitter doesn't allow profiles longer than 20 characters"
+    | otherwise = Right name
+
+dateField :: Day -> Field Handler Day
+dateField tomorrow = check (futureDate tomorrow) dayField
+
+futureDate :: Day -> Day -> Either Text Day
+futureDate tomorrow date
+    | date < tomorrow = Left "You must select a future date"
+    | otherwise = Right date
