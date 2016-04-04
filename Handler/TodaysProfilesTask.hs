@@ -6,11 +6,10 @@ module Handler.TodaysProfilesTask
 
 import Import
 
-import qualified Data.ByteString.Char8 as BSC
-import qualified Data.Text as T
 import Model.Profile (allProfilesForUpdate)
 import qualified Croniker.Time as CT
 import TwitterClient (updateTwitterName)
+import Helper.TextConversion
 
 updateTodaysProfiles :: Handler ()
 updateTodaysProfiles = do
@@ -25,8 +24,8 @@ updateName (Profile name _ userId) = do
     case muser of
         Nothing -> return ()
         (Just user) -> do
-            let accessKey = BSC.pack $ T.unpack $ userTwitterOauthToken user
-            let accessSecret = BSC.pack $ T.unpack $ userTwitterOauthTokenSecret user
+            let accessKey = t2b $ userTwitterOauthToken user
+            let accessSecret = t2b $ userTwitterOauthTokenSecret user
             liftIO $ updateTwitterName name twitterConsumerKey twitterConsumerSecret accessKey accessSecret
 
 isTime :: Profile -> Handler Bool
