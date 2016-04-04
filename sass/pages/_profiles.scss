@@ -3,7 +3,7 @@
     margin-bottom: $large-spacing;
   }
 
-  .form {
+  .profile-form {
     @include span-columns(4);
   }
 
@@ -13,6 +13,8 @@
   }
 
   .profile {
+    @include span-columns(5 of 5);
+
     margin-bottom: $large-spacing;
 
     form, button {
@@ -21,9 +23,11 @@
 
     button {
       background-color: $white;
-      border-bottom: 1px solid $action-color;
+      border-bottom: 1px solid lighten($action-color, 10);
       border-radius: 0;
-      color: $black;
+      color: $medium-gray;
+      font-weight: 400;
+      line-height: 4px; // move bottom-border closer to text
       margin-right: $base-spacing;
       padding: 0 0 $tiny-spacing 0;
       vertical-align: baseline;
@@ -33,5 +37,9 @@
         color: $red;
       }
     }
+  }
+
+  .rest {
+    @include span-columns(4 of 5);
   }
 }

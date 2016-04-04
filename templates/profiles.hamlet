@@ -1,5 +1,5 @@
 <div.page-profiles>
-    <div.form>
+    <div.profile-form>
         <form method=post action=@{ProfileR}#form enctype=#{profileEnc}>
             ^{profileWidget}
             <button type="submit">
@@ -13,12 +13,10 @@
                 <div.banner>All changes will happen at 1am on the scheduled day.
                 $forall (Entity profileId (Profile name date _)) <- allProfiles
                     <li.profile>
-                        <form #profile-delete method=post action=@{DeleteProfileR profileId}>
-                            <input type="hidden" name="_token" value="#{csrfToken}">
-                            <button type="submit" value="">
-                                Delete
-
-                        <strong>#{name}
-                        on
-                        #{prettyTime date}
-                        at 1 AM
+                        <div.rest>
+                            <strong>#{name}
+                            <div>#{prettyTime date}
+                            <form method=post action=@{DeleteProfileR profileId}>
+                                <input type="hidden" name="_token" value="#{csrfToken}">
+                                <button type="submit" value="">
+                                    Delete

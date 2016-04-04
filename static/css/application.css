@@ -410,12 +410,14 @@ footer {
   .page-login .hero {
     font-size: 1.5rem; }
 
-.page-profiles .form {
+.page-profiles .banner {
+  margin-bottom: 3em; }
+.page-profiles .profile-form {
   float: left;
   display: block;
   margin-right: 2.35765%;
   width: 31.76157%; }
-  .page-profiles .form:last-child {
+  .page-profiles .profile-form:last-child {
     margin-right: 0; }
 .page-profiles .profiles {
   margin-left: 8.5298%;
@@ -426,20 +428,35 @@ footer {
   .page-profiles .profiles:last-child {
     margin-right: 0; }
 .page-profiles .profile {
+  float: left;
+  display: block;
+  margin-right: 5.85151%;
+  width: 100%;
   margin-bottom: 3em; }
+  .page-profiles .profile:last-child {
+    margin-right: 0; }
   .page-profiles .profile form, .page-profiles .profile button {
     display: inline; }
   .page-profiles .profile button {
     background-color: white;
-    border-bottom: 1px solid #00a0b0;
+    border-bottom: 1px solid #00cee3;
     border-radius: 0;
-    color: #1a1a1a;
+    color: #999;
+    font-weight: 400;
+    line-height: 4px;
     margin-right: 1.5em;
     padding: 0 0 0.5em 0;
     vertical-align: baseline; }
     .page-profiles .profile button:hover {
       border-color: #d9534f;
       color: #d9534f; }
+.page-profiles .rest {
+  float: left;
+  display: block;
+  margin-right: 5.85151%;
+  width: 78.8297%; }
+  .page-profiles .rest:last-child {
+    margin-right: 0; }
 
 main {
   max-width: 68em;
