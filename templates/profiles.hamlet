@@ -13,10 +13,9 @@
                 <div.banner>All changes will happen at 1am on the scheduled day.
                 $forall (Entity profileId (Profile name date _)) <- allProfiles
                     <li.profile>
-                        <div.rest>
-                            <strong>#{name}
-                            <div>#{prettyTime date}
-                            <form method=post action=@{DeleteProfileR profileId}>
-                                <input type="hidden" name="_token" value="#{csrfToken}">
-                                <button type="submit" value="">
-                                    Delete
+                        <strong>#{name}
+                        <div>#{prettyTime date}
+                        <form method=post action=@{DeleteProfileR profileId}>
+                            <input type="hidden" name="_token" value="#{csrfToken}">
+                            <button type="submit" value="">
+                                Delete
