@@ -7,9 +7,10 @@
 
     <div.profiles>
         $if null allProfiles
-            <h2>You don't have any profiles
+            <h2>You don't have any scheduled changes to your Twitter profile
         $else
             <ul>
+                <div.banner>All changes will happen at 1am on the scheduled day.
                 $forall (Entity profileId (Profile name date _)) <- allProfiles
                     <li.profile>
                         <form #profile-delete method=post action=@{DeleteProfileR profileId}>

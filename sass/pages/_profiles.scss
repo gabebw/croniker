@@ -1,4 +1,8 @@
 .page-profiles {
+  .banner {
+    margin-bottom: $large-spacing;
+  }
+
   .form {
     @include span-columns(4);
   }
