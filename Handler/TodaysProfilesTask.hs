@@ -29,10 +29,10 @@ updateProfile (Profile name _ userId picture) = do
             let accessKey = t2b $ userTwitterOauthToken user
             let accessSecret = t2b $ userTwitterOauthTokenSecret user
             liftIO $ do
-                print $ "[" ++ username ++ "] Updating name to " ++ name
+                putStrLn $ "[" ++ username ++ "] Updating name to " ++ name
                 updateTwitterName name twitterConsumerKey twitterConsumerSecret accessKey accessSecret
                 when (isJust picture) $ do
-                    print $ "[" ++ username ++ "] Updating picture"
+                    putStrLn $ "[" ++ username ++ "] Updating picture"
                     updateTwitterPicture (fromJust picture) twitterConsumerKey twitterConsumerSecret accessKey accessSecret
 
 isTime :: Profile -> Handler Bool
