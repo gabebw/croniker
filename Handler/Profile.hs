@@ -104,7 +104,7 @@ profileForm tomorrow userId extra = do
         ^{display profilePictureView}
         ^{display dayView}
     |]
-    let profile = Profile <$> nameRes <*> dayRes <*> pure userId <*> pure Nothing
+    let profile = Profile <$> nameRes <*> dayRes <*> pure userId <*> pure Nothing <*> pure False
     return (profile, widget)
 
     where

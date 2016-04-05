@@ -14,12 +14,12 @@ import Helper.TextConversion
 
 updateTodaysProfiles :: Handler ()
 updateTodaysProfiles = do
-    profiles <- map entityVal <$> runDB allProfilesForUpdate
+    profiles <- runDB allProfilesForUpdate
     filteredProfiles <- filterM isTime profiles
     mapM_ updateProfile filteredProfiles
 
-updateProfile :: Profile -> Handler ()
-updateProfile (Profile name _ userId picture) = do
+updateProfile :: Entity Profile -> Handler ()
+updateProfile (Entity profileId (Profile name _ userId picture _)) = do
     App{twitterConsumerKey, twitterConsumerSecret} <- getYesod
     muser <- runDB $ get userId
     case muser of
@@ -34,9 +34,10 @@ updateProfile (Profile name _ userId picture) = do
                 when (isJust picture) $ do
                     putStrLn $ "[" ++ username ++ "] Updating picture"
                     updateTwitterPicture (fromJust picture) twitterConsumerKey twitterConsumerSecret accessKey accessSecret
+            runDB $ update profileId [ProfileSent =. True]
 
-isTime :: Profile -> Handler Bool
-isTime (Profile _ profileDay userId _) = do
+isTime :: Entity Profile -> Handler Bool
+isTime (Entity _ (Profile _ profileDay userId _ _)) = do
     muser <- runDB $ get userId
     case muser of
       Nothing -> return False

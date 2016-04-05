@@ -11,13 +11,15 @@
         $else
             <ul>
                 <div.banner>All changes will happen at 1am on the scheduled day.
-                $forall (Entity profileId (Profile name date _ picture)) <- allProfiles
+                $forall (Entity profileId (Profile name date _ picture sent)) <- allProfiles
                     <li.profile>
                         $maybe b64data <- picture
                             <div.profile-picture>
                                 <img src="data:;base64,#{b64data}">
                         <strong>#{name}
                         <div>#{prettyTime date}
+                        $if sent
+                            <div>Successfully sent to Twitter
                         <form method=post action=@{DeleteProfileR profileId}>
                             <input type="hidden" name="_token" value="#{csrfToken}">
                             <button type="submit" value="">

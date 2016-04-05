@@ -28,4 +28,4 @@ profilesFromTodayFor userId = do
 allProfilesForUpdate :: DB [Entity Profile]
 allProfilesForUpdate = do
     days <- sequence [yesterday, today, tomorrow]
-    selectList [ProfileDate <-. days] [Asc ProfileDate]
+    selectList [ProfileDate <-. days, ProfileSent ==. False] [Asc ProfileDate]
