@@ -25,10 +25,15 @@ updateProfile (Profile name _ userId picture) = do
     case muser of
         Nothing -> return ()
         (Just user) -> do
+            let username = userTwitterUsername user
             let accessKey = t2b $ userTwitterOauthToken user
             let accessSecret = t2b $ userTwitterOauthTokenSecret user
-            liftIO $ updateTwitterName name twitterConsumerKey twitterConsumerSecret accessKey accessSecret
-            when (isJust picture) $ liftIO $ updateTwitterPicture (fromJust picture) twitterConsumerKey twitterConsumerSecret accessKey accessSecret
+            liftIO $ do
+                print $ "[" ++ username ++ "] Updating name to " ++ name
+                updateTwitterName name twitterConsumerKey twitterConsumerSecret accessKey accessSecret
+                when (isJust picture) $ do
+                    print $ "[" ++ username ++ "] Updating picture"
+                    updateTwitterPicture (fromJust picture) twitterConsumerKey twitterConsumerSecret accessKey accessSecret
 
 isTime :: Profile -> Handler Bool
 isTime (Profile _ profileDay userId _) = do
