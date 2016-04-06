@@ -6,17 +6,24 @@ module Handler.TodaysProfilesTask
 
 import Import
 
+import qualified Control.Exception.Lifted as EL
 import Data.Maybe (fromJust)
+
 import Model.Profile (allProfilesForUpdate)
 import qualified Croniker.Time as CT
 import TwitterClient (updateTwitterName, updateTwitterPicture)
+import Helper.HttpExceptionHandler (handleHttpException)
 import Helper.TextConversion
 
 updateTodaysProfiles :: Handler ()
 updateTodaysProfiles = do
     profiles <- runDB allProfilesForUpdate
     filteredProfiles <- filterM isTime profiles
-    mapM_ updateProfile filteredProfiles
+    mapM_ updateWithErrorHandling filteredProfiles
+
+updateWithErrorHandling :: Entity Profile -> Handler ()
+updateWithErrorHandling profile = EL.try (updateProfile profile)
+    >>= handleHttpException
 
 updateProfile :: Entity Profile -> Handler ()
 updateProfile (Entity profileId (Profile{profileName, profileUserId, profilePicture})) = do

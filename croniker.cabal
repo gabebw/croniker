@@ -24,6 +24,7 @@ library
                      Handler.Root
                      Handler.TodaysProfilesTask
                      Handler.UpdateUser
+                     Helper.HttpExceptionHandler
                      Helper.Request
                      Helper.TextConversion
                      Import
@@ -109,6 +110,8 @@ library
                  , wreq-sb
                  , yesod-auth-oauth
                  , conduit-extra
+                 , http-client
+                 , lifted-base
 
 executable         croniker
     if flag(library-only)
