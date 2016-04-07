@@ -14,11 +14,16 @@ authenticateUser Creds{credsExtra} = do
     muser <- maybe (return Nothing) (getBy . UniqueUser) mTwitterUserId
     case muser of
         Nothing -> createUser (credsToUser credsExtra)
-        (Just user) -> return $ Authenticated $ entityKey user
+        Just (Entity userId _) -> updateUser userId
     where
         createUser :: AuthId m ~ UserId => Maybe User -> DB (AuthenticationResult m)
         createUser (Just user) = Authenticated <$> insert user
         createUser Nothing = return $ ServerError "Something went wrong"
+
+        updateUser :: AuthId m ~ UserId => UserId -> DB (AuthenticationResult m)
+        updateUser userId = do
+            update userId (updateStatements credsExtra)
+            return (Authenticated userId)
 
 credsToUser :: [(Text, Text)] -> Maybe User
 credsToUser credsExtra = User
@@ -28,6 +33,12 @@ credsToUser credsExtra = User
     <*> (lookup "oauth_token_secret" credsExtra)
     <*> pure defaultTZLabel
     <*> pure False
+
+updateStatements :: [(Text, Text)] -> [Update User]
+updateStatements credsExtra = catMaybes
+    [ (UserTwitterOauthToken =.) <$> lookup "oauth_token" credsExtra
+    , (UserTwitterOauthTokenSecret =.) <$> lookup "oauth_token_secret" credsExtra
+    ]
 
 defaultTZLabel :: TZLabel
 defaultTZLabel = Etc__UTC
