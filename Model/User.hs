@@ -1,3 +1,5 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Model.User
     ( authenticateUser
     ) where
@@ -7,7 +9,7 @@ import Import.NoFoundation
 import Data.Time.Zones.All (TZLabel(Etc__UTC))
 
 authenticateUser :: AuthId m ~ UserId => Creds m -> DB (AuthenticationResult m)
-authenticateUser Creds{..} = do
+authenticateUser Creds{credsExtra} = do
     let mTwitterUserId = (lookup "user_id" credsExtra)
     muser <- maybe (return Nothing) (getBy . UniqueUser) mTwitterUserId
     case muser of
