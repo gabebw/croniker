@@ -4,8 +4,9 @@ module TwitterClient
     ) where
 
 import Import
+
 import Control.Lens ((.~), (&), (?~))
-import Network.Wreq as Wreq (FormParam((:=)), auth, defaults, postWith, param, oauth1Auth)
+import Network.Wreq (FormParam((:=)), auth, defaults, postWith, param, oauth1Auth)
 import qualified Data.Text as T
 
 -- https://dev.twitter.com/rest/reference/post/account/update_profile
