@@ -15,6 +15,7 @@ library
     hs-source-dirs: ., app, src
     exposed-modules: Application
                      Croniker.Time
+                     Croniker.Types
                      Croniker.UrlParser
                      Data.TZLabel
                      Foundation

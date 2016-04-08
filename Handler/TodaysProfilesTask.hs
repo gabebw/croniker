@@ -8,6 +8,7 @@ import Import
 
 import qualified Control.Exception.Lifted as EL
 import Data.Maybe (fromJust)
+import Croniker.Types (OauthCredentials(OauthCredentials))
 
 import Model.Profile (allProfilesForUpdate)
 import qualified Croniker.Time as CT
@@ -35,12 +36,13 @@ updateProfile (Entity profileId (Profile{profileName, profileUserId, profilePict
             let username = userTwitterUsername user
             let accessKey = t2b $ userTwitterOauthToken user
             let accessSecret = t2b $ userTwitterOauthTokenSecret user
+            let credentials = OauthCredentials twitterConsumerKey twitterConsumerSecret accessKey accessSecret
             liftIO $ do
                 logger username $ "Updating name to " <> profileName
-                updateTwitterName profileName twitterConsumerKey twitterConsumerSecret accessKey accessSecret
+                updateTwitterName profileName credentials
                 when (isJust profilePicture) $ do
                     logger username "Updating picture"
-                    updateTwitterPicture (fromJust profilePicture) twitterConsumerKey twitterConsumerSecret accessKey accessSecret
+                    updateTwitterPicture (fromJust profilePicture) credentials
             runDB $ update profileId [ProfileSent =. True]
 
 logger :: Text -> Text -> IO ()
