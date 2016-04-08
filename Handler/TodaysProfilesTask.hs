@@ -7,8 +7,7 @@ module Handler.TodaysProfilesTask
 import Import
 
 import qualified Control.Exception.Lifted as EL
-import Data.Maybe (fromJust)
-import Croniker.Types (OauthCredentials(OauthCredentials))
+import Croniker.Types (OauthCredentials(OauthCredentials), OauthReader, runOauthReader)
 
 import Model.Profile (allProfilesForUpdate)
 import qualified Croniker.Time as CT
@@ -37,16 +36,25 @@ updateProfile (Entity profileId (Profile{profileName, profileUserId, profilePict
             let accessKey = t2b $ userTwitterOauthToken user
             let accessSecret = t2b $ userTwitterOauthTokenSecret user
             let credentials = OauthCredentials twitterConsumerKey twitterConsumerSecret accessKey accessSecret
-            liftIO $ do
-                logger username $ "Updating name to " <> profileName
-                updateTwitterName profileName credentials
-                when (isJust profilePicture) $ do
-                    logger username "Updating picture"
-                    updateTwitterPicture (fromJust profilePicture) credentials
+            let computation = do
+                updateName profileName >>= logger username
+                forM_ profilePicture $ \picture ->
+                    logger username =<< updatePicture picture
+            runOauthReader computation credentials
             runDB $ update profileId [ProfileSent =. True]
 
-logger :: Text -> Text -> IO ()
+logger :: MonadIO m => Text -> Text -> m ()
 logger username t = putStrLn $ "[" <> username <> "] " <> t
+
+updateName :: Text -> OauthReader Text
+updateName profileName = do
+    updateTwitterName profileName
+    return $ "Updating name to " <> profileName
+
+updatePicture :: Text -> OauthReader Text
+updatePicture profilePicture = do
+    updateTwitterPicture profilePicture
+    return "Updating picture"
 
 isTime :: Entity Profile -> Handler Bool
 isTime (Entity _ (Profile{profileDate, profileUserId})) = do

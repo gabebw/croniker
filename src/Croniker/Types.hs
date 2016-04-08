@@ -2,7 +2,8 @@
 
 module Croniker.Types
     ( OauthCredentials(OauthCredentials)
-    , toOauth1Auth
+    , OauthReader
+    , runOauthReader
     ) where
 
 import Import.NoFoundation
@@ -15,6 +16,11 @@ data OauthCredentials = OauthCredentials
     , oauthUserKey :: ByteString
     , oauthUserSecret :: ByteString
     }
+
+type OauthReader = ReaderT W.Auth IO
+
+runOauthReader :: MonadIO m => OauthReader a -> OauthCredentials -> m a
+runOauthReader reader creds = liftIO $ runReaderT reader (toOauth1Auth creds)
 
 toOauth1Auth :: OauthCredentials -> W.Auth
 toOauth1Auth (OauthCredentials{oauthKey, oauthSecret, oauthUserKey, oauthUserSecret}) = W.oauth1Auth
