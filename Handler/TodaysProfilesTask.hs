@@ -36,12 +36,15 @@ updateProfile (Entity profileId (Profile{profileName, profileUserId, profilePict
             let accessKey = t2b $ userTwitterOauthToken user
             let accessSecret = t2b $ userTwitterOauthTokenSecret user
             liftIO $ do
-                putStrLn $ "[" ++ username ++ "] Updating name to " ++ profileName
+                logger username $ "Updating name to " <> profileName
                 updateTwitterName profileName twitterConsumerKey twitterConsumerSecret accessKey accessSecret
                 when (isJust profilePicture) $ do
-                    putStrLn $ "[" ++ username ++ "] Updating picture"
+                    logger username "Updating picture"
                     updateTwitterPicture (fromJust profilePicture) twitterConsumerKey twitterConsumerSecret accessKey accessSecret
             runDB $ update profileId [ProfileSent =. True]
+
+logger :: Text -> Text -> IO ()
+logger username t = putStrLn $ "[" <> username <> "] " <> t
 
 isTime :: Entity Profile -> Handler Bool
 isTime (Entity _ (Profile{profileDate, profileUserId})) = do
