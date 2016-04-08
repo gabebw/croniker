@@ -1,1 +1,1 @@
-FROM thoughtbot/stack
+FROM thoughtbot/heroku-haskell-stack
