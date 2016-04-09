@@ -109,10 +109,11 @@ profileForm tomorrow userId extra = do
 
     where
         display view = [whamlet|
-            <strong>^{fvLabel view}
-            ^{fvInput view}
-            $maybe errors <- fvErrors view
-                <div.errors>#{errors}
+            <fieldset>
+                <strong>^{fvLabel view}
+                ^{fvInput view}
+                $maybe errors <- fvErrors view
+                    <div.errors>#{errors}
         |]
 
 fs :: Text -> [(Text, Text)] -> FieldSettings site

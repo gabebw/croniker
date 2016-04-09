@@ -178,7 +178,8 @@ fieldset {
   background-color: transparent;
   border: 0;
   margin: 0;
-  padding: 0; }
+  padding: 0;
+  margin-bottom: 1.5em; }
 
 legend {
   font-weight: 600;
