@@ -128,7 +128,12 @@ prettyTime :: (FormatTime t) => t -> String
 prettyTime = formatTime defaultTimeLocale "%B %d, %Y"
 
 nameField :: Field Handler Text
-nameField = check maxLength textField
+nameField = check doesNotContainTwitter $ check maxLength textField
+
+doesNotContainTwitter :: Text -> Either Text Text
+doesNotContainTwitter name
+    | "twitter" `isInfixOf` (toLower name) = Left "Twitter doesn't allow monikers that contain \"Twitter\""
+    | otherwise = Right name
 
 maxLength :: Text -> Either Text Text
 maxLength name
