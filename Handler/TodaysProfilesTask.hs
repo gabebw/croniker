@@ -27,11 +27,11 @@ updateWithErrorHandling profile = EL.try (updateProfile profile)
 
 updateProfile :: Entity Profile -> Handler ()
 updateProfile (Entity profileId (Profile{profileName, profileUserId, profilePicture})) = do
-    App{twitterConsumerKey, twitterConsumerSecret} <- getYesod
     muser <- runDB $ get profileUserId
     case muser of
         Nothing -> return ()
         (Just user) -> do
+            App{twitterConsumerKey, twitterConsumerSecret} <- getYesod
             let username = userTwitterUsername user
             let accessKey = t2b $ userTwitterOauthToken user
             let accessSecret = t2b $ userTwitterOauthTokenSecret user
