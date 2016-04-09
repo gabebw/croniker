@@ -113,7 +113,7 @@ profileForm tomorrow userId extra = do
                 <strong>^{fvLabel view}
                 ^{fvInput view}
                 $maybe errors <- fvErrors view
-                    <div.errors>#{errors}
+                    <div.form-errors>#{errors}
         |]
 
 fs :: Text -> [(Text, Text)] -> FieldSettings site

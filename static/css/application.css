@@ -404,6 +404,9 @@ footer, .push {
 footer {
   text-align: center; }
 
+.form-errors {
+  color: #ed5446; }
+
 .page-login {
   text-align: center; }
   .page-login * {
@@ -449,8 +452,8 @@ footer {
     padding: 0 0 0.5em 0;
     vertical-align: baseline; }
     .page-profiles .profile button:hover {
-      border-color: #d9534f;
-      color: #d9534f; }
+      border-color: #ed5446;
+      color: #ed5446; }
 .page-profiles .profile-picture {
   float: left;
   display: block;
