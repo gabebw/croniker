@@ -15,6 +15,7 @@ library
     hs-source-dirs: ., app, src
     exposed-modules: Application
                      Croniker.Time
+                     Croniker.UrlParser
                      Data.TZLabel
                      Foundation
                      Handler.ChooseTimezone
@@ -112,6 +113,7 @@ library
                  , conduit-extra
                  , http-client
                  , lifted-base
+                 , parsec
 
 executable         croniker
     if flag(library-only)

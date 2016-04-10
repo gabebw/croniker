@@ -18,6 +18,7 @@ import Helper.Request (fromMaybe404)
 import Helper.TextConversion (b2t)
 import qualified Model.Profile as M
 import qualified Croniker.Time as CT
+import qualified Croniker.UrlParser as CUP
 
 instance ToMarkup Day where
   toMarkup = toMarkup . show
@@ -129,12 +130,17 @@ prettyTime :: (FormatTime t) => t -> String
 prettyTime = formatTime defaultTimeLocale "%B %d, %Y"
 
 nameField :: Field Handler Text
-nameField = check doesNotContainTwitter $ check maxLength textField
+nameField = check doesNotContainUrl $ check doesNotContainTwitter $ check maxLength textField
 
 doesNotContainTwitter :: Text -> Either Text Text
 doesNotContainTwitter name
     | "twitter" `isInfixOf` (toLower name) = Left "Twitter doesn't allow monikers that contain \"Twitter\""
     | otherwise = Right name
+
+doesNotContainUrl :: Text -> Either Text Text
+doesNotContainUrl name = if CUP.containsUrl name
+                            then Left "Twitter doesn't allow URLs in monikers"
+                            else Right name
 
 maxLength :: Text -> Either Text Text
 maxLength name
