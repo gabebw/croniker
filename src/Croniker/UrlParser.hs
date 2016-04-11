@@ -15,7 +15,7 @@ containsUrl :: T.Text -> Bool
 containsUrl t = or $ map isUrl (T.words $ T.toLower t)
 
 isUrl :: T.Text -> Bool
-isUrl s = isRight $ parse url "" s
+isUrl = isRight . parse url ""
 
 url :: Parser Url
 url = do
