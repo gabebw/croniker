@@ -44,7 +44,11 @@ oauthCredentials user = do
     App{twitterConsumerKey, twitterConsumerSecret} <- getYesod
     let accessKey = t2b $ userTwitterOauthToken user
     let accessSecret = t2b $ userTwitterOauthTokenSecret user
-    return $ OauthCredentials twitterConsumerKey twitterConsumerSecret accessKey accessSecret
+    return $ OauthCredentials
+        twitterConsumerKey
+        twitterConsumerSecret
+        accessKey
+        accessSecret
 
 logger :: MonadIO m => Text -> Text -> m ()
 logger username t = putStrLn $ "[" <> username <> "] " <> t
