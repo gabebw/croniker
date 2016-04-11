@@ -6,6 +6,8 @@
 .cabal-sandbox
 .env
 .git
+!.git/refs/heads
+!.git/HEAD
 .hsenv*
 .sass-cache
 .stack-work
