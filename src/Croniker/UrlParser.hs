@@ -12,7 +12,7 @@ import Text.Parsec.Text (Parser)
 type Url = String
 
 containsUrl :: T.Text -> Bool
-containsUrl t = any isUrl (T.words $ T.toLower t)
+containsUrl = any isUrl . T.words . T.toLower
 
 isUrl :: T.Text -> Bool
 isUrl = isRight . parse url ""
