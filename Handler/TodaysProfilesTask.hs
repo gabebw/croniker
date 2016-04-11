@@ -31,17 +31,20 @@ updateProfile (Entity profileId (Profile{profileName, profileUserId, profilePict
     case muser of
         Nothing -> return ()
         (Just user) -> do
-            App{twitterConsumerKey, twitterConsumerSecret} <- getYesod
             let username = userTwitterUsername user
-            let accessKey = t2b $ userTwitterOauthToken user
-            let accessSecret = t2b $ userTwitterOauthTokenSecret user
-            let credentials = OauthCredentials twitterConsumerKey twitterConsumerSecret accessKey accessSecret
             let computation = do
                 updateName profileName >>= logger username
                 forM_ profilePicture $ \picture ->
                     logger username =<< updatePicture picture
-            runOauthReader computation credentials
+            runOauthReader computation =<< oauthCredentials user
             runDB $ update profileId [ProfileSent =. True]
+
+oauthCredentials :: User -> Handler OauthCredentials
+oauthCredentials user = do
+    App{twitterConsumerKey, twitterConsumerSecret} <- getYesod
+    let accessKey = t2b $ userTwitterOauthToken user
+    let accessSecret = t2b $ userTwitterOauthTokenSecret user
+    return $ OauthCredentials twitterConsumerKey twitterConsumerSecret accessKey accessSecret
 
 logger :: MonadIO m => Text -> Text -> m ()
 logger username t = putStrLn $ "[" <> username <> "] " <> t
