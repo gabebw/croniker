@@ -6,14 +6,15 @@ import Prelude
 import Data.Monoid ((<>))
 import qualified Data.Text as T
 import Data.Either (isRight)
-import Text.ParserCombinators.Parsec
+import Text.Parsec
+import Text.Parsec.Text (Parser)
 
 type Url = String
 
 containsUrl :: T.Text -> Bool
-containsUrl t = or $ map isUrl (words $ T.unpack $ T.toLower t)
+containsUrl t = or $ map isUrl (T.words $ T.toLower t)
 
-isUrl :: String -> Bool
+isUrl :: T.Text -> Bool
 isUrl s = isRight $ parse url "" s
 
 url :: Parser Url
