@@ -1,7 +1,8 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module Handler.TodaysProfilesTask
+module Handler.UpdateProfilesTask
     ( updateTodaysProfiles
+    , updateAllProfiles
     ) where
 
 import Import
@@ -20,6 +21,11 @@ updateTodaysProfiles = do
     profiles <- runDB allProfilesForUpdate
     filteredProfiles <- filterM isTime profiles
     mapM_ updateWithErrorHandling filteredProfiles
+
+updateAllProfiles :: Handler ()
+updateAllProfiles = do
+    profiles <- runDB $ selectList [] []
+    mapM_ updateWithErrorHandling profiles
 
 updateWithErrorHandling :: Entity Profile -> Handler ()
 updateWithErrorHandling profile = EL.try (updateProfile profile)

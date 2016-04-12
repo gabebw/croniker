@@ -12,6 +12,7 @@ module Application
     , handler
     , db
     , todaysProfilesTaskMain
+    , allProfilesTaskMain
     ) where
 
 import Control.Monad.Logger                 (liftLoc, runLoggingT)
@@ -42,7 +43,7 @@ import Handler.ChooseTimezone
 import Handler.Common
 import Handler.Profile
 import Handler.Root
-import Handler.TodaysProfilesTask (updateTodaysProfiles)
+import Handler.UpdateProfilesTask (updateTodaysProfiles, updateAllProfiles)
 import Handler.UpdateUser
 
 -- This line actually creates our YesodDispatch instance. It is the second half
@@ -186,6 +187,9 @@ shutdownApp _ = return ()
 
 todaysProfilesTaskMain :: IO ()
 todaysProfilesTaskMain = handler updateTodaysProfiles
+
+allProfilesTaskMain :: IO ()
+allProfilesTaskMain = handler updateAllProfiles
 
 ---------------------------------------------
 -- Functions for use in development with GHCi

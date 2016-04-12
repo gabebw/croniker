@@ -20,6 +20,19 @@ This will start Yesod and tell Sass to recompile the CSS whenever a file in
 
 Now visit http://localhost:3000.
 
+## Running a task
+
+To update all of the unsent profiles scheduled for today:
+
+    stack exec todays-profiles
+
+To update all of the profiles, regardless of when they're scheduled or whether
+they've been sent:
+
+    stack exec all-profiles
+
+`all-profiles` is meant to be used for local testing.
+
 ## Adding a new executable
 
 If you add a new `executable` in `croniker.cabal`, run `stack build` so that you

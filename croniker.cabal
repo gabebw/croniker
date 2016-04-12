@@ -24,7 +24,7 @@ library
                      Handler.DeleteProfile
                      Handler.Profile
                      Handler.Root
-                     Handler.TodaysProfilesTask
+                     Handler.UpdateProfilesTask
                      Handler.UpdateUser
                      Helper.HttpExceptionHandler
                      Helper.Request
@@ -130,7 +130,17 @@ executable         todays-profiles
     if flag(library-only)
         Buildable: False
 
-    main-is:           TaskMain.hs
+    main-is:           TodaysProfilesTaskMain.hs
+    hs-source-dirs:    app
+    build-depends:     base, croniker
+
+    ghc-options:       -threaded -O2 -rtsopts -with-rtsopts=-N
+
+executable         all-profiles
+    if flag(library-only)
+        Buildable: False
+
+    main-is:           AllProfilesTaskMain.hs
     hs-source-dirs:    app
     build-depends:     base, croniker
 
