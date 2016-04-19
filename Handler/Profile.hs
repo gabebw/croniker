@@ -13,6 +13,7 @@ import Text.Blaze (ToMarkup, toMarkup)
 import qualified Data.ByteString.Base64 as B64
 import Data.Conduit.Binary (sinkLbs)
 import qualified Data.ByteString.Lazy as L
+import qualified Data.Text as T
 
 import Helper.Request (fromMaybe404)
 import Helper.TextConversion (b2t)
@@ -136,7 +137,7 @@ prettyTime :: (FormatTime t) => t -> String
 prettyTime = formatTime defaultTimeLocale "%B %d, %Y"
 
 nameField :: Field Handler Text
-nameField = check doesNotContainUrl $ check doesNotContainTwitter $ check maxLength textField
+nameField = check doesNotContainUrl $ check doesNotContainTwitter $ check validLength textField
 
 doesNotContainTwitter :: Text -> Either Text Text
 doesNotContainTwitter name
@@ -148,9 +149,10 @@ doesNotContainUrl name
     | CUP.containsUrl name = Left "Twitter doesn't allow URLs in monikers"
     | otherwise = Right name
 
-maxLength :: Text -> Either Text Text
-maxLength name
-    | length name > 20 = Left "Twitter doesn't allow profiles longer than 20 characters"
+validLength :: Text -> Either Text Text
+validLength name
+    | length (T.strip name) == 0 = Left "Usernames cannot be only spaces"
+    | length (T.strip name) > 20 = Left "Twitter doesn't allow profiles longer than 20 characters"
     | otherwise = Right name
 
 dateField :: Day -> Field Handler Day
