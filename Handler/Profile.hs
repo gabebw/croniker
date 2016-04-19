@@ -107,7 +107,7 @@ profileForm tomorrow userId extra = do
         ^{display dayView}
     |]
     let profile = Profile
-                    <$> nameRes
+                    <$> (normalize <$> nameRes)
                     <*> dayRes
                     <*> pure userId
                     <*> pure Nothing
@@ -154,6 +154,9 @@ validLength name
     | length (T.strip name) == 0 = Left "Usernames cannot be only spaces"
     | length (T.strip name) > 20 = Left "Twitter doesn't allow profiles longer than 20 characters"
     | otherwise = Right name
+
+normalize :: Text -> Text
+normalize = T.strip
 
 dateField :: Day -> Field Handler Day
 dateField tomorrow = check (futureDate tomorrow) dayField
