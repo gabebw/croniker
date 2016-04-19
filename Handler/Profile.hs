@@ -138,9 +138,9 @@ doesNotContainTwitter name
     | otherwise = Right name
 
 doesNotContainUrl :: Text -> Either Text Text
-doesNotContainUrl name = if CUP.containsUrl name
-                            then Left "Twitter doesn't allow URLs in monikers"
-                            else Right name
+doesNotContainUrl name
+    | CUP.containsUrl name = Left "Twitter doesn't allow URLs in monikers"
+    | otherwise = Right name
 
 maxLength :: Text -> Either Text Text
 maxLength name
