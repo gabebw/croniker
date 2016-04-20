@@ -137,7 +137,12 @@ prettyTime :: (FormatTime t) => t -> String
 prettyTime = formatTime defaultTimeLocale "%B %d, %Y"
 
 nameField :: Field Handler Text
-nameField = check doesNotContainUrl $ check doesNotContainTwitter $ check (validWhitespace . CMN.normalize) $ check (validLength . CMN.normalize) textField
+nameField = foldr check textField [
+                doesNotContainUrl,
+                doesNotContainTwitter,
+                validWhitespace . CMN.normalize,
+                validLength . CMN.normalize
+            ]
 
 doesNotContainTwitter :: Text -> Either Text Text
 doesNotContainTwitter name
