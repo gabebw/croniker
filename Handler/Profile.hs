@@ -7,20 +7,19 @@ module Handler.Profile
 
 import Import
 
-import Data.Char (ord)
 import Data.Maybe (fromJust)
 import Data.Time.Format (FormatTime)
 import Text.Blaze (ToMarkup, toMarkup)
 import qualified Data.ByteString.Base64 as B64
 import Data.Conduit.Binary (sinkLbs)
 import qualified Data.ByteString.Lazy as L
-import qualified Data.Text as T
 
 import Helper.Request (fromMaybe404)
 import Helper.TextConversion (b2t)
 import qualified Model.Profile as M
 import qualified Croniker.Time as CT
 import qualified Croniker.UrlParser as CUP
+import qualified Croniker.MonikerNormalization as CMN
 
 instance ToMarkup Day where
   toMarkup = toMarkup . show
@@ -108,7 +107,7 @@ profileForm tomorrow userId extra = do
         ^{display dayView}
     |]
     let profile = Profile
-                    <$> (normalize <$> nameRes)
+                    <$> (CMN.normalize <$> nameRes)
                     <*> dayRes
                     <*> pure userId
                     <*> pure Nothing
@@ -152,26 +151,9 @@ doesNotContainUrl name
 
 validLength :: Text -> Either Text Text
 validLength name
-    | length (normalize name) == 0 = Left "Usernames cannot be blank"
-    | length (normalize name) > 20 = Left "Twitter doesn't allow profiles longer than 20 characters"
+    | length (CMN.normalize name) == 0 = Left "Usernames cannot be blank"
+    | length (CMN.normalize name) > 20 = Left "Twitter doesn't allow profiles longer than 20 characters"
     | otherwise = Right name
-
--- Twitter strips out fancy Unicode whitespace characters, and doesn't allow
--- anything outside the Basic Multilingual Plane (which ends at U+FEFF).
-removeInvalidUnicode :: Text -> Text
-removeInvalidUnicode = filter (not . bad)
-    where
-        bad c = ord c `elem` [0x202A..0x202F] || ord c >= 0xFEFF
-
-normalize :: Text -> Text
-normalize = T.strip . stripCharacters . removeInvalidUnicode
-
--- Strip characters that are not allowed at the beginning/end of monikers (but
--- are allowed when surrounded by other characters).
-stripCharacters :: Text -> Text
-stripCharacters = T.dropWhile bad . T.dropWhileEnd bad
-    where
-        bad c = ord c `elem` [0x2028, 0x2029]
 
 dateField :: Day -> Field Handler Day
 dateField tomorrow = check (futureDate tomorrow) dayField
