@@ -1,0 +1,2 @@
+module Croniker.MonikerNormalization
+    where
