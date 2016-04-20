@@ -7,15 +7,11 @@ module Handler.Profile
 
 import Import
 
-import Data.Conduit.Binary (sinkLbs)
 import Data.Maybe (fromJust)
 import Data.Time.Format (FormatTime)
 import Text.Blaze (ToMarkup, toMarkup)
-import qualified Data.ByteString.Base64 as B64
-import qualified Data.ByteString.Lazy as L
 
 import Helper.Request (fromMaybe404)
-import Helper.TextConversion (b2t)
 import qualified Croniker.MonikerNormalization as CMN
 import qualified Croniker.Time as CT
 import qualified Croniker.UrlParser as CUP
@@ -40,12 +36,11 @@ postProfileR = do
     tomorrow <- CT.localTomorrow user
     takenDays <- runDB $ U.takenDays tomorrow userId
     nextFreeDay <- runDB $ U.nextFreeDay tomorrow takenDays
-    (resultWithoutProfilePicture, formWidget) <- fst <$> (runFormPost $ profileForm nextFreeDay takenDays tomorrow userId)
-    result <- withPossibleProfilePicture resultWithoutProfilePicture
+    (result, formWidget) <- fst <$> (runFormPost $ profileForm nextFreeDay takenDays tomorrow userId)
 
     case result of
-        FormSuccess profile -> do
-            void $ runDB $ insert profile
+        FormSuccess formProfile  -> do
+            P.addProfile formProfile
             setMessage "Profile created"
             redirect ProfileR
         _ -> do
@@ -68,25 +63,6 @@ prerequisites = do
 requireSetTimezone :: User -> Handler ()
 requireSetTimezone user = unless (userChoseTimezone user) (redirect ChooseTimezoneR)
 
-fileContents :: (Text, FileInfo) -> Handler L.ByteString
-fileContents (_, fi) = runResourceT $ fileSource fi $$ sinkLbs
-
--- If there's a profile picture in the HTTP request, set the Profile's
--- profilePicture field to the Base64-encoded contents of that file.
---
--- If there's no profile picture, don't do anything.
-withPossibleProfilePicture :: FormResult Profile -> Handler (FormResult Profile)
-withPossibleProfilePicture (FormSuccess profile) = do
-    (_, files) <- runRequestBody
-    contents <- mapM fileContents files
-    return $ FormSuccess $ profileWithPicture contents profile
-    where
-        profileWithPicture (f:_) p = p { profilePicture = Just $ base64text f }
-        profileWithPicture _ p = p
-        base64text = b2t . B64.encode . toStrict
-
-withPossibleProfilePicture result = return result
-
 profilesTemplate :: (ToWidget App w) => Entity User -> w -> Handler Html
 profilesTemplate (Entity userId _) profileWidget = do
     csrfToken <- fromJust . reqToken <$> getRequest
@@ -100,15 +76,15 @@ requireOwnedProfile profileId = do
     userId <- requireAuthId
     void $ fromMaybe404 $ runDB $ P.findProfileFor userId profileId
 
-profileForm :: Day -> [Day] -> Day -> UserId -> Form Profile
-profileForm nextFreeDay takenDays tomorrow userId = renderDivs $ Profile
+profileForm :: Day -> [Day] -> Day -> UserId -> Form P.FormProfile
+profileForm nextFreeDay takenDays tomorrow userId = renderDivs $ P.FormProfile
     <$> fmap CMN.normalize (areq nameField (fs "New moniker" [("maxlength", "20"), ("autofocus", "autofocus")]) Nothing)
     <*> areq
             (dateField takenDays tomorrow)
             ((fs "Date" []) { fsTooltip = Just "Defaults to the next available date" })
             (Just nextFreeDay)
     <*> pure userId
-    <*> (Nothing <$ aopt fileField (fs "Profile picture (optional)" []) Nothing)
+    <*> aopt fileField (fs "Profile picture (optional)" []) Nothing
     <*> pure False
 
 fs :: Text -> [(Text, Text)] -> FieldSettings site
