@@ -137,7 +137,7 @@ prettyTime :: (FormatTime t) => t -> String
 prettyTime = formatTime defaultTimeLocale "%B %d, %Y"
 
 nameField :: Field Handler Text
-nameField = check doesNotContainUrl $ check doesNotContainTwitter $ check (validLength . CMN.normalize) textField
+nameField = check doesNotContainUrl $ check doesNotContainTwitter $ check (validWhitespace . CMN.normalize) $ check (validLength . CMN.normalize) textField
 
 doesNotContainTwitter :: Text -> Either Text Text
 doesNotContainTwitter name
@@ -153,6 +153,11 @@ validLength :: Text -> Either Text Text
 validLength name
     | length name == 0 = Left "Usernames cannot be blank"
     | length name > 20 = Left "Twitter doesn't allow profiles longer than 20 characters"
+    | otherwise = Right name
+
+validWhitespace :: Text -> Either Text Text
+validWhitespace name
+    | any (`isInfixOf` name) ["\n", "\t"] = Left "Usernames cannot contain special whitespace characters"
     | otherwise = Right name
 
 dateField :: Day -> Field Handler Day
