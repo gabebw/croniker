@@ -185,3 +185,4 @@ test-suite test
                  , classy-prelude
                  , classy-prelude-yesod
                  , aeson
+                 , text >= 0.11 && < 2.0

@@ -33,6 +33,10 @@ they've been sent:
 
 `all-profiles` is meant to be used for local testing.
 
+## Running tests
+
+    stack test
+
 ## Adding a new executable
 
 If you add a new `executable` in `croniker.cabal`, run `stack build` so that you
