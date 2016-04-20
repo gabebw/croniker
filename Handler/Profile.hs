@@ -1,8 +1,8 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 module Handler.Profile
     ( getProfileR
-    , postDeleteProfileR
     , postProfileR
+    , postDeleteProfileR
     ) where
 
 import Import
@@ -24,18 +24,41 @@ import qualified Croniker.MonikerNormalization as CMN
 instance ToMarkup Day where
   toMarkup = toMarkup . show
 
-prerequisites :: Handler (Entity User)
-prerequisites = do
-    euser@(Entity _ user) <- requireAuth
-    requireSetTimezone user
-    return euser
-
 getProfileR :: Handler Html
 getProfileR = do
     euser@(Entity userId user) <- prerequisites
     tomorrow <- CT.localTomorrow user
     (widget, _) <- generateFormPost $ profileForm tomorrow userId
     profilesTemplate euser widget
+
+postProfileR :: Handler Html
+postProfileR = do
+    euser@(Entity userId user) <- prerequisites
+    tomorrow <- CT.localTomorrow user
+    ((resultWithoutProfilePicture, formWidget), _) <- runFormPost $ profileForm tomorrow userId
+    result <- withPossibleProfilePicture resultWithoutProfilePicture
+
+    case result of
+        FormSuccess profile -> do
+            void $ runDB $ insert profile
+            setMessage "Profile created"
+            redirect ProfileR
+        _ -> do
+            setMessage "Oops, something went wrong"
+            profilesTemplate euser formWidget
+
+postDeleteProfileR :: ProfileId -> Handler ()
+postDeleteProfileR profileId = do
+    requireOwnedProfile profileId
+    runDB $ delete profileId
+    setMessage "Profile deleted!"
+    redirect ProfileR
+
+prerequisites :: Handler (Entity User)
+prerequisites = do
+    euser@(Entity _ user) <- requireAuth
+    requireSetTimezone user
+    return euser
 
 requireSetTimezone :: User -> Handler ()
 requireSetTimezone user = when (not $ userChoseTimezone user) (redirect ChooseTimezoneR)
@@ -59,22 +82,6 @@ withPossibleProfilePicture (FormSuccess profile) = do
 
 withPossibleProfilePicture result = return result
 
-postProfileR :: Handler Html
-postProfileR = do
-    euser@(Entity userId user) <- prerequisites
-    tomorrow <- CT.localTomorrow user
-    ((resultWithoutProfilePicture, formWidget), _) <- runFormPost $ profileForm tomorrow userId
-    result <- withPossibleProfilePicture resultWithoutProfilePicture
-
-    case result of
-        FormSuccess profile -> do
-            void $ runDB $ insert profile
-            setMessage "Profile created"
-            redirect ProfileR
-        _ -> do
-            setMessage "Oops, something went wrong"
-            profilesTemplate euser formWidget
-
 profilesTemplate :: (ToWidget App w) => Entity User -> w -> Handler Html
 profilesTemplate (Entity userId _) profileWidget = do
     csrfToken <- fromJust . reqToken <$> getRequest
@@ -82,13 +89,6 @@ profilesTemplate (Entity userId _) profileWidget = do
     defaultLayout $ do
         setTitle "Croniker"
         $(widgetFile "profiles")
-
-postDeleteProfileR :: ProfileId -> Handler ()
-postDeleteProfileR profileId = do
-    requireOwnedProfile profileId
-    runDB $ delete profileId
-    setMessage "Profile deleted!"
-    redirect ProfileR
 
 requireOwnedProfile :: ProfileId -> Handler ()
 requireOwnedProfile profileId = do
