@@ -10,8 +10,8 @@ import Import
 import Data.Maybe (fromJust)
 import Data.Time.Format (FormatTime)
 import Text.Blaze (ToMarkup, toMarkup)
-import qualified Data.ByteString.Base64 as B64
 import Data.Conduit.Binary (sinkLbs)
+import qualified Data.ByteString.Base64 as B64
 import qualified Data.ByteString.Lazy as L
 
 import Helper.Request (fromMaybe404)
@@ -95,34 +95,13 @@ requireOwnedProfile profileId = do
     userId <- requireAuthId
     void $ fromMaybe404 $ runDB $ M.findProfileFor userId profileId
 
-profileForm :: Day -> UserId -> Html -> MForm Handler (FormResult Profile, Widget)
-profileForm tomorrow userId extra = do
-    (nameRes, nameView) <- mreq nameField (fs "New moniker" [("maxlength", "20")]) Nothing
-    (dayRes, dayView) <- mreq (dateField tomorrow) (fs "When should it be changed?" []) (Just tomorrow)
-    (_, profilePictureView) <- mopt fileField (fs "Profile picture (optional)" []) Nothing
-    let widget = [whamlet|
-        #{extra}
-        ^{display nameView}
-        ^{display profilePictureView}
-        ^{display dayView}
-    |]
-    let profile = Profile
-                    <$> (CMN.normalize <$> nameRes)
-                    <*> dayRes
-                    <*> pure userId
-                    <*> pure Nothing
-                    <*> pure False
-
-    return (profile, widget)
-
-    where
-        display view = [whamlet|
-            <fieldset>
-                <strong>^{fvLabel view}
-                ^{fvInput view}
-                $maybe errors <- fvErrors view
-                    <div.form-errors>#{errors}
-        |]
+profileForm :: Day -> UserId -> Form Profile
+profileForm tomorrow userId = renderDivs $ Profile
+    <$> fmap CMN.normalize (areq nameField (fs "New profile" [("maxlength", "20")]) Nothing)
+    <*> areq (dateField tomorrow) (fs "Date" []) (Just tomorrow)
+    <*> pure userId
+    <*> (Nothing <$ aopt fileField (fs "Profile picture (optional)" []) Nothing)
+    <*> pure False
 
 fs :: Text -> [(Text, Text)] -> FieldSettings site
 fs label attrs = FieldSettings

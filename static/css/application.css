@@ -404,7 +404,7 @@ footer, .push {
 footer {
   text-align: center; }
 
-.form-errors {
+form .errors {
   color: #ed5446; }
 
 .page-login {
