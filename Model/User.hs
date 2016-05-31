@@ -2,6 +2,7 @@
 
 module Model.User
     ( authenticateUser
+    , takenDays
     ) where
 
 import Import.NoFoundation
@@ -24,6 +25,9 @@ authenticateUser Creds{credsExtra} = do
         updateUser userId = do
             update userId (updateStatements credsExtra)
             return (Authenticated userId)
+
+takenDays :: UserId -> DB [Day]
+takenDays userId = map (profileDate . entityVal) <$> selectList [ProfileUserId ==. userId] []
 
 credsToUser :: [(Text, Text)] -> Maybe User
 credsToUser credsExtra = User

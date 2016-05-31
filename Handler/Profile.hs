@@ -17,6 +17,7 @@ import qualified Data.ByteString.Lazy as L
 import Helper.Request (fromMaybe404)
 import Helper.TextConversion (b2t)
 import qualified Model.Profile as P
+import qualified Model.User as U
 import qualified Croniker.Time as CT
 import qualified Croniker.UrlParser as CUP
 import qualified Croniker.MonikerNormalization as CMN
@@ -28,14 +29,16 @@ getProfileR :: Handler Html
 getProfileR = do
     euser@(Entity userId user) <- prerequisites
     tomorrow <- CT.localTomorrow user
-    (widget, _) <- generateFormPost $ profileForm tomorrow userId
+    takenDays <- runDB $ U.takenDays userId
+    (widget, _) <- generateFormPost $ profileForm takenDays tomorrow userId
     profilesTemplate euser widget
 
 postProfileR :: Handler Html
 postProfileR = do
     euser@(Entity userId user) <- prerequisites
     tomorrow <- CT.localTomorrow user
-    ((resultWithoutProfilePicture, formWidget), _) <- runFormPost $ profileForm tomorrow userId
+    takenDays <- runDB $ U.takenDays userId
+    ((resultWithoutProfilePicture, formWidget), _) <- runFormPost $ profileForm takenDays tomorrow userId
     result <- withPossibleProfilePicture resultWithoutProfilePicture
 
     case result of
@@ -95,10 +98,10 @@ requireOwnedProfile profileId = do
     userId <- requireAuthId
     void $ fromMaybe404 $ runDB $ P.findProfileFor userId profileId
 
-profileForm :: Day -> UserId -> Form Profile
-profileForm tomorrow userId = renderDivs $ Profile
+profileForm :: [Day] -> Day -> UserId -> Form Profile
+profileForm takenDays tomorrow userId = renderDivs $ Profile
     <$> fmap CMN.normalize (areq nameField (fs "New profile" [("maxlength", "20")]) Nothing)
-    <*> areq (dateField tomorrow) (fs "Date" []) (Just tomorrow)
+    <*> areq (dateField takenDays tomorrow) (fs "Date" []) (Just tomorrow)
     <*> pure userId
     <*> (Nothing <$ aopt fileField (fs "Profile picture (optional)" []) Nothing)
     <*> pure False
@@ -144,10 +147,15 @@ validWhitespace name
     | any (`isInfixOf` name) ["\n", "\t"] = Left "Usernames cannot contain special whitespace characters"
     | otherwise = Right name
 
-dateField :: Day -> Field Handler Day
-dateField tomorrow = check (futureDate tomorrow) dayField
+dateField :: [Day] -> Day -> Field Handler Day
+dateField takenDays tomorrow = check (nothingScheduled takenDays) $ check (futureDate tomorrow) dayField
 
 futureDate :: Day -> Day -> Either Text Day
 futureDate tomorrow date
     | date < tomorrow = Left "You must select a future date"
+    | otherwise = Right date
+
+nothingScheduled :: [Day] -> Day -> Either Text Day
+nothingScheduled takenDays date
+    | date `elem` takenDays = Left "You already have a change scheduled for that day"
     | otherwise = Right date
