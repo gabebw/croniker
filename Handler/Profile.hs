@@ -16,7 +16,7 @@ import qualified Data.ByteString.Lazy as L
 
 import Helper.Request (fromMaybe404)
 import Helper.TextConversion (b2t)
-import qualified Model.Profile as M
+import qualified Model.Profile as P
 import qualified Croniker.Time as CT
 import qualified Croniker.UrlParser as CUP
 import qualified Croniker.MonikerNormalization as CMN
@@ -85,7 +85,7 @@ withPossibleProfilePicture result = return result
 profilesTemplate :: (ToWidget App w) => Entity User -> w -> Handler Html
 profilesTemplate (Entity userId _) profileWidget = do
     csrfToken <- fromJust . reqToken <$> getRequest
-    allProfiles <- runDB $ M.futureProfilesFor userId
+    allProfiles <- runDB $ P.futureProfilesFor userId
     defaultLayout $ do
         setTitle "Croniker"
         $(widgetFile "profiles")
@@ -93,7 +93,7 @@ profilesTemplate (Entity userId _) profileWidget = do
 requireOwnedProfile :: ProfileId -> Handler ()
 requireOwnedProfile profileId = do
     userId <- requireAuthId
-    void $ fromMaybe404 $ runDB $ M.findProfileFor userId profileId
+    void $ fromMaybe404 $ runDB $ P.findProfileFor userId profileId
 
 profileForm :: Day -> UserId -> Form Profile
 profileForm tomorrow userId = renderDivs $ Profile

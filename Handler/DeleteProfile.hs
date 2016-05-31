@@ -6,7 +6,7 @@ module Handler.DeleteProfile
 import Import
 
 import Helper.Request (fromMaybe404)
-import qualified Model.Profile as M
+import qualified Model.Profile as P
 
 postDeleteProfileR :: ProfileId -> Handler ()
 postDeleteProfileR profileId = do
@@ -18,4 +18,4 @@ postDeleteProfileR profileId = do
 requireOwnedProfile :: ProfileId -> Handler ()
 requireOwnedProfile profileId = do
     userId <- requireAuthId
-    void $ fromMaybe404 $ runDB $ M.findProfileFor userId profileId
+    void $ fromMaybe404 $ runDB $ P.findProfileFor userId profileId
