@@ -64,10 +64,10 @@ prerequisites = do
     return euser
 
 requireSetTimezone :: User -> Handler ()
-requireSetTimezone user = when (not $ userChoseTimezone user) (redirect ChooseTimezoneR)
+requireSetTimezone user = unless (userChoseTimezone user) (redirect ChooseTimezoneR)
 
 fileContents :: (Text, FileInfo) -> Handler L.ByteString
-fileContents (_, fi) = runResourceT $ (fileSource fi) $$ sinkLbs
+fileContents (_, fi) = runResourceT $ fileSource fi $$ sinkLbs
 
 -- If there's a profile picture in the HTTP request, set the Profile's
 -- profilePicture field to the Base64-encoded contents of that file.
@@ -128,7 +128,7 @@ nameField = foldr check textField [
 
 doesNotContainTwitter :: Text -> Either Text Text
 doesNotContainTwitter name
-    | "twitter" `isInfixOf` (toLower name) = Left "Twitter doesn't allow monikers that contain \"Twitter\""
+    | "twitter" `isInfixOf` toLower name = Left "Twitter doesn't allow monikers that contain \"Twitter\""
     | otherwise = Right name
 
 doesNotContainUrl :: Text -> Either Text Text
