@@ -13,7 +13,7 @@ fi
 remote="$1"; shift
 
 cat <<EOF
-Running a migration deploy to $app. This will:
+Running a migration deploy to $remote. This will:
 
   - Put the app in maintenance mode
   - Backup the database
