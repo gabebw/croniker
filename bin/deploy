@@ -2,12 +2,12 @@
 
 set -e
 
-if (( $# != 1 )); then
+if [ $# -ne 1 ]; then
   echo "Usage: ./bin/deploy (staging|production)"
   exit 1
 fi
 
-if [ "$(uname)" == "Darwin" ]; then
+if [ "$(uname)" = "Darwin" ]; then
   if [ "$(docker-machine status default)" != "Running" ]; then
       docker-machine start default
   fi
