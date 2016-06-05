@@ -115,7 +115,7 @@ library
                  , conduit-extra
                  , http-client
                  , lifted-base
-                 , parsec
+                 , tld
 
 executable         croniker
     if flag(library-only)
@@ -152,6 +152,9 @@ test-suite test
     main-is:           Spec.hs
     hs-source-dirs:    test
     ghc-options:       -Wall
+
+    other-modules: Croniker.MonikerNormalizationSpec
+                 , Croniker.UrlParserSpec
 
     extensions: TemplateHaskell
                 QuasiQuotes
