@@ -30,10 +30,10 @@ spec = describe "Croniker.UrlParser" $ do
             containsUrl "something.com" `shouldBe` True
 
         it "returns true for strings with http://-prefixed URLs" $ do
-            containsUrl "https://something.com" `shouldBe` True
+            containsUrl "http://something.com" `shouldBe` True
 
         it "returns true for strings with https://-prefixed URLs" $ do
-            containsUrl "http://something.com" `shouldBe` True
+            containsUrl "https://something.com" `shouldBe` True
 
         it "returns false for strings with nothing that looks like a URL" $ do
             containsUrl "hello" `shouldBe` False
