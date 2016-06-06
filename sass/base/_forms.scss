@@ -13,7 +13,6 @@ legend {
 }
 
 label {
-  display: block;
   font-weight: 600;
   margin-bottom: $small-spacing / 2;
 }
@@ -82,4 +81,10 @@ select {
   margin-bottom: $base-spacing;
   max-width: 100%;
   width: auto;
+}
+
+.tooltip {
+  color: $medium-gray;
+  display: inline;
+  margin-left: $small-spacing;
 }

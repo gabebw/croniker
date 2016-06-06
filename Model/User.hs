@@ -2,12 +2,14 @@
 
 module Model.User
     ( authenticateUser
+    , nextFreeDay
     , takenDays
     ) where
 
 import Import.NoFoundation
 
 import Data.Time.Zones.All (TZLabel(Etc__UTC))
+import Database.Persist.Sql (rawSql, Single(..))
 
 authenticateUser :: AuthId m ~ UserId => Creds m -> DB (AuthenticationResult m)
 authenticateUser Creds{credsExtra} = do
@@ -28,6 +30,25 @@ authenticateUser Creds{credsExtra} = do
 
 takenDays :: UserId -> DB [Day]
 takenDays userId = map (profileDate . entityVal) <$> selectList [ProfileUserId ==. userId] []
+
+nextFreeDay :: UserId -> DB (Maybe (Single Day))
+nextFreeDay userId = listToMaybe <$> rawSql s [toPersistValue userId]
+    where
+        s = "WITH next_year AS ( \
+            \   SELECT current_date + s.a AS date \
+            \   FROM generate_series(1,365) AS s(a) \
+            \ ), joined AS ( \
+            \ SELECT profile.date AS profile_date, next_year.date AS generated_date \
+            \ FROM next_year LEFT OUTER JOIN profile \
+            \     ON next_year.date = profile.date \
+            \     AND profile.date >= current_date \
+            \     AND profile.user_id = ? \
+            \ ) \
+            \ SELECT generated_date AS next_available_date \
+            \ FROM joined \
+            \ WHERE profile_date IS NULL \
+            \ ORDER BY generated_date ASC \
+            \ LIMIT 1;"
 
 credsToUser :: [(Text, Text)] -> Maybe User
 credsToUser credsExtra = User

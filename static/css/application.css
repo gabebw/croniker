@@ -187,7 +187,6 @@ legend {
   padding: 0; }
 
 label {
-  display: block;
   font-weight: 600;
   margin-bottom: 0.375em; }
 
@@ -245,6 +244,11 @@ select {
   margin-bottom: 1.5em;
   max-width: 100%;
   width: auto; }
+
+.tooltip {
+  color: #999;
+  display: inline;
+  margin-left: 0.75em; }
 
 ul,
 ol {

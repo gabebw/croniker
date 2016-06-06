@@ -10,6 +10,7 @@ import Import
 import Data.Conduit.Binary (sinkLbs)
 import Data.Maybe (fromJust)
 import Data.Time.Format (FormatTime)
+import Database.Persist.Sql (Single(..))
 import Text.Blaze (ToMarkup, toMarkup)
 import qualified Data.ByteString.Base64 as B64
 import qualified Data.ByteString.Lazy as L
@@ -30,7 +31,8 @@ getProfileR = do
     euser@(Entity userId user) <- prerequisites
     tomorrow <- CT.localTomorrow user
     takenDays <- runDB $ U.takenDays userId
-    widget <- fst <$> (generateFormPost $ profileForm takenDays tomorrow userId)
+    nextFreeDay <- (maybe tomorrow unSingle) <$> runDB (U.nextFreeDay userId)
+    widget <- fst <$> (generateFormPost $ profileForm nextFreeDay takenDays tomorrow userId)
     profilesTemplate euser widget
 
 postProfileR :: Handler Html
@@ -38,7 +40,8 @@ postProfileR = do
     euser@(Entity userId user) <- prerequisites
     tomorrow <- CT.localTomorrow user
     takenDays <- runDB $ U.takenDays userId
-    (resultWithoutProfilePicture, formWidget) <- fst <$> (runFormPost $ profileForm takenDays tomorrow userId)
+    nextFreeDay <- (maybe tomorrow unSingle) <$> runDB (U.nextFreeDay userId)
+    (resultWithoutProfilePicture, formWidget) <- fst <$> (runFormPost $ profileForm nextFreeDay takenDays tomorrow userId)
     result <- withPossibleProfilePicture resultWithoutProfilePicture
 
     case result of
@@ -98,10 +101,13 @@ requireOwnedProfile profileId = do
     userId <- requireAuthId
     void $ fromMaybe404 $ runDB $ P.findProfileFor userId profileId
 
-profileForm :: [Day] -> Day -> UserId -> Form Profile
-profileForm takenDays tomorrow userId = renderDivs $ Profile
+profileForm :: Day -> [Day] -> Day -> UserId -> Form Profile
+profileForm nextFreeDay takenDays tomorrow userId = renderDivs $ Profile
     <$> fmap CMN.normalize (areq nameField (fs "New profile" [("maxlength", "20"), ("autofocus", "autofocus")]) Nothing)
-    <*> areq (dateField takenDays tomorrow) (fs "Date" []) (Just tomorrow)
+    <*> areq
+            (dateField takenDays tomorrow)
+            ((fs "Date" []) { fsTooltip = Just "Defaults to the next available date" })
+            (Just nextFreeDay)
     <*> pure userId
     <*> (Nothing <$ aopt fileField (fs "Profile picture (optional)" []) Nothing)
     <*> pure False
