@@ -100,7 +100,7 @@ requireOwnedProfile profileId = do
 
 profileForm :: [Day] -> Day -> UserId -> Form Profile
 profileForm takenDays tomorrow userId = renderDivs $ Profile
-    <$> fmap CMN.normalize (areq nameField (fs "New profile" [("maxlength", "20")]) Nothing)
+    <$> fmap CMN.normalize (areq nameField (fs "New profile" [("maxlength", "20"), ("autofocus", "autofocus")]) Nothing)
     <*> areq (dateField takenDays tomorrow) (fs "Date" []) (Just tomorrow)
     <*> pure userId
     <*> (Nothing <$ aopt fileField (fs "Profile picture (optional)" []) Nothing)
