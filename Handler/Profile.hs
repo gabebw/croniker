@@ -7,20 +7,20 @@ module Handler.Profile
 
 import Import
 
+import Data.Conduit.Binary (sinkLbs)
 import Data.Maybe (fromJust)
 import Data.Time.Format (FormatTime)
 import Text.Blaze (ToMarkup, toMarkup)
-import Data.Conduit.Binary (sinkLbs)
 import qualified Data.ByteString.Base64 as B64
 import qualified Data.ByteString.Lazy as L
 
 import Helper.Request (fromMaybe404)
 import Helper.TextConversion (b2t)
-import qualified Model.Profile as P
-import qualified Model.User as U
+import qualified Croniker.MonikerNormalization as CMN
 import qualified Croniker.Time as CT
 import qualified Croniker.UrlParser as CUP
-import qualified Croniker.MonikerNormalization as CMN
+import qualified Model.Profile as P
+import qualified Model.User as U
 
 instance ToMarkup Day where
   toMarkup = toMarkup . show
