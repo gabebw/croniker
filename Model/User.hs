@@ -28,8 +28,8 @@ authenticateUser Creds{credsExtra} = do
             update userId (updateStatements credsExtra)
             return (Authenticated userId)
 
-takenDays :: UserId -> DB [Day]
-takenDays userId = map (profileDate . entityVal) <$> selectList [ProfileUserId ==. userId] []
+takenDays :: Day -> UserId -> DB [Day]
+takenDays tomorrow userId = map (profileDate . entityVal) <$> selectList [ProfileUserId ==. userId, ProfileDate >=. tomorrow] []
 
 nextFreeDay :: UserId -> DB (Maybe (Single Day))
 nextFreeDay userId = listToMaybe <$> rawSql s [toPersistValue userId]

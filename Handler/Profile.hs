@@ -30,7 +30,7 @@ getProfileR :: Handler Html
 getProfileR = do
     euser@(Entity userId user) <- prerequisites
     tomorrow <- CT.localTomorrow user
-    takenDays <- runDB $ U.takenDays userId
+    takenDays <- runDB $ U.takenDays tomorrow userId
     nextFreeDay <- (maybe tomorrow unSingle) <$> runDB (U.nextFreeDay userId)
     widget <- fst <$> (generateFormPost $ profileForm nextFreeDay takenDays tomorrow userId)
     profilesTemplate euser widget
@@ -39,7 +39,7 @@ postProfileR :: Handler Html
 postProfileR = do
     euser@(Entity userId user) <- prerequisites
     tomorrow <- CT.localTomorrow user
-    takenDays <- runDB $ U.takenDays userId
+    takenDays <- runDB $ U.takenDays tomorrow userId
     nextFreeDay <- (maybe tomorrow unSingle) <$> runDB (U.nextFreeDay userId)
     (resultWithoutProfilePicture, formWidget) <- fst <$> (runFormPost $ profileForm nextFreeDay takenDays tomorrow userId)
     result <- withPossibleProfilePicture resultWithoutProfilePicture
