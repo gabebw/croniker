@@ -31,9 +31,8 @@ authenticateUser Creds{credsExtra} = do
 takenDays :: Day -> UserId -> DB [Day]
 takenDays tomorrow userId = map (profileDate . entityVal) <$> selectList [ProfileUserId ==. userId, ProfileDate >=. tomorrow] []
 
-nextFreeDay :: Day -> UserId -> DB Day
-nextFreeDay tomorrow userId = do
-    takenDates <- takenDays tomorrow userId
+nextFreeDay :: Day -> [Day] -> DB Day
+nextFreeDay tomorrow takenDates = do
     return $ fromMaybe tomorrow $ find (`onotElem` takenDates) nextYear
     where
         nextYear = map (`addDays` tomorrow) [0..365]

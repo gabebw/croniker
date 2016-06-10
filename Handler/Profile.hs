@@ -30,7 +30,7 @@ getProfileR = do
     euser@(Entity userId user) <- prerequisites
     tomorrow <- CT.localTomorrow user
     takenDays <- runDB $ U.takenDays tomorrow userId
-    nextFreeDay <- runDB $ U.nextFreeDay tomorrow userId
+    nextFreeDay <- runDB $ U.nextFreeDay tomorrow takenDays
     widget <- fst <$> (generateFormPost $ profileForm nextFreeDay takenDays tomorrow userId)
     profilesTemplate euser widget
 
@@ -39,7 +39,7 @@ postProfileR = do
     euser@(Entity userId user) <- prerequisites
     tomorrow <- CT.localTomorrow user
     takenDays <- runDB $ U.takenDays tomorrow userId
-    nextFreeDay <- runDB $ U.nextFreeDay tomorrow userId
+    nextFreeDay <- runDB $ U.nextFreeDay tomorrow takenDays
     (resultWithoutProfilePicture, formWidget) <- fst <$> (runFormPost $ profileForm nextFreeDay takenDays tomorrow userId)
     result <- withPossibleProfilePicture resultWithoutProfilePicture
 
