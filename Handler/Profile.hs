@@ -10,7 +10,6 @@ import Import
 import Data.Conduit.Binary (sinkLbs)
 import Data.Maybe (fromJust)
 import Data.Time.Format (FormatTime)
-import Database.Persist.Sql (Single(..))
 import Text.Blaze (ToMarkup, toMarkup)
 import qualified Data.ByteString.Base64 as B64
 import qualified Data.ByteString.Lazy as L
@@ -31,7 +30,7 @@ getProfileR = do
     euser@(Entity userId user) <- prerequisites
     tomorrow <- CT.localTomorrow user
     takenDays <- runDB $ U.takenDays tomorrow userId
-    nextFreeDay <- (maybe tomorrow unSingle) <$> runDB (U.nextFreeDay userId)
+    nextFreeDay <- runDB $ U.nextFreeDay tomorrow userId
     widget <- fst <$> (generateFormPost $ profileForm nextFreeDay takenDays tomorrow userId)
     profilesTemplate euser widget
 
@@ -40,7 +39,7 @@ postProfileR = do
     euser@(Entity userId user) <- prerequisites
     tomorrow <- CT.localTomorrow user
     takenDays <- runDB $ U.takenDays tomorrow userId
-    nextFreeDay <- (maybe tomorrow unSingle) <$> runDB (U.nextFreeDay userId)
+    nextFreeDay <- runDB $ U.nextFreeDay tomorrow userId
     (resultWithoutProfilePicture, formWidget) <- fst <$> (runFormPost $ profileForm nextFreeDay takenDays tomorrow userId)
     result <- withPossibleProfilePicture resultWithoutProfilePicture
 
