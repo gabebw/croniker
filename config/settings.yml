@@ -30,6 +30,4 @@ database:
   port:     "_env:PGPORT:5432"
   database: "_env:PGDATABASE:croniker_development"
   poolsize: "_env:PGPOOLSIZE:10"
-
-copyright: ""
 #analytics: UA-YOURCODE

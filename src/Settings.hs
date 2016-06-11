@@ -56,9 +56,6 @@ data AppSettings = AppSettings
     , appSkipCombining          :: Bool
     -- ^ Perform no stylesheet/script combining
 
-    -- Example app-specific configuration values.
-    , appCopyright              :: Text
-    -- ^ Copyright text to appear in the footer of the page
     , appAnalytics              :: Maybe Text
     -- ^ Google Analytics code
     , appDatabaseUrl            :: Bool
@@ -79,14 +76,11 @@ instance FromJSON AppSettings where
         appHost                   <- fromString <$> o .: "host"
         appPort                   <- o .: "port"
         appIpFromHeader           <- o .: "ip-from-header"
-
         appDetailedRequestLogging <- o .:? "detailed-logging" .!= defaultDev
         appShouldLogAll           <- o .:? "should-log-all"   .!= defaultDev
         appReloadTemplates        <- o .:? "reload-templates" .!= defaultDev
         appMutableStatic          <- o .:? "mutable-static"   .!= defaultDev
         appSkipCombining          <- o .:? "skip-combining"   .!= defaultDev
-
-        appCopyright              <- o .: "copyright"
         appAnalytics              <- o .:? "analytics"
         appDatabaseUrl            <- o .:? "database-url"     .!= (not defaultDev)
 
