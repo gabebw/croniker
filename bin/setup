@@ -13,8 +13,8 @@ if ! command -v docker-compose > /dev/null; then
   exit 1
 fi
 
-if ! heroku plugins | grep -Fq heroku-container-tools; then
-  heroku plugins:install heroku-container-tools
+if ! heroku plugins | grep -Fq heroku-docker; then
+  heroku plugins:install heroku-docker
 fi
 
 heroku git:remote --remote staging --app croniker-staging

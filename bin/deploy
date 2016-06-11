@@ -15,5 +15,4 @@ if [ "$(uname)" = "Darwin" ]; then
   eval "$(docker-machine env default)"
 fi
 
-heroku container:login
-heroku container:push --remote "$1"
+heroku docker:release --remote "$1"
