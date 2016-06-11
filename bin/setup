@@ -20,6 +20,7 @@ fi
 heroku git:remote --remote staging --app croniker-staging
 heroku git:remote --remote production --app croniker-production
 
+touch .env
 for variable in TWITTER_CONSUMER_KEY TWITTER_CONSUMER_SECRET GOOGLE_API_KEY; do
   if ! grep -qF "$variable" .env; then
     heroku config --shell --remote staging | grep "$variable" >> .env
