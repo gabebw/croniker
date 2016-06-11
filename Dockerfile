@@ -6,3 +6,5 @@ FROM thoughtbot/heroku-haskell-stack
 COPY .git .git
 RUN cat ".git/$(cut -d' ' -f2 .git/HEAD)" > /app/GIT_HEAD_REF
 RUN rm -rf .git
+
+CMD ./croniker
