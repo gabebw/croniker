@@ -1,0 +1,6 @@
+<div.page-settings>
+    <div.settings-form>
+        <form method=post action=@{SettingsR}#form enctype=#{enctype}>
+            ^{widget}
+            <button type="submit">
+                Submit

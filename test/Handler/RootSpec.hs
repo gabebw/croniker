@@ -27,10 +27,10 @@ spec = withApp $ do
                 loginAs user
 
                 get RootR
-                void $ followRedirect
+                void followRedirect
 
                 bodyContains "gabebw"
                 bodyContains "Defaults to the next available date"
 
 buildUser :: User
-buildUser = User "1" "gabebw" "token123" "secret123" Etc__UTC True
+buildUser = User "1" "gabebw" "token123" "secret123" Etc__UTC True True

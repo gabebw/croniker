@@ -12,6 +12,7 @@ User
     twitterOauthTokenSecret Text
     tzLabel TZLabel default='Etc/UTC'
     choseTimezone Bool default=False
+    publicRssFeed Bool default=False
     UniqueUser twitterUserId
     deriving Typeable Show
 Profile

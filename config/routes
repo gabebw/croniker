@@ -9,3 +9,5 @@
 /profiles ProfileR GET POST
 /profiles/#ProfileId/delete DeleteProfileR POST
 /user/#UserId/update UpdateUserR POST
+/user/#UserId/feed FeedR GET
+/settings SettingsR GET POST

@@ -6,8 +6,10 @@
 @import "header";
 @import "footer";
 @import "errors";
+@import "mixins/round-sliding-checkbox";
 @import "pages/login";
 @import "pages/profiles";
+@import "pages/settings";
 
 main {
   @include outer-container;

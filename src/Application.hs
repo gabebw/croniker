@@ -39,8 +39,10 @@ import qualified Data.ByteString.Char8 as BSC
 -- Don't forget to add new modules to your cabal file!
 import Handler.ChooseTimezone
 import Handler.Common
+import Handler.Feed
 import Handler.Profile
 import Handler.Root
+import Handler.Settings
 import Handler.UpdateProfilesTask (updateTodaysProfiles, updateAllProfiles)
 import Handler.UpdateUser
 

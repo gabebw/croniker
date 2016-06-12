@@ -37,8 +37,10 @@ $doctype 5
         <a href=@{ProfileR}>
             Croniker
         <ul.header__items>
-            <li.header__item>
-                $maybe (Entity _ user) <- muser
+            $maybe (Entity _ user) <- muser
+                <li.header__item>
+                    <a href=@{SettingsR}>Settings
+                <li.header__item>
                     Hi, #{userTwitterUsername user}!
 
       <main>

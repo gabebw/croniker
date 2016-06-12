@@ -24,8 +24,10 @@ library
                      Handler.ChooseTimezone
                      Handler.Common
                      Handler.DeleteProfile
+                     Handler.Feed
                      Handler.Profile
                      Handler.Root
+                     Handler.Settings
                      Handler.UpdateProfilesTask
                      Handler.UpdateUser
                      Helper.HttpExceptionHandler
@@ -119,6 +121,8 @@ library
                  , http-client
                  , lifted-base
                  , tld
+                 , yesod-newsfeed
+                 , blaze-html
 
 executable         croniker
     if flag(library-only)
@@ -158,6 +162,7 @@ test-suite test
 
     other-modules: Croniker.MonikerNormalizationSpec
                  , Croniker.UrlParserSpec
+                 , Handler.FeedSpec
                  , Handler.RootSpec
                  , TestImport
 
@@ -178,6 +183,7 @@ test-suite test
                 ViewPatterns
                 TupleSections
 
+                RankNTypes
                 NamedFieldPuns
 
     build-depends: base

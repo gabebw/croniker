@@ -12,6 +12,7 @@ import Data.Time.Zones.All (TZLabel(Etc__UTC))
 authenticateUser :: AuthId m ~ UserId => Maybe Text -> [(Text, Text)] -> DB (AuthenticationResult m)
 authenticateUser mTwitterUserId credsExtra = do
     muser <- maybe (return Nothing) (getBy . UniqueUser) mTwitterUserId
+
     case muser of
         Nothing -> createUser (credsToUser credsExtra)
         Just (Entity userId _) -> updateUser userId
@@ -41,6 +42,7 @@ credsToUser credsExtra = User
     <*> lookup "oauth_token" credsExtra
     <*> lookup "oauth_token_secret" credsExtra
     <*> pure defaultTZLabel
+    <*> pure False
     <*> pure False
 
 updateStatements :: [(Text, Text)] -> [Update User]

@@ -1,0 +1,50 @@
+@mixin round-sliding-checkbox {
+  input[type="checkbox"]{
+    display: none;
+  }
+
+  label {
+    position: relative;
+
+    &:before,
+    &:after,
+    span:before,
+    span:after {
+      content: '';
+      display: block;
+      position: absolute;
+    }
+
+    span {
+      background: $disabled-setting-color;
+      border-radius: 16px;
+      cursor: pointer;
+      display: block;
+      float: right;
+      height: 32px;
+      position: relative;
+      transition: background .2s ease-in;
+      width: 64px;
+
+      &::before {
+        background: $setting-switch-color;
+        border-radius: 50%;
+        height: 28px;
+        left: 2px;
+        top: 2px;
+        transition: left .2s ease-in;
+        width: 28px;
+      }
+    }
+  }
+
+  input:checked + label {
+    span {
+      background: $active-setting-color;
+    }
+
+    span::before {
+      left: 34px;
+    }
+  }
+}

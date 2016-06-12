@@ -23,6 +23,12 @@ runDB query = do
 runDBWithApp :: App -> SqlPersistM a -> IO a
 runDBWithApp app query = runSqlPersistMPool query (appConnPool app)
 
+runInsert :: forall a. (PersistEntity a, PersistEntityBackend a ~ SqlBackend) => a -> YesodExample App (Key a)
+runInsert = runDB . insert
+
+runInsert_ :: forall a. (PersistEntity a, PersistEntityBackend a ~ SqlBackend) => a -> YesodExample App ()
+runInsert_ = void . runInsert
+
 withApp :: SpecWith (TestApp App) -> Spec
 withApp = before $ do
     loadEnvFrom ".env.test"

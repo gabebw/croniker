@@ -27,12 +27,16 @@ $medium-gray: #999;
 $light-gray: #ddd;
 $white: white;
 $top-bar-color: $accent-color;
-$green: #00a0b0;
+$teal: #00a0b0;
 $red: #ed5446;
+$green: #2ecc71;
+$active-setting-color: $green;
+$disabled-setting-color: $red;
+$setting-switch-color: $light-gray;
 
 // Font Colors
 $base-font-color: $dark-gray;
-$action-color: $green;
+$action-color: $teal;
 
 // Border
 $base-border-color: $light-gray;

@@ -174,6 +174,9 @@ button, input[type="button"], input[type="reset"], input[type="submit"], .button
     button:disabled:hover, input[type="button"]:disabled:hover, input[type="reset"]:disabled:hover, input[type="submit"]:disabled:hover, .button:disabled:hover {
       background-color: #00a0b0; }
 
+[type="submit"] {
+  margin-top: 1.5em; }
+
 fieldset {
   background-color: transparent;
   border: 0;
@@ -249,6 +252,10 @@ select {
   color: #999;
   display: inline;
   margin-left: 0.75em; }
+
+.block-tooltip {
+  color: #999;
+  display: block; }
 
 ul,
 ol {
@@ -486,6 +493,49 @@ form .errors {
   margin-right: 0; }
   .page-profiles .updated-fields-without-picture:last-child {
     margin-right: 0; }
+
+.settings-form {
+  margin-left: 17.05961%;
+  float: left;
+  display: block;
+  margin-right: 2.35765%;
+  width: 31.76157%;
+  margin-top: 1.5em; }
+  .settings-form:last-child {
+    margin-right: 0; }
+
+.settings-field input[type="checkbox"] {
+  display: none; }
+.settings-field label {
+  position: relative; }
+  .settings-field label:before, .settings-field label:after,
+  .settings-field label span:before,
+  .settings-field label span:after {
+    content: '';
+    display: block;
+    position: absolute; }
+  .settings-field label span {
+    background: #ed5446;
+    border-radius: 16px;
+    cursor: pointer;
+    display: block;
+    float: right;
+    height: 32px;
+    position: relative;
+    transition: background .2s ease-in;
+    width: 64px; }
+    .settings-field label span::before {
+      background: #ddd;
+      border-radius: 50%;
+      height: 28px;
+      left: 2px;
+      top: 2px;
+      transition: left .2s ease-in;
+      width: 28px; }
+.settings-field input:checked + label span {
+  background: #2ecc71; }
+.settings-field input:checked + label span::before {
+  left: 34px; }
 
 main {
   max-width: 68em;

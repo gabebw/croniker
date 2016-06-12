@@ -1,0 +1,9 @@
+.settings-form {
+  @include shift(2);
+  @include span-columns(4);
+  margin-top: $base-spacing;
+}
+
+.settings-field {
+  @include round-sliding-checkbox;
+}
