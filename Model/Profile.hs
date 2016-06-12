@@ -22,8 +22,8 @@ data FormProfile = FormProfile
 
 addProfile :: FormProfile -> Handler ()
 addProfile (FormProfile name date userId picture sent) = do
-    b64Picture <- base64Bytes picture
-    void $ runDB $ insert $ Profile name date userId b64Picture sent
+    base64Picture <- base64Bytes picture
+    void $ runDB $ insert $ Profile name date userId base64Picture sent
 
 -- If a picture was uploaded, base64-encode it.
 base64Bytes :: Maybe FileInfo -> Handler (Maybe Text)
