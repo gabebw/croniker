@@ -85,7 +85,6 @@ profileForm nextFreeDay takenDays tomorrow userId = renderDivs $ P.FormProfile
             (Just nextFreeDay)
     <*> pure userId
     <*> aopt fileField (fs "Profile picture (optional)" []) Nothing
-    <*> pure False
 
 fs :: Text -> [(Text, Text)] -> FieldSettings site
 fs label attrs = FieldSettings

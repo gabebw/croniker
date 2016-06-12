@@ -17,13 +17,12 @@ data FormProfile = FormProfile
     , profileDate :: Day
     , profileUserId :: UserId
     , profilePicture :: Maybe FileInfo
-    , profileSent :: Bool
     }
 
 addProfile :: FormProfile -> Handler ()
-addProfile (FormProfile name date userId picture sent) = do
+addProfile (FormProfile name date userId picture) = do
     base64Picture <- base64Bytes picture
-    void $ runDB $ insert $ Profile name date userId base64Picture sent
+    void $ runDB $ insert $ Profile name date userId base64Picture False
 
 -- If a picture was uploaded, base64-encode it.
 base64Bytes :: Maybe FileInfo -> Handler (Maybe Text)
