@@ -38,6 +38,12 @@ spec = describe "Croniker.UrlParser" $ do
         it "returns false for strings with nothing that looks like a URL" $ do
             containsUrl "hello" `shouldBe` False
 
+        it "returns false for strings that have only a TLD" $ do
+            containsUrl "com" `shouldBe` False
+
+        it "returns false for strings that have only a dot-TLD" $ do
+            containsUrl ".com" `shouldBe` False
+
         it "returns false for strings that contain a file extension" $ do
             containsUrl "hello.tar.gz" `shouldBe` False
 

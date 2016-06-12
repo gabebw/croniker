@@ -12,7 +12,7 @@ containsUrl :: T.Text -> Bool
 containsUrl = any isUrl . T.words
 
 isUrl :: T.Text -> Bool
-isUrl = isJust . parseTLDText . withHTTP
+isUrl url = "." `T.isInfixOf` url && (isJust $ parseTLDText $ withHTTP url)
 
 withHTTP :: T.Text -> T.Text
 withHTTP t
