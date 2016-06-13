@@ -1,0 +1,17 @@
+web:
+  # image: gabebw/croniker:latest
+  build: .
+  command: ./croniker
+  working_dir: /app/user
+  environment:
+    # Set by the postgres:9.4 image
+    PGDATABASE: postgres
+    PGHOST: herokuPostgresql
+    PGUSER: postgres
+  ports:
+    - 3000
+  links:
+    - herokuPostgresql
+  stdin_open: true
+herokuPostgresql:
+  image: postgres:9.4
