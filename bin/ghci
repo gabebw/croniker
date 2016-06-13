@@ -1,0 +1,3 @@
+#!/bin/sh
+
+stack ghci --main-is croniker:exe:croniker

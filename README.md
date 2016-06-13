@@ -37,6 +37,10 @@ they've been sent:
 
     stack test
 
+## Running ghci
+
+    ./bin/ghci
+
 ## Adding a new executable
 
 If you add a new `executable` in `croniker.cabal`, run `stack build` so that you
