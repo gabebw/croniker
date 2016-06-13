@@ -1,4 +1,4 @@
-FROM thoughtbot/heroku-haskell-stack
+FROM thoughtbot/heroku-haskell-stack:lts-6.3
 
 # Add a /app/GIT_HEAD_REF file with the git commit SHA that is currently
 # deployed.
