@@ -27,7 +27,7 @@ getProfileR = do
     tomorrow <- CT.localTomorrow user
     takenDays <- runDB $ U.takenDays tomorrow userId
     nextFreeDay <- runDB $ U.nextFreeDay tomorrow takenDays
-    widget <- fst <$> (generateFormPost $ profileForm nextFreeDay takenDays tomorrow userId)
+    widget <- fst <$> (generateFormPost $ profileForm nextFreeDay takenDays tomorrow)
     profilesTemplate euser widget
 
 postProfileR :: Handler Html
@@ -36,11 +36,11 @@ postProfileR = do
     tomorrow <- CT.localTomorrow user
     takenDays <- runDB $ U.takenDays tomorrow userId
     nextFreeDay <- runDB $ U.nextFreeDay tomorrow takenDays
-    (result, formWidget) <- fst <$> (runFormPost $ profileForm nextFreeDay takenDays tomorrow userId)
+    (result, formWidget) <- fst <$> (runFormPost $ profileForm nextFreeDay takenDays tomorrow)
 
     case result of
         FormSuccess formProfile  -> do
-            P.addProfile formProfile
+            P.addProfile userId formProfile
             setMessage "Profile created"
             redirect ProfileR
         _ -> do
@@ -76,14 +76,13 @@ requireOwnedProfile profileId = do
     userId <- requireAuthId
     void $ fromMaybe404 $ runDB $ P.findProfileFor userId profileId
 
-profileForm :: Day -> [Day] -> Day -> UserId -> Form P.FormProfile
-profileForm nextFreeDay takenDays tomorrow userId = renderDivs $ P.FormProfile
+profileForm :: Day -> [Day] -> Day -> Form P.FormProfile
+profileForm nextFreeDay takenDays tomorrow = renderDivs $ P.FormProfile
     <$> fmap CMN.normalize (areq nameField (fs "New moniker" [("maxlength", "20"), ("autofocus", "autofocus")]) Nothing)
     <*> areq
             (dateField takenDays tomorrow)
             ((fs "Date" []) { fsTooltip = Just "Defaults to the next available date" })
             (Just nextFreeDay)
-    <*> pure userId
     <*> aopt fileField (fs "Profile picture (optional)" []) Nothing
 
 fs :: Text -> [(Text, Text)] -> FieldSettings site

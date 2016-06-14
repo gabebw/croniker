@@ -15,12 +15,11 @@ import Helper.TextConversion (base64Encode)
 data FormProfile = FormProfile
     { profileName :: Text
     , profileDate :: Day
-    , profileUserId :: UserId
     , profilePicture :: Maybe FileInfo
     }
 
-addProfile :: FormProfile -> Handler ()
-addProfile (FormProfile name date userId picture) = do
+addProfile :: UserId -> FormProfile -> Handler ()
+addProfile userId (FormProfile name date picture) = do
     base64Picture <- base64Bytes picture
     void $ runDB $ insert $ Profile name date userId base64Picture False
 
