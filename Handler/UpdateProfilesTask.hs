@@ -12,7 +12,7 @@ import Croniker.Types (OauthCredentials(OauthCredentials), OauthReader, runOauth
 
 import Model.Profile (allProfilesForUpdate)
 import qualified Croniker.Time as CT
-import TwitterClient (updateTwitterName, updateTwitterPicture)
+import TwitterClient (updateTwitterMoniker, updateTwitterPicture)
 import Helper.HttpExceptionHandler (handleHttpException)
 import Helper.TextConversion
 
@@ -32,14 +32,14 @@ updateWithErrorHandling profile = EL.try (updateProfile profile)
     >>= handleHttpException
 
 updateProfile :: Entity Profile -> Handler ()
-updateProfile (Entity profileId (Profile{profileName, profileUserId, profilePicture})) = do
+updateProfile (Entity profileId (Profile{profileMoniker, profileUserId, profilePicture})) = do
     muser <- runDB $ get profileUserId
     case muser of
         Nothing -> return ()
         (Just user) -> do
             let username = userTwitterUsername user
             let computation = do
-                updateName profileName >>= logger username
+                updateMoniker profileMoniker >>= logger username
                 forM_ profilePicture $ \picture ->
                     updatePicture picture >>= logger username
             runOauthReader computation =<< oauthCredentials user
@@ -59,10 +59,10 @@ oauthCredentials user = do
 logger :: MonadIO m => Text -> Text -> m ()
 logger username t = putStrLn $ "[" <> username <> "] " <> t
 
-updateName :: Text -> OauthReader Text
-updateName profileName = do
-    updateTwitterName profileName
-    return $ "Updating name to " <> profileName
+updateMoniker :: Text -> OauthReader Text
+updateMoniker profileMoniker = do
+    updateTwitterMoniker profileMoniker
+    return $ "Updating name to " <> profileMoniker
 
 updatePicture :: Text -> OauthReader Text
 updatePicture profilePicture = do

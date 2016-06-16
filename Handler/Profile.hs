@@ -80,7 +80,7 @@ profileForm :: Day -> [Day] -> Day -> Form P.FormProfile
 profileForm nextFreeDay takenDays tomorrow = renderDivs $ P.FormProfile
     <$> fmap CMN.normalize
             (areq
-                nameField
+                monikerField
                 (fs "New moniker" [("maxlength", "20"), ("autofocus", "autofocus")])
                 Nothing)
     <*> areq
@@ -101,34 +101,34 @@ fs label attrs = FieldSettings
 prettyTime :: (FormatTime t) => t -> String
 prettyTime = formatTime defaultTimeLocale "%B %d, %Y"
 
-nameField :: Field Handler Text
-nameField = foldr check textField [
-                doesNotContainUrl,
-                doesNotContainTwitter,
-                validWhitespace . CMN.normalize,
-                validLength . CMN.normalize
-            ]
+monikerField :: Field Handler Text
+monikerField = foldr check textField [
+                   doesNotContainUrl,
+                   doesNotContainTwitter,
+                   validWhitespace . CMN.normalize,
+                   validLength . CMN.normalize
+               ]
 
 doesNotContainTwitter :: Text -> Either Text Text
-doesNotContainTwitter name
-    | "twitter" `isInfixOf` toLower name = Left "Twitter doesn't allow monikers that contain \"Twitter\""
-    | otherwise = Right name
+doesNotContainTwitter moniker
+    | "twitter" `isInfixOf` toLower moniker = Left "Twitter doesn't allow monikers that contain \"Twitter\""
+    | otherwise = Right moniker
 
 doesNotContainUrl :: Text -> Either Text Text
-doesNotContainUrl name
-    | CUP.containsUrl name = Left "Twitter doesn't allow URLs in monikers"
-    | otherwise = Right name
+doesNotContainUrl moniker
+    | CUP.containsUrl moniker = Left "Twitter doesn't allow URLs in monikers"
+    | otherwise = Right moniker
 
 validLength :: Text -> Either Text Text
-validLength name
-    | length name == 0 = Left "Usernames cannot be blank"
-    | length name > 20 = Left "Twitter doesn't allow profiles longer than 20 characters"
-    | otherwise = Right name
+validLength moniker
+    | length moniker == 0 = Left "Monikers cannot be blank"
+    | length moniker > 20 = Left "Twitter doesn't allow monikers longer than 20 characters"
+    | otherwise = Right moniker
 
 validWhitespace :: Text -> Either Text Text
-validWhitespace name
-    | any (`isInfixOf` name) ["\n", "\t"] = Left "Usernames cannot contain special whitespace characters"
-    | otherwise = Right name
+validWhitespace moniker
+    | any (`isInfixOf` moniker) ["\n", "\t"] = Left "Moniker cannot contain special whitespace characters"
+    | otherwise = Right moniker
 
 dateField :: [Day] -> Day -> Field Handler Day
 dateField takenDays tomorrow = check (nothingScheduled takenDays) $ check (futureDate tomorrow) dayField

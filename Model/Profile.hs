@@ -13,15 +13,15 @@ import Data.Conduit.Binary (sinkLbs)
 import Helper.TextConversion (base64Encode)
 
 data FormProfile = FormProfile
-    { profileName :: Text
+    { profileMoniker :: Text
     , profileDate :: Day
     , profilePicture :: Maybe FileInfo
     }
 
 addProfile :: UserId -> FormProfile -> Handler ()
-addProfile userId (FormProfile name date picture) = do
+addProfile userId (FormProfile moniker date picture) = do
     base64Picture <- base64Bytes picture
-    void $ runDB $ insert $ Profile name date userId base64Picture False
+    void $ runDB $ insert $ Profile moniker date userId base64Picture False
 
 -- If a picture was uploaded, base64-encode it.
 base64Bytes :: Maybe FileInfo -> Handler (Maybe Text)
