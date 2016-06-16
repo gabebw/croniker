@@ -78,10 +78,12 @@ profilesTemplate euser profileWidget = do
         $(widgetFile "profiles")
 
 textFieldsTemplate :: Profile -> Widget
-textFieldsTemplate Profile{profileMoniker} = [whamlet|
+textFieldsTemplate Profile{profileMoniker, profileDescription} = [whamlet|
         $maybe name <- profileMoniker
             <p>
                 <strong>#{name}
+        $maybe description <- profileDescription
+            <p>Bio: #{description}
     |]
 
 prettyTime :: (FormatTime t) => t -> String

@@ -1,6 +1,7 @@
 module TwitterClient
     ( updateTwitterMoniker
     , updateTwitterPicture
+    , updateTwitterDescription
     ) where
 
 import Import
@@ -10,13 +11,18 @@ import Network.Wreq (FormParam((:=)), auth, defaults, postWith, param)
 
 import Croniker.Types (OauthReader)
 
--- https://dev.twitter.com/rest/reference/post/account/update_profile
 updateTwitterMoniker :: Text -> OauthReader ()
-updateTwitterMoniker newMoniker = do
+updateTwitterMoniker = updateProfile "name"
+
+updateTwitterDescription :: Text -> OauthReader ()
+updateTwitterDescription = updateProfile "description"
+
+-- https://dev.twitter.com/rest/reference/post/account/update_profile
+updateProfile :: Text -> Text -> OauthReader ()
+updateProfile name value = do
     oauth <- ask
     let url = "https://api.twitter.com/1.1/account/update_profile.json"
-    let opts = defaults & param "name" .~ [newMoniker] & auth ?~ oauth
-    -- Null because we don't send anything in the post body
+    let opts = defaults & param name .~ [value] & auth ?~ oauth
     void $ liftIO $ postWith opts url Null
 
 -- https://dev.twitter.com/rest/reference/post/account/update_profile_image

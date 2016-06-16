@@ -11,7 +11,7 @@
         $else
             <ul>
                 <div.banner>All changes will happen at 1am in your time zone on the scheduled day.
-                $forall (Entity profileId p@(Profile _ date _ mpicture sent)) <- allProfiles
+                $forall (Entity profileId p@(Profile _ date _ mpicture _ sent)) <- allProfiles
                     <li.profile>
                         $maybe b64data <- mpicture
                             <div.profile-picture>

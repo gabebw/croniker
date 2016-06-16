@@ -19,6 +19,7 @@ Profile
     date Day
     userId UserId
     picture Text Maybe
+    description Text Maybe
     sent Bool default=False
     UniqueUserDate userId date
     deriving Show
