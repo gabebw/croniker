@@ -14,6 +14,9 @@ import TwitterClient (updateTwitterDescription, updateTwitterMoniker, updateTwit
 import Helper.HttpExceptionHandler (handleHttpException)
 import Helper.TextConversion
 
+type Logger = Text -> OauthReader ()
+type Updater = Text -> OauthReader Text
+
 updateTodaysProfiles :: Handler ()
 updateTodaysProfiles = do
     profiles <- runDB allProfilesForUpdate
@@ -35,16 +38,16 @@ updateProfile (Entity profileId Profile{profileDescription, profileMoniker, prof
     case muser of
         Nothing -> return ()
         (Just user) -> do
-            let username = userTwitterUsername user
-            let computation = do
-                forM_ profileMoniker $ \moniker ->
-                    updateMoniker moniker >>= logger username
-                forM_ profileDescription $ \description ->
-                    updateDescription description >>= logger username
-                forM_ profilePicture $ \picture ->
-                    updatePicture picture >>= logger username
+            let l = logger $ userTwitterUsername user
+            let pairs = [ (profileMoniker, updateMoniker)
+                        , (profileDescription, updateDescription)
+                        , (profilePicture, updatePicture) ]
+            let computation = mapM_ (updateAndLog l) pairs
             runOauthReader computation =<< oauthCredentials user
             runDB $ update profileId [ProfileSent =. True]
+
+updateAndLog :: Logger -> (Maybe Text, Updater) -> OauthReader ()
+updateAndLog l (mvalue, f) = forM_ mvalue $ \value -> f value >>= l
 
 oauthCredentials :: User -> Handler OauthCredentials
 oauthCredentials user = do
@@ -57,20 +60,20 @@ oauthCredentials user = do
         accessKey
         accessSecret
 
-logger :: MonadIO m => Text -> Text -> m ()
+logger :: Text -> Logger
 logger username t = putStrLn $ "[" <> username <> "] " <> t
 
-updateMoniker :: Text -> OauthReader Text
+updateMoniker :: Updater
 updateMoniker profileMoniker = do
     updateTwitterMoniker profileMoniker
     return $ "Updating moniker to " <> profileMoniker
 
-updateDescription :: Text -> OauthReader Text
+updateDescription :: Updater
 updateDescription profileDescription = do
     updateTwitterDescription profileDescription
     return $ "Updating description to " <> profileDescription
 
-updatePicture :: Text -> OauthReader Text
+updatePicture :: Updater
 updatePicture profilePicture = do
     updateTwitterPicture profilePicture
     return "Updating picture"
