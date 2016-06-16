@@ -41,7 +41,7 @@ updateProfile (Entity profileId (Profile{profileName, profileUserId, profilePict
             let computation = do
                 updateName profileName >>= logger username
                 forM_ profilePicture $ \picture ->
-                    logger username =<< updatePicture picture
+                    updatePicture picture >>= logger username
             runOauthReader computation =<< oauthCredentials user
             runDB $ update profileId [ProfileSent =. True]
 
