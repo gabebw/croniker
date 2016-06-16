@@ -11,7 +11,7 @@ import Data.Maybe (fromJust)
 import Data.Time.Format (FormatTime)
 import Text.Blaze (ToMarkup, toMarkup)
 
-import Helper.Request (fromMaybe404)
+import Helper.Request (requireOwnedProfile)
 import qualified Croniker.MonikerNormalization as CMN
 import qualified Croniker.Time as CT
 import qualified Croniker.UrlParser as CUP
@@ -70,11 +70,6 @@ profilesTemplate (Entity userId _) profileWidget = do
     defaultLayout $ do
         setTitle "Croniker"
         $(widgetFile "profiles")
-
-requireOwnedProfile :: ProfileId -> Handler ()
-requireOwnedProfile profileId = do
-    userId <- requireAuthId
-    void $ fromMaybe404 $ runDB $ P.findProfileFor userId profileId
 
 profileForm :: Day -> [Day] -> Day -> Form P.FormProfile
 profileForm nextFreeDay takenDays tomorrow = renderDivs $ P.FormProfile
