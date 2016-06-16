@@ -19,6 +19,7 @@ library
                      Croniker.Types
                      Croniker.UrlParser
                      Data.TZLabel
+                     Form.Profile
                      Foundation
                      Handler.ChooseTimezone
                      Handler.Common
