@@ -62,7 +62,7 @@ logger username t = putStrLn $ "[" <> username <> "] " <> t
 updateMoniker :: Text -> OauthReader Text
 updateMoniker profileMoniker = do
     updateTwitterMoniker profileMoniker
-    return $ "Updating name to " <> profileMoniker
+    return $ "Updating moniker to " <> profileMoniker
 
 updatePicture :: Text -> OauthReader Text
 updatePicture profilePicture = do
