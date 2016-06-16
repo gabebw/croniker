@@ -78,7 +78,11 @@ requireOwnedProfile profileId = do
 
 profileForm :: Day -> [Day] -> Day -> Form P.FormProfile
 profileForm nextFreeDay takenDays tomorrow = renderDivs $ P.FormProfile
-    <$> fmap CMN.normalize (areq nameField (fs "New moniker" [("maxlength", "20"), ("autofocus", "autofocus")]) Nothing)
+    <$> fmap CMN.normalize
+            (areq
+                nameField
+                (fs "New moniker" [("maxlength", "20"), ("autofocus", "autofocus")])
+                Nothing)
     <*> areq
             (dateField takenDays tomorrow)
             ((fs "Date" []) { fsTooltip = Just "Defaults to the next available date" })
