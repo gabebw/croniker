@@ -15,7 +15,7 @@ User
     UniqueUser twitterUserId
     deriving Typeable Show
 Profile
-    moniker Text
+    moniker Text Maybe
     date Day
     userId UserId
     picture Text Maybe

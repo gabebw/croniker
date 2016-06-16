@@ -11,12 +11,13 @@
         $else
             <ul>
                 <div.banner>All changes will happen at 1am on the scheduled day.
-                $forall (Entity profileId (Profile name date _ picture sent)) <- allProfiles
+                $forall (Entity profileId (Profile mname date _ mpicture sent)) <- allProfiles
                     <li.profile>
-                        $maybe b64data <- picture
+                        $maybe b64data <- mpicture
                             <div.profile-picture>
                                 <img src="data:;base64,#{b64data}">
-                        <strong>#{name}
+                        $maybe name <- mname
+                            <strong>#{name}
                         <div>#{prettyTime date}
                         $if sent
                             <div>Successfully sent to Twitter

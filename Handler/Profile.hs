@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Handler.Profile
@@ -39,10 +40,15 @@ postProfileR = do
     (result, formWidget) <- fst <$> (runFormPost $ profileForm nextFreeDay takenDays tomorrow)
 
     case result of
-        FormSuccess formProfile  -> do
-            P.addProfile userId formProfile
-            setMessage "Profile created"
-            redirect ProfileR
+        FormSuccess formProfile@P.FormProfile{profileMoniker, profilePicture} -> do
+            if isJust profileMoniker || isJust profilePicture
+               then do
+                   P.addProfile userId formProfile
+                   setMessage "Profile created"
+                   redirect ProfileR
+                else do
+                   setMessage "Please set a moniker or a picture"
+                   profilesTemplate euser formWidget
         _ -> do
             setMessage "Oops, something went wrong"
             profilesTemplate euser formWidget

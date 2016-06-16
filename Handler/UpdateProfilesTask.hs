@@ -39,7 +39,8 @@ updateProfile (Entity profileId (Profile{profileMoniker, profileUserId, profileP
         (Just user) -> do
             let username = userTwitterUsername user
             let computation = do
-                updateMoniker profileMoniker >>= logger username
+                forM_ profileMoniker $ \moniker ->
+                    updateMoniker moniker >>= logger username
                 forM_ profilePicture $ \picture ->
                     updatePicture picture >>= logger username
             runOauthReader computation =<< oauthCredentials user

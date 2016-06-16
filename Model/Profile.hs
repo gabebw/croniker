@@ -13,7 +13,7 @@ import Data.Conduit.Binary (sinkLbs)
 import Helper.TextConversion (base64Encode)
 
 data FormProfile = FormProfile
-    { profileMoniker :: Text
+    { profileMoniker :: Maybe Text
     , profileDate :: Day
     , profilePicture :: Maybe FileInfo
     }

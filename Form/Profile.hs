@@ -10,8 +10,8 @@ import qualified Model.Profile as P
 
 profileForm :: Day -> [Day] -> Day -> Form P.FormProfile
 profileForm nextFreeDay takenDays tomorrow = renderDivs $ P.FormProfile
-    <$> fmap CMN.normalize
-            (areq
+    <$> fmap normalizeMaybe
+            (aopt
                 monikerField
                 (fs "New moniker" [("maxlength", "20"), ("autofocus", "autofocus")])
                 Nothing)
@@ -20,6 +20,8 @@ profileForm nextFreeDay takenDays tomorrow = renderDivs $ P.FormProfile
             ("Date" { fsTooltip = Just "Defaults to the next available date" })
             (Just nextFreeDay)
     <*> aopt fileField "Profile picture (optional)" Nothing
+    where
+        normalizeMaybe = fmap CMN.normalize
 
 fs :: Text -> [(Text, Text)] -> FieldSettings site
 fs label attrs = FieldSettings
