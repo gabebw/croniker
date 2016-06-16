@@ -85,9 +85,9 @@ profileForm nextFreeDay takenDays tomorrow = renderDivs $ P.FormProfile
                 Nothing)
     <*> areq
             (dateField takenDays tomorrow)
-            ((fs "Date" []) { fsTooltip = Just "Defaults to the next available date" })
+            ("Date" { fsTooltip = Just "Defaults to the next available date" })
             (Just nextFreeDay)
-    <*> aopt fileField (fs "Profile picture (optional)" []) Nothing
+    <*> aopt fileField "Profile picture (optional)" Nothing
 
 fs :: Text -> [(Text, Text)] -> FieldSettings site
 fs label attrs = FieldSettings
