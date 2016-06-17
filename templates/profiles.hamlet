@@ -10,7 +10,7 @@
             <h2>You don't have any scheduled changes to your Twitter profile
         $else
             <ul>
-                <div.banner>All changes will happen at 1am on the scheduled day.
+                <div.banner>All changes will happen at 1am in your time zone on the scheduled day.
                 $forall (Entity profileId (Profile mname date _ mpicture sent)) <- allProfiles
                     <li.profile>
                         $maybe b64data <- mpicture
