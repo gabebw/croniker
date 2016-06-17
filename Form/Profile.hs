@@ -15,10 +15,10 @@ profileForm nextFreeDay takenDays tomorrow = renderDivs $ FormProfile
                 monikerField
                 (fs "New moniker" [("maxlength", "20"), ("autofocus", "autofocus")])
                 Nothing)
-    <*> (aopt
+    <*> aopt
             textField
             (fs "Description" [("maxlength", "160")])
-            Nothing)
+            Nothing
     <*> aopt fileField "Profile picture" Nothing
     <*> areq
             (dateField takenDays tomorrow)

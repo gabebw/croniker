@@ -82,7 +82,7 @@ instance FromJSON AppSettings where
         appMutableStatic          <- o .:? "mutable-static"   .!= defaultDev
         appSkipCombining          <- o .:? "skip-combining"   .!= defaultDev
         appAnalytics              <- o .:? "analytics"
-        appDatabaseUrl            <- o .:? "database-url"     .!= (not defaultDev)
+        appDatabaseUrl            <- o .:? "database-url"     .!= not defaultDev
 
         return AppSettings {..}
 

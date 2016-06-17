@@ -6,7 +6,7 @@ import Import
 
 import Network.HTTP.Client ()
 
-handleHttpException :: (Either HttpException ()) -> Handler ()
+handleHttpException :: Either HttpException () -> Handler ()
 handleHttpException (Left e) = printHttpException e
 handleHttpException _ = return ()
 

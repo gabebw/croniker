@@ -30,7 +30,7 @@ updateWithErrorHandling profile = EL.try (updateProfile profile)
     >>= handleHttpException
 
 updateProfile :: Entity Profile -> Handler ()
-updateProfile (Entity profileId (Profile{profileDescription, profileMoniker, profileUserId, profilePicture})) = do
+updateProfile (Entity profileId Profile{profileDescription, profileMoniker, profileUserId, profilePicture}) = do
     muser <- runDB $ get profileUserId
     case muser of
         Nothing -> return ()
@@ -76,7 +76,7 @@ updatePicture profilePicture = do
     return "Updating picture"
 
 isTime :: Entity Profile -> Handler Bool
-isTime (Entity _ (Profile{profileDate, profileUserId})) = do
+isTime (Entity _ Profile{profileDate, profileUserId}) = do
     muser <- runDB $ get profileUserId
     case muser of
       Nothing -> return False
