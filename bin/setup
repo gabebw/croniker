@@ -8,13 +8,8 @@ if ! psql -l | cut -d'|' -f1 | grep -qF croniker_development; then
   createdb croniker_development
 fi
 
-if ! command -v docker-compose > /dev/null; then
-  echo "Install docker-compose"
-  exit 1
-fi
-
-if ! heroku plugins | grep -Fq heroku-docker; then
-  heroku plugins:install heroku-docker
+if ! heroku plugins | grep -Fq heroku-container-tools; then
+  heroku plugins:install heroku-container-tools
 fi
 
 heroku git:remote --remote staging --app croniker-staging
