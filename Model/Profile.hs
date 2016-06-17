@@ -1,5 +1,5 @@
 module Model.Profile
-    ( futureProfilesFor
+    ( todayAndFutureProfilesFor
     , allProfilesForUpdate
     , findProfileFor
     , addProfile
@@ -33,9 +33,9 @@ base64Bytes (Just fi) = do
 findProfileFor :: UserId -> ProfileId -> DB (Maybe (Entity Profile))
 findProfileFor userId profileId = selectFirst [ProfileUserId ==. userId, ProfileId ==. profileId] []
 
-futureProfilesFor :: UserId -> DB [Entity Profile]
-futureProfilesFor userId = do
-    day <- today
+todayAndFutureProfilesFor :: Entity User -> DB [Entity Profile]
+todayAndFutureProfilesFor (Entity userId user) = do
+    day <- localToday user
     selectList [ProfileUserId ==. userId, ProfileDate >=. day] [Asc ProfileDate]
 
 -- Due to time zones, we need to find profiles from yesterday/today/tomorrow (in

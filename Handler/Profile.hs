@@ -70,9 +70,9 @@ requireSetTimezone :: User -> Handler ()
 requireSetTimezone user = unless (userChoseTimezone user) (redirect ChooseTimezoneR)
 
 profilesTemplate :: (ToWidget App w) => Entity User -> w -> Handler Html
-profilesTemplate (Entity userId _) profileWidget = do
+profilesTemplate euser profileWidget = do
     csrfToken <- fromJust . reqToken <$> getRequest
-    allProfiles <- runDB $ P.futureProfilesFor userId
+    allProfiles <- runDB $ P.todayAndFutureProfilesFor e
     defaultLayout $ do
         setTitle "Croniker"
         $(widgetFile "profiles")
