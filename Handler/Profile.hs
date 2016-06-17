@@ -1,4 +1,3 @@
-{-# LANGUAGE NamedFieldPuns #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Handler.Profile
