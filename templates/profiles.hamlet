@@ -16,10 +16,10 @@
                         $maybe b64data <- mpicture
                             <div.profile-picture>
                                 <img src="data:;base64,#{b64data}">
-                            <div.updated-fields>
+                            <div.updated-fields-with-picture>
                                 ^{textFieldsTemplate p}
                         $nothing
-                            <div.updated-fields-full>
+                            <div.updated-fields-without-picture>
                                 ^{textFieldsTemplate p}
                         $if sent
                             <p>Successfully sent to Twitter
