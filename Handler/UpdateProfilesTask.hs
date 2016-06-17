@@ -1,5 +1,3 @@
-{-# LANGUAGE NamedFieldPuns #-}
-
 module Handler.UpdateProfilesTask
     ( updateTodaysProfiles
     , updateAllProfiles

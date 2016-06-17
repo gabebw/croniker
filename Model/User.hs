@@ -1,5 +1,3 @@
-{-# LANGUAGE NamedFieldPuns #-}
-
 module Model.User
     ( authenticateUser
     , nextFreeDay

@@ -1,5 +1,3 @@
-{-# LANGUAGE NamedFieldPuns #-}
-
 module Croniker.Types
     ( OauthCredentials(OauthCredentials)
     , OauthReader
