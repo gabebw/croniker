@@ -17,6 +17,7 @@ import Form.Profile (profileForm)
 import Helper.Request (requireOwnedProfile)
 import qualified Croniker.Time as CT
 import qualified Model.Profile as P
+import qualified Model.FormProfile as FP
 import qualified Model.User as U
 
 instance ToMarkup Day where
@@ -40,10 +41,10 @@ postProfileR = do
     (result, formWidget) <- fst <$> (runFormPost $ profileForm nextFreeDay takenDays tomorrow)
 
     case result of
-        FormSuccess formProfile@P.FormProfile{profileMoniker, profilePicture} -> do
-            if isJust profileMoniker || isJust profilePicture
+        FormSuccess formProfile -> do
+            if FP.valuesArePresent formProfile
                then do
-                   P.addProfile userId formProfile
+                   FP.addProfile userId formProfile
                    setMessage "Profile created"
                    redirect ProfileR
                 else do
@@ -72,7 +73,7 @@ requireSetTimezone user = unless (userChoseTimezone user) (redirect ChooseTimezo
 profilesTemplate :: (ToWidget App w) => Entity User -> w -> Handler Html
 profilesTemplate euser profileWidget = do
     csrfToken <- fromJust . reqToken <$> getRequest
-    allProfiles <- runDB $ P.todayAndFutureProfilesFor e
+    allProfiles <- runDB $ P.todayAndFutureProfilesFor euser
     defaultLayout $ do
         setTitle "Croniker"
         $(widgetFile "profiles")

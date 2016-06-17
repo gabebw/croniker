@@ -2,33 +2,11 @@ module Model.Profile
     ( todayAndFutureProfilesFor
     , allProfilesForUpdate
     , findProfileFor
-    , addProfile
-    , FormProfile(..)
     ) where
 
 import Import
 
 import Croniker.Time
-import Data.Conduit.Binary (sinkLbs)
-import Helper.TextConversion (base64Encode)
-
-data FormProfile = FormProfile
-    { profileMoniker :: Maybe Text
-    , profileDate :: Day
-    , profilePicture :: Maybe FileInfo
-    }
-
-addProfile :: UserId -> FormProfile -> Handler ()
-addProfile userId (FormProfile moniker date picture) = do
-    base64Picture <- base64Bytes picture
-    void $ runDB $ insert $ Profile moniker date userId base64Picture False
-
--- If a picture was uploaded, base64-encode it.
-base64Bytes :: Maybe FileInfo -> Handler (Maybe Text)
-base64Bytes Nothing = return Nothing
-base64Bytes (Just fi) = do
-    fileBytes <- runResourceT $ fileSource fi $$ sinkLbs
-    return $ Just $ base64Encode fileBytes
 
 findProfileFor :: UserId -> ProfileId -> DB (Maybe (Entity Profile))
 findProfileFor userId profileId = selectFirst [ProfileUserId ==. userId, ProfileId ==. profileId] []

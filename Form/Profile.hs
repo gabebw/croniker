@@ -6,10 +6,10 @@ import Import
 
 import qualified Croniker.MonikerNormalization as CMN
 import qualified Croniker.UrlParser as CUP
-import qualified Model.Profile as P
+import Model.FormProfile (FormProfile(..))
 
-profileForm :: Day -> [Day] -> Day -> Form P.FormProfile
-profileForm nextFreeDay takenDays tomorrow = renderDivs $ P.FormProfile
+profileForm :: Day -> [Day] -> Day -> Form FormProfile
+profileForm nextFreeDay takenDays tomorrow = renderDivs $ FormProfile
     <$> fmap normalizeMaybe
             (aopt
                 monikerField
