@@ -443,8 +443,9 @@ form .errors {
   margin-bottom: 3em; }
   .page-profiles .profile:last-child {
     margin-right: 0; }
-  .page-profiles .profile form, .page-profiles .profile button {
-    display: inline; }
+  .page-profiles .profile form, .page-profiles .profile .date {
+    clear: both;
+    float: left; }
   .page-profiles .profile button {
     background-color: white;
     border-bottom: 1px solid #00cee3;
@@ -469,6 +470,22 @@ form .errors {
     height: 72px;
     min-width: 72px;
     width: 72px; }
+.page-profiles .updated-fields-with-picture {
+  float: left;
+  display: block;
+  margin-right: 5.85151%;
+  width: 78.8297%;
+  margin-right: 0; }
+  .page-profiles .updated-fields-with-picture:last-child {
+    margin-right: 0; }
+.page-profiles .updated-fields-without-picture {
+  float: left;
+  display: block;
+  margin-right: 2.35765%;
+  width: 40.29137%;
+  margin-right: 0; }
+  .page-profiles .updated-fields-without-picture:last-child {
+    margin-right: 0; }
 
 main {
   max-width: 68em;

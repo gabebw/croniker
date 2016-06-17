@@ -47,7 +47,7 @@ postProfileR = do
                    setMessage "Profile created"
                    redirect ProfileR
                 else do
-                   setMessage "Please set a moniker or a picture"
+                   setMessage "Please set a moniker, description, or picture"
                    profilesTemplate euser formWidget
         _ -> do
             setMessage "Oops, something went wrong"
@@ -76,6 +76,13 @@ profilesTemplate euser profileWidget = do
     defaultLayout $ do
         setTitle "Croniker"
         $(widgetFile "profiles")
+
+textFieldsTemplate :: Profile -> Widget
+textFieldsTemplate Profile{profileMoniker} = [whamlet|
+        $maybe name <- profileMoniker
+            <p>
+                <strong>#{name}
+    |]
 
 prettyTime :: (FormatTime t) => t -> String
 prettyTime = formatTime defaultTimeLocale "%B %d, %Y"

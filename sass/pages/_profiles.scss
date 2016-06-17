@@ -1,4 +1,9 @@
 .page-profiles {
+  $profile-columns: 5;
+  $picture-columns: 1;
+  $with-picture-columns: $profile-columns - $picture-columns;
+  $without-picture-columns: $profile-columns;
+
   .banner {
     margin-bottom: $large-spacing;
   }
@@ -9,16 +14,17 @@
 
   .profiles {
     @include shift(1);
-    @include span-columns(5);
+    @include span-columns($profile-columns);
   }
 
   .profile {
-    @include span-columns(5 of 5);
+    @include span-columns($profile-columns of $profile-columns);
 
     margin-bottom: $large-spacing;
 
-    form, button {
-      display: inline;
+    form, .date {
+      clear: both;
+      float: left;
     }
 
     button {
@@ -40,7 +46,7 @@
   }
 
   .profile-picture {
-    @include span-columns(1 of 5);
+    @include span-columns($picture-columns of $profile-columns);
 
     img {
       $small-twitter-profile-size: 72px;
@@ -49,5 +55,15 @@
       min-width: $small-twitter-profile-size;
       width: $small-twitter-profile-size;
     }
+  }
+
+  .updated-fields-with-picture {
+    @include span-columns($with-picture-columns of $profile-columns);
+    @include omega;
+  }
+
+  .updated-fields-without-picture {
+    @include span-columns($without-picture-columns);
+    @include omega;
   }
 }
