@@ -7,9 +7,6 @@ app=croniker
 stack install yesod-bin cabal-install --install-ghc
 stack build
 
-createdb "${app}_development" 2>/dev/null || true
-createdb "${app}_test" 2>/dev/null || true
-
 psql template1 >/dev/null <<SQL
   DO
   \$body\$
@@ -19,9 +16,16 @@ psql template1 >/dev/null <<SQL
       END IF;
     END
   \$body\$;
-  GRANT ALL PRIVILEGES ON DATABASE ${app}_development to $app;
-  GRANT ALL PRIVILEGES ON DATABASE ${app}_test to $app;
 SQL
+
+# Ensure that the DB is owned by the user named $app
+if ! psql -l | egrep "${app}_development.*$app"; then
+  createdb --owner="$app" "${app}_development" || true
+fi
+
+if ! psql -l | egrep "${app}_test.*$app"; then
+  createdb --owner="$app" "${app}_test" || true
+fi
 
 if ! heroku plugins | grep -Fq heroku-container-tools; then
   heroku plugins:install heroku-container-tools
