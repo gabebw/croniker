@@ -11,7 +11,7 @@ import Helper.TextConversion (base64Encode)
 
 data FormProfile = FormProfile
     { profileMoniker :: Maybe Text
-    , profileDescription :: Maybe Text
+    , profileDescription :: Maybe Textarea
     , profilePicture :: Maybe FileInfo
     , profileDate :: Day
     }
@@ -19,7 +19,13 @@ data FormProfile = FormProfile
 addProfile :: UserId -> FormProfile -> Handler ()
 addProfile userId (FormProfile moniker description picture date) = do
     base64Picture <- base64Bytes picture
-    void $ runDB $ insert $ Profile moniker date userId base64Picture description False
+    void $ runDB $ insert $ Profile
+        moniker
+        date
+        userId
+        base64Picture
+        (unTextarea <$> description)
+        False
 
 valuesArePresent :: FormProfile -> Bool
 valuesArePresent FormProfile{profileMoniker, profilePicture, profileDescription} =
