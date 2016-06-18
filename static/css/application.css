@@ -443,7 +443,7 @@ form .errors {
   margin-bottom: 3em; }
   .page-profiles .profile:last-child {
     margin-right: 0; }
-  .page-profiles .profile form, .page-profiles .profile .date {
+  .page-profiles .profile form, .page-profiles .profile p {
     clear: both;
     float: left; }
   .page-profiles .profile button {
