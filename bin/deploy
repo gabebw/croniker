@@ -15,5 +15,13 @@ if [ "$(uname)" = "Darwin" ]; then
   eval "$(docker-machine env default)"
 fi
 
+old_ref=$(heroku run cat /app/GIT_HEAD_REF --remote "$1")
+
 heroku container:login
 heroku container:push --remote "$1"
+
+new_ref=$(git rev-parse HEAD)
+
+echo "Old SHA: $old_ref"
+echo "New SHA: $new_ref"
+git log "$old_ref..$new_ref"
