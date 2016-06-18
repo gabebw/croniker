@@ -7,7 +7,7 @@ app=croniker
 stack install yesod-bin cabal-install --install-ghc
 stack build
 
-createdb "$app" 2>/dev/null || true
+createdb "${app}_development" 2>/dev/null || true
 createdb "${app}_test" 2>/dev/null || true
 
 psql template1 >/dev/null <<SQL
@@ -19,7 +19,7 @@ psql template1 >/dev/null <<SQL
       END IF;
     END
   \$body\$;
-  GRANT ALL PRIVILEGES ON DATABASE $app to $app;
+  GRANT ALL PRIVILEGES ON DATABASE ${app}_development to $app;
   GRANT ALL PRIVILEGES ON DATABASE ${app}_test to $app;
 SQL
 
