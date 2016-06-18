@@ -50,10 +50,7 @@ type Form x = Html -> MForm (HandlerT App IO) (FormResult x, Widget)
 instance Yesod App where
     -- Controls the base of generated URLs. For more information on modifying,
     -- see: https://github.com/yesodweb/yesod/wiki/Overriding-approot
-    approot = ApprootRequest $ \app req ->
-        case appRoot $ appSettings app of
-            Nothing -> getApprootText guessApproot app req
-            Just root -> root
+    approot = ApprootRequest $ \app req -> getApprootText guessApproot app req
 
     -- Store session data on the client in encrypted cookies.
     -- `envClientSessionBackend` will use the `$SESSION_KEY` environment
@@ -116,12 +113,8 @@ instance Yesod App where
         -- Generate a unique filename based on the content itself
         genFileName lbs = "autogen-" ++ base64md5 lbs
 
-    -- What messages should be logged. The following includes all messages when
-    -- in development, and warnings and errors in production.
-    shouldLog app _source level =
-        appShouldLogAll (appSettings app)
-            || level == LevelWarn
-            || level == LevelError
+    -- Log messages only if app settings allow the message's log level.
+    shouldLog App{appSettings} _source level = appSettings `allowsLevel` level
 
     makeLogger = return . appLogger
 

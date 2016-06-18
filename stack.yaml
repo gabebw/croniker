@@ -12,7 +12,7 @@ extra-deps:
 - heroku-0.1.2.3
 - wreq-sb-0.4.0.0
 - yesod-auth-oauth-1.4.0.2
-- heroku-persistent-0.1.0
+- heroku-persistent-0.2.0
 - tld-0.3.0.0
 
 # Override default flag values for local packages and extra-deps

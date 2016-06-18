@@ -13,6 +13,7 @@ import Test.Hspec            as X
 import Text.Shakespeare.Text (st)
 import Yesod.Default.Config2 (ignoreEnv, loadAppSettings)
 import Yesod.Test            as X
+import LoadEnv (loadEnvFrom)
 
 runDB :: SqlPersistM a -> YesodExample App a
 runDB query = do
@@ -22,11 +23,11 @@ runDB query = do
 runDBWithApp :: App -> SqlPersistM a -> IO a
 runDBWithApp app query = runSqlPersistMPool query (appConnPool app)
 
-
 withApp :: SpecWith (TestApp App) -> Spec
 withApp = before $ do
+    loadEnvFrom ".env.test"
     settings <- loadAppSettings
-        ["config/test-settings.yml", "config/settings.yml"]
+        ["config/settings.yml"]
         []
         ignoreEnv
     foundation <- makeFoundation settings

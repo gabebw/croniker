@@ -25,16 +25,14 @@ import Network.Wai.Handler.Warp             (Settings, defaultSettings,
                                              defaultShouldDisplayException,
                                              runSettings, setHost,
                                              setOnException, setPort, getPort)
-import Network.Wai.Middleware.RequestLogger (Destination (Logger),
+import Network.Wai.Middleware.RequestLogger (Destination (Logger, Callback),
                                              IPAddrSource (..),
                                              OutputFormat (..), destination,
                                              mkRequestLogger, outputFormat)
 import System.Log.FastLogger                (defaultBufSize, newStdoutLoggerSet,
                                              toLogStr)
-import System.Directory (doesFileExist)
-import Configuration.Dotenv (loadFile)
+import LoadEnv (loadEnv)
 import System.Environment (getEnv)
-import Web.Heroku.Persist.Postgresql (postgresConf)
 import qualified Data.ByteString.Char8 as BSC
 
 -- Import all relevant handler modules here.
@@ -64,16 +62,10 @@ makeFoundation appSettings = do
     appStatic <-
         (if appMutableStatic appSettings then staticDevel else static)
         (appStaticDir appSettings)
-    exists <- doesFileExist ".env"
-    when exists $ loadFile False ".env"
 
     twitterConsumerKey <- BSC.pack <$> getEnv "TWITTER_CONSUMER_KEY"
     twitterConsumerSecret <- BSC.pack <$> getEnv "TWITTER_CONSUMER_SECRET"
     googleApiKey <- getEnv "GOOGLE_API_KEY"
-
-    dbconf <- if appDatabaseUrl appSettings
-        then postgresConf $ pgPoolSize $ appDatabaseConf appSettings
-        else return $ appDatabaseConf appSettings
 
     -- We need a log function to create a connection pool. We need a connection
     -- pool to create our foundation. And we need our foundation to get a
@@ -89,8 +81,8 @@ makeFoundation appSettings = do
 
     -- Create the database connection pool
     pool <- flip runLoggingT logFunc $ createPostgresqlPool
-        (pgConnStr dbconf)
-        (pgPoolSize dbconf)
+        (pgConnStr $ appDatabaseConf appSettings)
+        (pgPoolSize $ appDatabaseConf appSettings)
 
     -- Perform database migration using our application's logging settings.
     runLoggingT (runSqlPool (runMigration migrateAll) pool) logFunc
@@ -111,13 +103,15 @@ makeLogWare :: App -> IO Middleware
 makeLogWare foundation =
     mkRequestLogger def
         { outputFormat =
-            if appDetailedRequestLogging $ appSettings foundation
+            if appSettings foundation `allowsLevel` LevelDebug
                 then Detailed True
                 else Apache
                         (if appIpFromHeader $ appSettings foundation
                             then FromFallback
                             else FromSocket)
-        , destination = Logger $ loggerSet $ appLogger foundation
+        , destination = if appSettings foundation `allowsLevel` LevelInfo
+            then Logger $ loggerSet $ appLogger foundation
+            else Callback $ \_ -> return ()
         }
 
 -- | Warp settings for the given foundation value.
@@ -145,7 +139,9 @@ getApplicationDev = do
     return (wsettings, app)
 
 getAppSettings :: IO AppSettings
-getAppSettings = loadYamlSettings [configSettingsYml] [] useEnv
+getAppSettings = do
+    loadEnv
+    loadYamlSettings [configSettingsYml] [] useEnv
 
 -- | main function for use by yesod devel
 develMain :: IO ()

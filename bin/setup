@@ -2,11 +2,26 @@
 
 set -e
 
+app=croniker
+
 stack install yesod-bin cabal-install --install-ghc
 stack build
-if ! psql -l | cut -d'|' -f1 | grep -qF croniker_development; then
-  createdb croniker_development
-fi
+
+createdb "$app" 2>/dev/null || true
+createdb "${app}_test" 2>/dev/null || true
+
+psql template1 >/dev/null <<SQL
+  DO
+  \$body\$
+    BEGIN
+      IF NOT EXISTS (SELECT * FROM pg_catalog.pg_user WHERE usename = '$app')
+      THEN CREATE USER $app WITH PASSWORD '$app';
+      END IF;
+    END
+  \$body\$;
+  GRANT ALL PRIVILEGES ON DATABASE $app to $app;
+  GRANT ALL PRIVILEGES ON DATABASE ${app}_test to $app;
+SQL
 
 if ! heroku plugins | grep -Fq heroku-container-tools; then
   heroku plugins:install heroku-container-tools
@@ -15,7 +30,10 @@ fi
 heroku git:remote --remote staging --app croniker-staging
 heroku git:remote --remote production --app croniker-production
 
-touch .env
+if ! [ -f .env ]; then
+  cp .sample.env .env
+fi
+
 for variable in TWITTER_CONSUMER_KEY TWITTER_CONSUMER_SECRET GOOGLE_API_KEY; do
   if ! grep -qF "$variable" .env; then
     heroku config --shell --remote staging | grep "$variable" >> .env

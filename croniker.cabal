@@ -107,7 +107,7 @@ library
                  , blaze-markup
 
                  , base64-bytestring
-                 , dotenv
+                 , load-env
                  , heroku-persistent
                  , lens
                  , lens-aeson

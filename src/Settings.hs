@@ -16,8 +16,12 @@ import Database.Persist.Postgresql (PostgresConf)
 import Language.Haskell.TH.Syntax  (Exp, Name, Q)
 import Network.Wai.Handler.Warp    (HostPreference)
 import Yesod.Default.Config2       (applyEnvValue, configSettingsYml)
-import Yesod.Default.Util          (WidgetFileSettings, widgetFileNoReload,
-                                    widgetFileReload)
+#if DEVELOPMENT
+import Yesod.Default.Util (WidgetFileSettings, widgetFileReload)
+#else
+import Yesod.Default.Util (WidgetFileSettings, widgetFileNoReload)
+#endif
+import Web.Heroku.Persist.Postgresql (fromDatabaseUrl)
 
 -- | Actions which only require access to the database connection can be given
 --   type @DB a@ (as opposed to @YesodDB App a@). This allows them to also be
@@ -45,21 +49,12 @@ data AppSettings = AppSettings
     -- ^ Get the IP address from the header when logging. Useful when sitting
     -- behind a reverse proxy.
 
-    , appDetailedRequestLogging :: Bool
-    -- ^ Use detailed request logging system
-    , appShouldLogAll           :: Bool
-    -- ^ Should all log messages be displayed?
-    , appReloadTemplates        :: Bool
-    -- ^ Use the reload version of templates
     , appMutableStatic          :: Bool
     -- ^ Assume that files in the static dir may change after compilation
     , appSkipCombining          :: Bool
     -- ^ Perform no stylesheet/script combining
-
-    , appAnalytics              :: Maybe Text
-    -- ^ Google Analytics code
-    , appDatabaseUrl            :: Bool
-    -- ^ Parse database info from DATABASE_URL?
+    , appLogLevel               :: LogLevel
+    -- ^ The LogLevel to use
     }
 
 instance FromJSON AppSettings where
@@ -70,21 +65,35 @@ instance FromJSON AppSettings where
 #else
                 False
 #endif
-        appStaticDir              <- o .: "static-dir"
-        appDatabaseConf           <- o .: "database"
+
+        -- This value is needed in a pure context, and so can't read from ENV.
+        -- It also doesn't differ between environments, so we might as well
+        -- harcode it.
+        let appStaticDir = "static"
+
+        appDatabaseConf           <- fromDatabaseUrl
+            <$> o .: "database-pool-size"
+            <*> o .: "database-url"
         appRoot                   <- o .:? "approot"
         appHost                   <- fromString <$> o .: "host"
         appPort                   <- o .: "port"
         appIpFromHeader           <- o .: "ip-from-header"
-        appDetailedRequestLogging <- o .:? "detailed-logging" .!= defaultDev
-        appShouldLogAll           <- o .:? "should-log-all"   .!= defaultDev
-        appReloadTemplates        <- o .:? "reload-templates" .!= defaultDev
         appMutableStatic          <- o .:? "mutable-static"   .!= defaultDev
-        appSkipCombining          <- o .:? "skip-combining"   .!= defaultDev
-        appAnalytics              <- o .:? "analytics"
-        appDatabaseUrl            <- o .:? "database-url"     .!= not defaultDev
+        appSkipCombining          <- o .: "skip-combining"
+        appLogLevel               <- parseLogLevel <$> o .: "log-level"
 
         return AppSettings {..}
+        where
+            parseLogLevel :: Text -> LogLevel
+            parseLogLevel t = case toLower t of
+                "debug" -> LevelDebug
+                "info" -> LevelInfo
+                "warn" -> LevelWarn
+                "error" -> LevelError
+                _ -> LevelOther t
+
+allowsLevel :: AppSettings -> LogLevel -> Bool
+AppSettings{appLogLevel} `allowsLevel` level = level >= appLogLevel
 
 -- | Settings for 'widgetFile', such as which template languages to support and
 -- default Hamlet settings.
@@ -103,10 +112,13 @@ combineSettings = def
 -- user.
 
 widgetFile :: String -> Q Exp
-widgetFile = (if appReloadTemplates compileTimeAppSettings
-                then widgetFileReload
-                else widgetFileNoReload)
-              widgetFileSettings
+widgetFile =
+#if DEVELOPMENT
+    widgetFileReload
+#else
+    widgetFileNoReload
+#endif
+    def
 
 -- | Raw bytes at compile time of @config/settings.yml@
 configSettingsYmlBS :: ByteString
