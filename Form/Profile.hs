@@ -13,7 +13,7 @@ profileForm nextFreeDay takenDays tomorrow = renderDivs $ FormProfile
     <$> fmap normalizeMaybe
             (aopt
                 monikerField
-                (fs "New moniker" [("maxlength", "20"), ("autofocus", "autofocus")])
+                (fs "Moniker" [("maxlength", "20"), ("autofocus", "autofocus")])
                 Nothing)
     <*> aopt
             textareaField
