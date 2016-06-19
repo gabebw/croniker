@@ -7,6 +7,14 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
+old_ref=$(heroku config:get DEPLOYED_GIT_SHA --remote "$1")
+new_ref=$(git rev-parse HEAD)
+
+if [ "$old_ref" = "$new_ref" ]; then
+  echo "$new_ref is already live on $1"
+  exit 0
+fi
+
 if [ "$(uname)" = "Darwin" ]; then
   if [ "$(docker-machine status default)" != "Running" ]; then
       docker-machine start default
@@ -15,16 +23,9 @@ if [ "$(uname)" = "Darwin" ]; then
   eval "$(docker-machine env default)"
 fi
 
-old_ref=$(heroku run cat /app/GIT_HEAD_REF --remote "$1")
-new_ref=$(git rev-parse HEAD)
-
-if [ "$old_ref" = "$new_ref" ]; then
-  echo "$new_ref is already live on $1"
-  exit 0
-fi
-
 heroku container:login
 heroku container:push --remote "$1"
+heroku config:set DEPLOYED_GIT_SHA="$new_ref" --remote "$1"
 
 echo "Old SHA: $old_ref"
 echo "New SHA: $new_ref"
