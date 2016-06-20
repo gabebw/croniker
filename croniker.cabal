@@ -192,3 +192,4 @@ test-suite test
                  , classy-prelude-yesod
                  , aeson
                  , text >= 0.11 && < 2.0
+                 , load-env
