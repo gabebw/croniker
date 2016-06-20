@@ -21,13 +21,10 @@ postUpdateUserR userId = do
             redirect RootR
 
 timezoneForm :: User -> Form User
-timezoneForm User{..} = renderDivs $ User
-       <$> pure userTwitterUserId
-       <*> pure userTwitterUsername
-       <*> pure userTwitterOauthToken
-       <*> pure userTwitterOauthTokenSecret
-       <*> areq (selectFieldList selectTZs) "" Nothing
-       <*> pure False
+timezoneForm user = renderDivs $ setTimezone
+    <$> areq (selectFieldList selectTZs) "" Nothing
     where
         selectTZs :: [(Text, TZLabel)]
         selectTZs = map (\tzlabel -> (b2t $ toTZName tzlabel, tzlabel)) [Africa__Abidjan .. Root__WET]
+
+        setTimezone tzLabel = user { userTzLabel = tzLabel }
