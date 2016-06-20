@@ -5,6 +5,7 @@ import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
 import Yesod.Auth.OAuth     (authTwitter)
+import Yesod.Auth.Dummy     (authDummy)
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
 import qualified Yesod.Core.Unsafe as Unsafe
@@ -137,11 +138,16 @@ instance YesodAuth App where
     -- Override the above two destinations when a Referer: header is present
     redirectToReferer _ = True
 
-    -- This is a callback function that gets called with the credentials
-    -- obtained by authenticating to Twitter.
-    authenticate = runDB . authenticateUser
+    authenticate Creds{credsIdent, credsExtra} = do
+        App{appSettings} <- getYesod
+        case appUseDummyAuth appSettings of
+            True -> runDB $ authenticateUser (Just credsIdent) []
+            False -> runDB $ authenticateUser (lookup "user_id" credsExtra) credsExtra
 
-    authPlugins app = [authTwitter (twitterConsumerKey app) (twitterConsumerSecret app)]
+    authPlugins app =
+        case appUseDummyAuth $ appSettings app of
+            True -> [authDummy]
+            False -> [authTwitter (twitterConsumerKey app) (twitterConsumerSecret app)]
 
     authHttpManager = getHttpManager
 

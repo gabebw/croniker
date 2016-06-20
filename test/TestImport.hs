@@ -56,3 +56,13 @@ getTables = do
     |] []
 
     return $ map unSingle tables
+
+loginAs :: User -> YesodExample App ()
+loginAs User{userTwitterUserId} = do
+    get RootR
+
+    request $ do
+        setMethod "POST"
+        addTokenFromCookie
+        addPostParam "ident" userTwitterUserId
+        setUrl ("/auth/page/dummy" :: Text)

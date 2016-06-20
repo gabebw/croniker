@@ -158,6 +158,8 @@ test-suite test
 
     other-modules: Croniker.MonikerNormalizationSpec
                  , Croniker.UrlParserSpec
+                 , Handler.RootSpec
+                 , TestImport
 
     extensions: TemplateHaskell
                 QuasiQuotes
@@ -176,6 +178,8 @@ test-suite test
                 ViewPatterns
                 TupleSections
 
+                NamedFieldPuns
+
     build-depends: base
                  , croniker
                  , yesod-test >= 1.5.0.1 && < 1.6
@@ -193,3 +197,4 @@ test-suite test
                  , aeson
                  , text >= 0.11 && < 2.0
                  , load-env
+                 , tz

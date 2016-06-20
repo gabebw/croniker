@@ -9,6 +9,7 @@ skip-combining: "_env:SKIP_COMBINING:false"
 database-url: "_env:DATABASE_URL:postgres://croniker:croniker@localhost:5432/croniker_development"
 database-pool-size: "_env:DATABASE_POOL_SIZE:10"
 mutable-static: "_env:MUTABLE_STATIC:false"
+use-dummy-auth: "_env:USE_DUMMY_AUTH:false"
 
 # NB: If you need a numeric value (e.g. 123) to parse as a String, wrap it in single quotes (e.g. "_env:PGPASS:'123'")
 # See https://github.com/yesodweb/yesod/wiki/Configuration#parsing-numeric-values-as-strings

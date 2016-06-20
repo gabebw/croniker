@@ -9,9 +9,8 @@ import Import.NoFoundation
 import Data.Time.Calendar (addDays)
 import Data.Time.Zones.All (TZLabel(Etc__UTC))
 
-authenticateUser :: AuthId m ~ UserId => Creds m -> DB (AuthenticationResult m)
-authenticateUser Creds{credsExtra} = do
-    let mTwitterUserId = lookup "user_id" credsExtra
+authenticateUser :: AuthId m ~ UserId => Maybe Text -> [(Text, Text)] -> DB (AuthenticationResult m)
+authenticateUser mTwitterUserId credsExtra = do
     muser <- maybe (return Nothing) (getBy . UniqueUser) mTwitterUserId
     case muser of
         Nothing -> createUser (credsToUser credsExtra)

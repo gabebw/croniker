@@ -55,6 +55,8 @@ data AppSettings = AppSettings
     -- ^ Perform no stylesheet/script combining
     , appLogLevel               :: LogLevel
     -- ^ The LogLevel to use
+    , appUseDummyAuth :: Bool
+    -- ^ Use dummy authentication? (Only set in tests.)
     }
 
 instance FromJSON AppSettings where
@@ -81,6 +83,7 @@ instance FromJSON AppSettings where
         appMutableStatic          <- o .:? "mutable-static"   .!= defaultDev
         appSkipCombining          <- o .: "skip-combining"
         appLogLevel               <- parseLogLevel <$> o .: "log-level"
+        appUseDummyAuth           <- o .: "use-dummy-auth"
 
         return AppSettings {..}
         where
