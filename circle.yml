@@ -1,0 +1,28 @@
+machine:
+  environment:
+    DATABASE_URL: postgres://ubuntu:@127.0.0.1:5432/croniker_test
+    GOOGLE_API_KEY: google_api_key
+    LOG_LEVEL: debug
+    TWITTER_CONSUMER_KEY: twitter_consumer_key
+    TWITTER_CONSUMER_SECRET: twitter_consumer_secret
+
+dependencies:
+  cache_directories:
+    - "~/.stack"
+    - ".stack-work"
+  pre:
+    - curl -sSL https://get.haskellstack.org/ | sh
+    - sudo apt-get update; sudo apt-get install --only-upgrade binutils
+    - createuser --superuser --no-password croniker
+    - createdb -O croniker -U ubuntu croniker_test
+
+  override:
+    - stack setup
+    - rm -rf $(stack path --dist-dir) $(stack path --local-install-root)
+    - stack install yesod-bin cabal-install --install-ghc
+    - stack build --only-dependencies -j1
+    - stack build --test --no-run-tests
+
+test:
+  override:
+    - stack test
