@@ -13,6 +13,8 @@ User sql=users
     tzLabel TZLabel default='Etc/UTC'
     choseTimezone Bool default=False
     publicRssFeed Bool default=False
+    createdAt UTCTime default=now() MigrationOnly
+    updatedAt UTCTime default=now() MigrationOnly
     UniqueUser twitterUserId
     deriving Typeable Show
 Profile sql=profiles
@@ -22,5 +24,7 @@ Profile sql=profiles
     picture Text Maybe
     description Text Maybe
     sent Bool default=False
+    createdAt UTCTime default=now() MigrationOnly
+    updatedAt UTCTime default=now() MigrationOnly
     UniqueUserDate userId date
     deriving Show
