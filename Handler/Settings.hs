@@ -45,7 +45,9 @@ settingsForm (Entity userId User{userPublicRssFeed}) extra = do
                 <a href=@{FeedR userId}>your RSS feed
                 public?
                 <span>
-            $if not userPublicRssFeed
+            $if userPublicRssFeed
+                <div.block-tooltip>Your feed shows your most recent changes, including today
+            $else
                 <div.block-tooltip>Only you can see it right now
     |]
     return (formSettings, widget)
