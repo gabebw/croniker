@@ -64,3 +64,13 @@ spec = describe "Croniker.MonikerNormalization" $ do
         it "removes trailing whitespace from the moniker" $ do
             let t = "hello\t\n  "
             normalize t `shouldBe` "hello"
+
+        it "removes all opening angle brackets" $ do
+            let t = "<h<e<l<l<o<"
+
+            normalize t `shouldBe` "hello"
+
+        it "removes all closing angle brackets" $ do
+            let t = ">h>e>l>l>o>"
+
+            normalize t `shouldBe` "hello"
