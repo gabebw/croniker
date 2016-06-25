@@ -28,6 +28,6 @@ fancyUnicodeWhitespace c = ord c `elem` [0x202A..0x202F]
 -- Remove characters that are not allowed at the beginning/end of monikers (but
 -- are allowed when surrounded by other characters).
 stripCharacters :: Text -> Text
-stripCharacters = T.dropWhile bad . T.dropWhileEnd bad
+stripCharacters = T.dropAround bad
     where
         bad c = ord c `elem` [0x2028, 0x2029]
