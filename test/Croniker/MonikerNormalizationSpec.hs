@@ -23,6 +23,12 @@ codepoint2text codepoint = T.singleton $ chr codepoint
 spec :: Spec
 spec = describe "Croniker.MonikerNormalization" $ do
     describe "normalize" $ do
+        it "allows emoji in the Basic Multilingual Plane" $ do
+            let recycling_symbol = codepoint2text 0x267B
+            let t = recycling_symbol `T.append` "hello"
+
+            normalize t `shouldBe` t
+
         forM_ [0x2028, 0x2029] $ \c -> do
             it (printf "strips U+%X from the beginning of the moniker" c) $ do
                 let t = codepoint2text c `T.append` "hello"
