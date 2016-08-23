@@ -5,7 +5,7 @@ module Form.Profile
 import Import
 
 import qualified Croniker.MonikerNormalization as CMN
-import qualified Croniker.MonikerFieldChecks as MonikerFieldChecks (allChecks)
+import qualified Croniker.MonikerFieldChecks as MonikerFieldChecks (runAllChecks)
 import Model.FormProfile (FormProfile(..))
 
 profileForm :: Day -> [Day] -> Day -> Form FormProfile
@@ -37,7 +37,7 @@ fs label attrs = FieldSettings
     }
 
 monikerField :: Field Handler Text
-monikerField = foldr check textField MonikerFieldChecks.allChecks
+monikerField = MonikerFieldChecks.runAllChecks textField
 
 dateField :: [Day] -> Day -> Field Handler Day
 dateField takenDays tomorrow = check (nothingScheduled takenDays) $ check (futureDate tomorrow) dayField
