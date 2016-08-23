@@ -23,10 +23,22 @@ codepoint2text codepoint = T.singleton $ chr codepoint
 spec :: Spec
 spec = describe "Croniker.MonikerNormalization" $ do
     describe "normalize" $ do
-        it "allows emoji in the Basic Multilingual Plane" $ do
+        it "allows codepoints below U+FFFF" $ do
             let recyclingSymbol = codepoint2text 0x267B
             let t = recyclingSymbol `T.append` "hello"
 
+            normalize t `shouldBe` t
+
+        it "allows codepoints above U+FFFF" $ do
+            let astral_plane_char = codepoint2text 0x10000
+
+            let t = T.concat [
+                        astral_plane_char,
+                        "he",
+                        astral_plane_char,
+                        "llo",
+                        astral_plane_char
+                    ]
             normalize t `shouldBe` t
 
         forM_ [0x2028, 0x2029] $ \c -> do
@@ -54,18 +66,6 @@ spec = describe "Croniker.MonikerNormalization" $ do
             it (printf "strips U+%X from the middle of the moniker" c) $ do
                 let t = T.concat ["he", codepoint2text c, "llo"]
                 normalize t `shouldBe` "hello"
-
-        it "strips chars above U+FEFF from the moniker" $ do
-            let astral_plane_char = codepoint2text 0x10000
-
-            let t = T.concat [
-                        astral_plane_char,
-                        "he",
-                        astral_plane_char,
-                        "llo",
-                        astral_plane_char
-                    ]
-            normalize t `shouldBe` "hello"
 
         it "removes leading whitespace from the moniker" $ do
             let t = "\t\n  hello"

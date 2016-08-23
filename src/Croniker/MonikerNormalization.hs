@@ -14,12 +14,7 @@ normalize = T.strip . stripCharacters . removeDisallowedCharacters
 removeDisallowedCharacters :: Text -> Text
 removeDisallowedCharacters = filter (not . bad)
     where
-        bad c = c `elem` ['<', '>'] || fancyUnicodeWhitespace c || outsideBMP c
-
--- Is this character outside Unicode's Basic Multilingual Plane (which ends at
--- U+FEFF)?
-outsideBMP :: Char -> Bool
-outsideBMP c = ord c >= 0xFEFF
+        bad c = c `elem` ['<', '>'] || fancyUnicodeWhitespace c
 
 -- Is this character fancy Unicode whitespace?
 fancyUnicodeWhitespace :: Char -> Bool
