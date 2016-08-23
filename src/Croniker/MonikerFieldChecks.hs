@@ -57,8 +57,8 @@ validUnicodeCombinations moniker = all insideBMP moniker ||
 
 -- Is this character outside Unicode's Basic Multilingual Plane?
 outsideBMP :: Char -> Bool
-outsideBMP c = ord c >= 0xFFFF
+outsideBMP c = ord c > 0xFFFF
 
 -- Is this character inside Unicode's Basic Multilingual Plane?
 insideBMP :: Char -> Bool
-insideBMP c = ord c < 0xFFFF
+insideBMP c = ord c <= 0xFFFF
