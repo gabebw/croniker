@@ -5,7 +5,7 @@ module Form.Profile
 import Import
 
 import qualified Croniker.MonikerNormalization as CMN
-import qualified Croniker.UrlParser as CUP
+import qualified Croniker.MonikerFieldChecks as MonikerFieldChecks (allChecks)
 import Model.FormProfile (FormProfile(..))
 
 profileForm :: Day -> [Day] -> Day -> Form FormProfile
@@ -37,33 +37,7 @@ fs label attrs = FieldSettings
     }
 
 monikerField :: Field Handler Text
-monikerField = foldr check textField [
-                   doesNotContainUrl,
-                   doesNotContainTwitter,
-                   validWhitespace . CMN.normalize,
-                   validLength . CMN.normalize
-               ]
-
-doesNotContainTwitter :: Text -> Either Text Text
-doesNotContainTwitter moniker
-    | "twitter" `isInfixOf` toLower moniker = Left "Twitter doesn't allow monikers that contain \"Twitter\""
-    | otherwise = Right moniker
-
-doesNotContainUrl :: Text -> Either Text Text
-doesNotContainUrl moniker
-    | CUP.containsUrl moniker = Left "Twitter doesn't allow URLs in monikers"
-    | otherwise = Right moniker
-
-validLength :: Text -> Either Text Text
-validLength moniker
-    | length moniker == 0 = Left "Monikers cannot be blank"
-    | length moniker > 20 = Left "Twitter doesn't allow monikers longer than 20 characters"
-    | otherwise = Right moniker
-
-validWhitespace :: Text -> Either Text Text
-validWhitespace moniker
-    | any (`isInfixOf` moniker) ["\n", "\t"] = Left "Moniker cannot contain special whitespace characters"
-    | otherwise = Right moniker
+monikerField = foldr check textField MonikerFieldChecks.allChecks
 
 dateField :: [Day] -> Day -> Field Handler Day
 dateField takenDays tomorrow = check (nothingScheduled takenDays) $ check (futureDate tomorrow) dayField

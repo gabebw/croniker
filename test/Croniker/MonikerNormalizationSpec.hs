@@ -24,8 +24,8 @@ spec :: Spec
 spec = describe "Croniker.MonikerNormalization" $ do
     describe "normalize" $ do
         it "allows emoji in the Basic Multilingual Plane" $ do
-            let recycling_symbol = codepoint2text 0x267B
-            let t = recycling_symbol `T.append` "hello"
+            let recyclingSymbol = codepoint2text 0x267B
+            let t = recyclingSymbol `T.append` "hello"
 
             normalize t `shouldBe` t
 
