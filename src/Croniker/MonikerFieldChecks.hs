@@ -1,12 +1,14 @@
 module Croniker.MonikerFieldChecks
     ( runAllChecks
+    , charactersNotAllowedAtBeginningOrEnd
     )
     where
 
 import Import
 
-import Croniker.MonikerNormalization (normalize)
 import Croniker.UrlParser (containsUrl)
+import Data.Char (chr, ord)
+import Data.Text (dropAround)
 
 runAllChecks :: Field Handler Text -> Field Handler Text
 runAllChecks field = foldr check field allChecks
@@ -15,8 +17,9 @@ allChecks :: [Text -> Either Text Text]
 allChecks = [
               doesNotContainUrl,
               doesNotContainTwitter,
-              validWhitespace . normalize,
-              validLength . normalize
+              validWhitespace,
+              validCharacters,
+              validLength
             ]
 
 doesNotContainTwitter :: Text -> Either Text Text
@@ -37,5 +40,22 @@ validLength moniker
 
 validWhitespace :: Text -> Either Text Text
 validWhitespace moniker
-    | any (`isInfixOf` moniker) ["\n", "\t"] = Left "Moniker cannot contain special whitespace characters"
+    | moniker `hasAnyChars` whitespace = Left "Moniker cannot contain special whitespace characters"
     | otherwise = Right moniker
+    where
+        whitespace = (map chr [0x202A..0x202F]) ++ ['\n', '\t']
+
+validCharacters :: Text -> Either Text Text
+validCharacters moniker
+    -- Characters that aren't allowed anywhere in monikers.
+    | moniker `hasAnyChars` ['<', '>'] = Left "Moniker cannot contain \"<\" or \">\""
+    | dropAround charactersNotAllowedAtBeginningOrEnd moniker /= moniker = Left "Moniker can't start or end with U+2028 or U+2029"
+    | otherwise = Right moniker
+
+hasAnyChars :: Text -> [Char] -> Bool
+hasAnyChars t cs = any (\c -> c `elem` cs) t
+
+-- Characters that are not allowed at the beginning/end of monikers (but are
+-- allowed when surrounded by other characters).
+charactersNotAllowedAtBeginningOrEnd :: Char -> Bool
+charactersNotAllowedAtBeginningOrEnd char = ord char `elem` [0x2028, 0x2029]
