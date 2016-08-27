@@ -1,6 +1,7 @@
 module Croniker.MonikerFieldChecks
     ( runAllChecks
-    , charactersNotAllowedAtBeginningOrEnd
+    , validCharacters
+    , allChecks
     )
     where
 
@@ -34,13 +35,13 @@ doesNotContainUrl moniker
 
 validLength :: Text -> Either Text Text
 validLength moniker
-    | length moniker == 0 = Left "Monikers cannot be blank"
+    | length moniker == 0 = Left "Monikers can't be blank"
     | length moniker > 20 = Left "Twitter doesn't allow monikers longer than 20 characters"
     | otherwise = Right moniker
 
 validWhitespace :: Text -> Either Text Text
 validWhitespace moniker
-    | moniker `hasAnyChars` whitespace = Left "Moniker cannot contain special whitespace characters"
+    | moniker `hasAnyChars` whitespace = Left "Moniker can't contain special whitespace characters"
     | otherwise = Right moniker
     where
         whitespace = (map chr [0x202A..0x202F]) ++ ['\n', '\t']
