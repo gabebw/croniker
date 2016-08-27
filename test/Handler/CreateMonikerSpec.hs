@@ -14,7 +14,7 @@ spec :: Spec
 spec = withApp $ do
     describe "Creating a moniker" $ do
         describe "when signed in" $ do
-            it "strips whitespace from the moniker" $ do
+            it "strips whitespace from the moniker after saving" $ do
                 let user = buildUser
                 void $ runDB $ insert user
                 loginAs user
@@ -22,9 +22,9 @@ spec = withApp $ do
                 get RootR
                 void followRedirect
                 postForm ProfileR $ do
-                    byLabel "Moniker" " twitter "
+                    byLabel "Moniker" " test "
 
-                htmlCount "input[id=hident2][value= twitter ]" 1
+                htmlAnyContain "strong" " test "
 
 buildUser :: User
 buildUser = User "1" "gabebw" "token123" "secret123" Etc__UTC True True
