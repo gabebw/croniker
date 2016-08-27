@@ -1,4 +1,4 @@
-module Croniker.MonikerNormalizationSpec
+module Croniker.MonikerFieldChecksSpec
     ( main
     , spec
     ) where
@@ -9,6 +9,7 @@ import Test.Hspec
 import Croniker.MonikerFieldChecks
 import Data.Char (chr)
 import Data.Either (isLeft)
+import qualified Data.Text as T (replicate)
 import Text.Printf (printf)
 
 main :: IO ()
@@ -86,16 +87,16 @@ spec = describe "Croniker.MonikerFieldChecks" $ do
                 checkAll t `shouldBe` Left "Moniker can't contain special whitespace characters"
 
         it "removes leading whitespace from the moniker before checking" $ do
-            let exactlyLongEnough = "01234567890123456789"
-            let t = " \t\n" `T.append` exactlyLongEnough
+            let exactlyLongEnough = T.replicate 20 "a"
+            let t = " \t\n" `mappend` exactlyLongEnough
 
-            normalize t `shouldBe` Right exactlyLongEnough
+            checkAll t `shouldBe` Right exactlyLongEnough
 
         it "removes trailing whitespace from the moniker before checking" $ do
-            let exactlyLongEnough = "01234567890123456789"
-            let t = exactlyLongEnough `T.append` " \t\n"
+            let exactlyLongEnough = T.replicate 20 "a"
+            let t = exactlyLongEnough `mappend` " \t\n"
 
-            normalize t `shouldBe` Right exactlyLongEnough
+            checkAll t `shouldBe` Right exactlyLongEnough
 
         it "warns about all opening angle brackets" $ do
             let t = "<h<e<l<l<o<"
