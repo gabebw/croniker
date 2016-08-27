@@ -1,6 +1,5 @@
 module Croniker.MonikerFieldChecks
     ( runAllChecks
-    , validCharacters
     , allChecks
     )
     where
