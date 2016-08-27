@@ -8,26 +8,32 @@ import Test.Hspec
 
 import Croniker.MonikerFieldChecks
 import Data.Char (chr)
-import Data.Either (lefts, isLeft)
+import Data.Either (isLeft)
 import Text.Printf (printf)
 
 main :: IO ()
 main = hspec spec
 
--- Helpful for stuff like U+267B.
+-- Helpful for generating Unicode codepoints like U+267B.
 -- `codepoint2text 0x267B` returns a Text that contains U+267B.
 codepoint2text :: Int -> Text
 codepoint2text codepoint = singleton $ chr codepoint
 
 checker :: [Text -> Either Text Text] -> Text -> Either Text Text
 checker [] t = Right t
-checker c:cs t = if isLeft c t then c t else checker cs t
+checker (c:cs) t = if isLeft (c t) then c t else checker cs t
 
+checkAll :: Text -> Either Text Text
 checkAll = checker allChecks
 
 spec :: Spec
 spec = describe "Croniker.MonikerFieldChecks" $ do
-    describe "normalize" $ do
+    describe "running all checks" $ do
+        it "does not warn about a valid moniker" $ do
+            let t = "hello there!"
+
+            checkAll t `shouldBe` Right t
+
         it "allows codepoints below U+FFFF" $ do
             let recyclingSymbol = codepoint2text 0x267B
             let t = recyclingSymbol `mappend` "hello"
@@ -79,22 +85,24 @@ spec = describe "Croniker.MonikerFieldChecks" $ do
 
                 checkAll t `shouldBe` Left "Moniker can't contain special whitespace characters"
 
-        -- Hmmmm
-        it "removes leading whitespace from the moniker" $ do
-            let t = "\t\n  hello"
+        it "removes leading whitespace from the moniker before checking" $ do
+            let exactlyLongEnough = "01234567890123456789"
+            let t = " \t\n" `T.append` exactlyLongEnough
 
-            normalize t `shouldBe` "hello"
+            normalize t `shouldBe` Right exactlyLongEnough
 
-        it "removes trailing whitespace from the moniker" $ do
-            let t = "hello\t\n  "
-            normalize t `shouldBe` "hello"
+        it "removes trailing whitespace from the moniker before checking" $ do
+            let exactlyLongEnough = "01234567890123456789"
+            let t = exactlyLongEnough `T.append` " \t\n"
+
+            normalize t `shouldBe` Right exactlyLongEnough
 
         it "warns about all opening angle brackets" $ do
             let t = "<h<e<l<l<o<"
 
-            checkAll t `shouldBe` "Moniker cannot contain \"<\" or \">\""
+            checkAll t `shouldBe` Left "Moniker cannot contain \"<\" or \">\""
 
         it "warns about all closing angle brackets" $ do
             let t = ">h>e>l>l>o>"
 
-            checkAll t `shouldBe` "Moniker cannot contain \"<\" or \">\""
+            checkAll t `shouldBe` Left "Moniker cannot contain \"<\" or \">\""
