@@ -209,4 +209,3 @@ test-suite test
                  , http-types
                  , wai-extra
                  , hspec-expectations-lifted
-                 , xml-conduit
