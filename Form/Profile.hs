@@ -33,7 +33,10 @@ fs label attrs = FieldSettings
     }
 
 monikerField :: Field Handler Text
-monikerField = MonikerFieldChecks.runAllChecks textField
+monikerField = MonikerFieldChecks.runAllChecks strippedTextField
+
+strippedTextField :: (Functor m, Monad m, RenderMessage (HandlerSite m) FormMessage) => Field m Text
+strippedTextField = convertField T.strip id textField
 
 dateField :: [Day] -> Day -> Field Handler Day
 dateField takenDays tomorrow = check (nothingScheduled takenDays) $ check (futureDate tomorrow) dayField

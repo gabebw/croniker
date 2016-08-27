@@ -8,7 +8,7 @@ import Import
 
 import Croniker.UrlParser (containsUrl)
 import Data.Char (chr, ord)
-import Data.Text (dropAround)
+import Data.Text (dropAround, strip)
 
 runAllChecks :: Field Handler Text -> Field Handler Text
 runAllChecks field = foldr check field allChecks
@@ -43,7 +43,7 @@ validWhitespace moniker
     | moniker `hasAnyChars` whitespace = Left "Moniker can't contain special whitespace characters"
     | otherwise = Right moniker
     where
-        whitespace = (map chr [0x202A..0x202F]) ++ ['\n', '\t']
+        whitespace = map chr [0x202A..0x202F] ++ ['\n', '\t']
 
 validCharacters :: Text -> Either Text Text
 validCharacters moniker
@@ -53,7 +53,7 @@ validCharacters moniker
     | otherwise = Right moniker
 
 hasAnyChars :: Text -> [Char] -> Bool
-hasAnyChars t cs = any (\c -> c `elem` cs) t
+hasAnyChars t cs = any (`elem` cs) t
 
 -- Characters that are not allowed at the beginning/end of monikers (but are
 -- allowed when surrounded by other characters).
