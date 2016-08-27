@@ -13,6 +13,7 @@ import Test.Hspec            as X
 import Text.Shakespeare.Text (st)
 import Yesod.Default.Config2 (useEnv, loadYamlSettings)
 import Yesod.Test            as X
+import Yesod.Test.Extension  as X
 import LoadEnv (loadEnvFrom)
 
 runDB :: SqlPersistM a -> YesodExample App a

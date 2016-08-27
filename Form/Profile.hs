@@ -4,6 +4,7 @@ module Form.Profile
 
 import Import
 
+import qualified Data.Text as T
 import qualified Croniker.MonikerFieldChecks as MonikerFieldChecks (runAllChecks)
 import Model.FormProfile (FormProfile(..))
 

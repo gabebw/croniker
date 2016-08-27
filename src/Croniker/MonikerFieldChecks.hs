@@ -8,7 +8,7 @@ import Import
 
 import Croniker.UrlParser (containsUrl)
 import Data.Char (chr, ord)
-import Data.Text (dropAround, strip)
+import Data.Text (dropAround)
 
 runAllChecks :: Field Handler Text -> Field Handler Text
 runAllChecks field = foldr check field allChecks
