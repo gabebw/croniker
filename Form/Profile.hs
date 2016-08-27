@@ -4,17 +4,16 @@ module Form.Profile
 
 import Import
 
-import qualified Croniker.MonikerNormalization as CMN
+import qualified Data.Text as T
 import qualified Croniker.MonikerFieldChecks as MonikerFieldChecks (runAllChecks)
 import Model.FormProfile (FormProfile(..))
 
 profileForm :: Day -> [Day] -> Day -> Form FormProfile
 profileForm nextFreeDay takenDays tomorrow = renderDivs $ FormProfile
-    <$> fmap normalizeMaybe
-            (aopt
-                monikerField
-                (fs "Moniker" [("maxlength", "20"), ("autofocus", "autofocus")])
-                Nothing)
+    <$> aopt
+            monikerField
+            (fs "Moniker" [("maxlength", "20"), ("autofocus", "autofocus")])
+            Nothing
     <*> aopt
             textareaField
             (fs "Bio" [("maxlength", "160"), ("rows", "4")])
@@ -24,8 +23,6 @@ profileForm nextFreeDay takenDays tomorrow = renderDivs $ FormProfile
             (dateField takenDays tomorrow)
             ("Date" { fsTooltip = Just "Defaults to the next available date" })
             (Just nextFreeDay)
-    where
-        normalizeMaybe = fmap CMN.normalize
 
 fs :: Text -> [(Text, Text)] -> FieldSettings site
 fs label attrs = FieldSettings
@@ -37,7 +34,10 @@ fs label attrs = FieldSettings
     }
 
 monikerField :: Field Handler Text
-monikerField = MonikerFieldChecks.runAllChecks textField
+monikerField = MonikerFieldChecks.runAllChecks strippedTextField
+
+strippedTextField :: (Functor m, Monad m, RenderMessage (HandlerSite m) FormMessage) => Field m Text
+strippedTextField = convertField T.strip id textField
 
 dateField :: [Day] -> Day -> Field Handler Day
 dateField takenDays tomorrow = check (nothingScheduled takenDays) $ check (futureDate tomorrow) dayField

@@ -14,7 +14,6 @@ Flag library-only
 library
     hs-source-dirs: ., app, src
     exposed-modules: Application
-                     Croniker.MonikerNormalization
                      Croniker.MonikerFieldChecks
                      Croniker.Time
                      Croniker.Types
@@ -161,7 +160,7 @@ test-suite test
     hs-source-dirs:    test
     ghc-options:       -Wall
 
-    other-modules: Croniker.MonikerNormalizationSpec
+    other-modules: Croniker.MonikerFieldChecksSpec
                  , Croniker.UrlParserSpec
                  , Handler.FeedSpec
                  , Handler.RootSpec
