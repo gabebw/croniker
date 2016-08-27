@@ -162,9 +162,11 @@ test-suite test
 
     other-modules: Croniker.MonikerFieldChecksSpec
                  , Croniker.UrlParserSpec
+                 , Handler.CreateMonikerSpec
                  , Handler.FeedSpec
                  , Handler.RootSpec
                  , TestImport
+                 , Yesod.Test.Extension
 
     extensions: TemplateHaskell
                 QuasiQuotes
@@ -207,3 +209,4 @@ test-suite test
                  , http-types
                  , wai-extra
                  , hspec-expectations-lifted
+                 , xml-conduit
