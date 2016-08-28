@@ -6,7 +6,8 @@ module Handler.CreateMonikerSpec
 import TestImport
 
 import Data.Time.Zones.All (TZLabel(..))
-import Network.Wai.Test
+import Network.Wai.Test (simpleBody, simpleHeaders)
+import Data.Text (strip)
 
 main :: IO ()
 main = hspec spec
@@ -28,7 +29,7 @@ spec = withApp $ do
                     byLabel "Date" "3000-01-01"
                 void followRedirect
 
-                htmlAnyContain "strong" moniker
+                htmlAnyContain "strong" (strip moniker)
 
 buildUser :: User
 buildUser = User "1" "gabebw" "token123" "secret123" Etc__UTC True True
