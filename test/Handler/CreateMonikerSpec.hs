@@ -7,7 +7,7 @@ import TestImport
 
 import Data.Time.Zones.All (TZLabel(..))
 import Network.Wai.Test (simpleBody, simpleHeaders)
-import Data.Text (strip)
+import qualified Data.Text as T
 
 main :: IO ()
 main = hspec spec
@@ -16,9 +16,10 @@ spec :: Spec
 spec = withApp $ do
     describe "Creating a moniker" $ do
         describe "when signed in" $ do
-            it "strips whitespace from the moniker after saving" $ do
+            it "strips whitespace from the moniker when it is invalid" $ do
                 let user = buildUser
-                let moniker = " test "
+                let strippedMoniker = "twitter"
+                let moniker = " " <> strippedMoniker <> "\t"
                 void $ runDB $ insert user
                 loginAs user
 
@@ -29,7 +30,8 @@ spec = withApp $ do
                     byLabel "Date" "3000-01-01"
                 void followRedirect
 
-                htmlAnyContain "strong" (strip moniker)
+                let query = "input[value=" <> strippedMoniker <> "]"
+                htmlCount query 1
 
 buildUser :: User
 buildUser = User "1" "gabebw" "token123" "secret123" Etc__UTC True True
