@@ -6,7 +6,6 @@ module Croniker.MonikerNormalizationSpec
 import ClassyPrelude
 import Test.Hspec
 
--- import Control.Monad (forM_)
 import Croniker.MonikerNormalization (normalize)
 import Data.Char (chr)
 import Text.Printf (printf)
