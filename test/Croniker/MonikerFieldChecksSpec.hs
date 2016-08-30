@@ -37,7 +37,7 @@ spec = describe "Croniker.MonikerFieldChecks" $ do
 
         it "allows codepoints below U+FFFF" $ do
             let recyclingSymbol = codepoint2text 0x267B
-            let t = recyclingSymbol `mappend` "hello"
+            let t = recyclingSymbol <> "hello"
 
             checkAll t `shouldBe` Right t
 
@@ -56,12 +56,12 @@ spec = describe "Croniker.MonikerFieldChecks" $ do
 
         forM_ [0x2028, 0x2029] $ \c -> do
             it (printf "warns about U+%X at the beginning of the moniker" c) $ do
-                let t = codepoint2text c `mappend` "hello"
+                let t = codepoint2text c <> "hello"
 
                 checkAll t `shouldBe` Left "Moniker can't start or end with U+2028 or U+2029"
 
             it (printf "warns about U+%X at the end of the moniker" c) $ do
-                let t = "hello" `mappend` codepoint2text c
+                let t = "hello" <> codepoint2text c
 
                 checkAll t `shouldBe` Left "Moniker can't start or end with U+2028 or U+2029"
 
@@ -72,12 +72,12 @@ spec = describe "Croniker.MonikerFieldChecks" $ do
 
         forM_ [0x202A..0x202F] $ \c -> do
             it (printf "warns about U+%X at the beginning of the moniker" c) $ do
-                let t = codepoint2text c `mappend` "hello"
+                let t = codepoint2text c <> "hello"
 
                 checkAll t `shouldBe` Left "Moniker can't contain special whitespace characters"
 
             it (printf "warns about U+%X at the end of the moniker" c) $ do
-                let t = "hello" `mappend` codepoint2text c
+                let t = "hello" <> codepoint2text c
 
                 checkAll t `shouldBe` Left "Moniker can't contain special whitespace characters"
 
