@@ -48,7 +48,7 @@ validWhitespace moniker
 validCharacters :: Text -> Either Text Text
 validCharacters moniker
     -- Characters that aren't allowed anywhere in monikers.
-    | moniker `hasAnyChars` ['<', '>'] = Left "Moniker cannot contain \"<\" or \">\""
+    | moniker `hasAnyChars` ['<', '>'] = Left "Moniker can't contain \"<\" or \">\""
     | dropAround charactersNotAllowedAtBeginningOrEnd moniker /= moniker = Left "Moniker can't start or end with U+2028 or U+2029"
     | otherwise = Right moniker
 

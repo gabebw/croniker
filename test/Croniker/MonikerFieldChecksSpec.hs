@@ -89,9 +89,9 @@ spec = describe "Croniker.MonikerFieldChecks" $ do
         it "warns about all opening angle brackets" $ do
             let t = "<h<e<l<l<o<"
 
-            checkAll t `shouldBe` Left "Moniker cannot contain \"<\" or \">\""
+            checkAll t `shouldBe` Left "Moniker can't contain \"<\" or \">\""
 
         it "warns about all closing angle brackets" $ do
             let t = ">h>e>l>l>o>"
 
-            checkAll t `shouldBe` Left "Moniker cannot contain \"<\" or \">\""
+            checkAll t `shouldBe` Left "Moniker can't contain \"<\" or \">\""
