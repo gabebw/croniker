@@ -7,16 +7,18 @@ import Import
 import Network.HTTP.Client ()
 
 handleHttpException :: Either HttpException () -> Handler ()
-handleHttpException (Left e) = printHttpException e
+handleHttpException (Left (HttpExceptionRequest _ content)) = printHttpException content
 handleHttpException _ = return ()
 
-printHttpException :: MonadIO m => HttpException -> m ()
-printHttpException (StatusCodeException status headers _) = putStrLn $
+printHttpException :: MonadIO m => HttpExceptionContent -> m ()
+printHttpException (StatusCodeException response _) = putStrLn $
     "!!! Error! Status code "
     <> code
     <> " "
     <> errors
     where
+        status = responseStatus response
+        headers = responseHeaders response
         errors = tshow $ lookup "X-Response-Body-Start" headers
         code = tshow $ statusCode status
 

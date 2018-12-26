@@ -1,7 +1,7 @@
 # For more information, see: https://github.com/commercialhaskell/stack/blob/release/doc/yaml_configuration.md
 
 # Specifies the GHC version and set of packages available
-resolver: lts-6.4
+resolver: lts-8.0
 
 # Local packages, usually specified by relative directory name
 packages:
@@ -9,11 +9,14 @@ packages:
 
 # Packages to be pulled from upstream that are not in the resolver
 extra-deps:
+- authenticate-oauth-1.5.1.2@sha256:8bd5240fa7d54eea37a8ad94ac7eeda62b6d4f9c381efeb750a2853e24edc296
+- cabal-doctest-1.0.6@sha256:c0b4a5b1ff38d2867e7003b4be59f3bd7e8e204ab8c988d96d3a77472ae671cd
 - heroku-0.1.2.3
-- wreq-sb-0.4.0.0
-- yesod-auth-oauth-1.4.0.2
 - heroku-persistent-0.2.0
-- tld-0.3.0.0
+- load-env-0.2.0.2@sha256:1cc305683eea4791d632f3acbf0c3373cf760717eeaeef373c17a8709221ab93
+- tld-0.3.0.2
+- wreq-0.5.3.1@sha256:2221706cfea670b15d8d78f96b74900aa50b6dcbeb8b0d0fbf6482577f5a6bc4
+- yesod-auth-oauth-1.4.2
 
 # Override default flag values for local packages and extra-deps
 flags:
