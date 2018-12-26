@@ -1,0 +1,66 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/gabebw/croniker
+    parallelism: 1
+    shell: /bin/bash --login
+    environment:
+      GOOGLE_API_KEY: google_api_key
+      LOG_LEVEL: debug
+      TWITTER_CONSUMER_KEY: twitter_consumer_key
+      TWITTER_CONSUMER_SECRET: twitter_consumer_secret
+
+    docker:
+    - image: fpco/stack-build:lts-8.0
+    - image: circleci/postgres:10.6
+      environment:
+        POSTGRES_USER: croniker
+        POSTGRES_DB: croniker_test
+        POSTGRES_PASSWORD: ""
+
+    steps:
+    # The following `checkout` command checks out your code to your working
+    # directory.
+    - checkout
+    # Restore the dependency cache
+    - restore_cache:
+        keys:
+        # First entry gets preference; keys are used as a prefix so `v1-` would
+        # match anything starting with `v1-`.
+        - v1-stack-{{ checksum "stack.yaml" }}-{{ checksum "croniker.cabal" }}-{{ .Branch }}
+        - v1-stack-{{ checksum "stack.yaml" }}-{{ checksum "croniker.cabal" }}-
+        - v1-stack-
+    - run: apt-get update || true
+    - run:
+        name: Install dockerize
+        command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+        environment:
+          DOCKERIZE_VERSION: v0.6.1
+    - run:
+        name: Show stack version
+        command: stack --version
+    - run: stack setup
+    - run:
+        name: Remove leftover stack files
+        command: rm -rf $(stack path --dist-dir) $(stack path --local-install-root)
+    - run: stack install yesod-bin cabal-install --install-ghc
+    - run:
+        name: Build dependencies
+        command: stack build --only-dependencies
+    - run:
+        name: Build tests
+        command: stack build --test --no-run-tests
+
+    - save_cache:
+        key: v1-stack-{{ checksum "stack.yaml" }}-{{ checksum "croniker.cabal" }}-{{ .Branch }}
+        paths:
+        - ~/.stack
+        - .stack-work
+
+    - run:
+        name: Wait for database
+        command: dockerize -wait tcp://localhost:5432 -timeout 1m
+
+    - run:
+        name: Run tests
+        command: stack test
