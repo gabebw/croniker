@@ -27,10 +27,6 @@ if ! psql -l | egrep "${app}_test.*$app"; then
   createdb --owner="$app" "${app}_test" || true
 fi
 
-if ! heroku plugins | grep -Fq heroku-container-tools; then
-  heroku plugins:install heroku-container-tools
-fi
-
 heroku git:remote --remote staging --app croniker-staging
 heroku git:remote --remote production --app croniker-production
 

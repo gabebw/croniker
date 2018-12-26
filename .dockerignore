@@ -1,10 +1,13 @@
+*.el
 *.hi
 *.keter
 *.o
 *.swp
 .DS_Store
 .cabal-sandbox
+.circleci
 .env
+.ghci
 .git
 !.git/refs/heads
 !.git/HEAD
@@ -20,5 +23,6 @@ docker-compose.yml
 env
 static/combined/
 static/tmp
+test/
 tmp
 yesod-devel/

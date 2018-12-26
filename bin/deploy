@@ -15,16 +15,16 @@ if [ "$old_ref" = "$new_ref" ]; then
   exit 0
 fi
 
-if [ "$(uname)" = "Darwin" ]; then
-  if [ "$(docker-machine status default)" != "Running" ]; then
-      docker-machine start default
-  fi
-
-  eval "$(docker-machine env default)"
+if [ "$(docker info --format '{{.OperatingSystem}}' 2>/dev/null)" != 'Docker for Mac' ]; then
+  # Docker for Mac is not running, or we're not on a Mac.
+  # Either way, quit.
+  echo "!! Can't connect to Docker. Please start Docker for Mac."
+  exit 1
 fi
 
 heroku container:login
-heroku container:push --remote "$1"
+heroku container:push web --remote "$1"
+heroku container:release web --remote "$1"
 heroku config:set DEPLOYED_GIT_SHA="$new_ref" --remote "$1"
 
 echo "Old SHA: $old_ref"
