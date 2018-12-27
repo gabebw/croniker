@@ -1,4 +1,4 @@
-FROM fpco/stack-build:lts-8.0
+FROM fpco/stack-build:lts-10.10
 
 # Everything will be put in this directory
 RUN mkdir -p /app/croniker

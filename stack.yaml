@@ -1,7 +1,12 @@
 # For more information, see: https://github.com/commercialhaskell/stack/blob/release/doc/yaml_configuration.md
 
 # Specifies the GHC version and set of packages available
-resolver: lts-8.0
+#
+# 10.10 is the latest resolver version that supports Yesod <1.6:
+# https://www.stackage.org/package/yesod-bin/snapshots
+#
+# Upgrading to Yesod 1.6 will require some work.
+resolver: lts-10.10
 
 # Local packages, usually specified by relative directory name
 packages:
@@ -9,13 +14,12 @@ packages:
 
 # Packages to be pulled from upstream that are not in the resolver
 extra-deps:
+- RSA-2.2.0
 - authenticate-oauth-1.5.1.2
-- cabal-doctest-1.0.6
 - heroku-0.1.2.3
 - heroku-persistent-0.2.0
 - load-env-0.2.0.2
 - tld-0.3.0.2
-- wreq-0.5.3.1
 - yesod-auth-oauth-1.4.2
 
 # Override default flag values for local packages and extra-deps

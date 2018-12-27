@@ -11,7 +11,7 @@ jobs:
       TWITTER_CONSUMER_SECRET: twitter_consumer_secret
 
     docker:
-    - image: fpco/stack-build:lts-8.0
+    - image: fpco/stack-build:lts-10.10
     - image: circleci/postgres:10.6
       environment:
         POSTGRES_USER: croniker
