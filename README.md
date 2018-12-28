@@ -13,7 +13,7 @@ Then run `./bin/setup`.
 
 ## Running the server
 
-    foreman start -f Procfile.local
+    heroku local -f Procfile.local
 
 This will start Yesod and tell Sass to recompile the CSS whenever a file in
 `sass/` changes.
