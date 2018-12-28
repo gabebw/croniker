@@ -15,6 +15,7 @@ extra-deps:
 - heroku-persistent-0.2.0
 - load-env-0.2.0.2
 - tld-0.3.0.2
+- unliftio-0.2.9.0
 - yesod-auth-oauth-1.6.0.1
 
 # Override default flag values for local packages and extra-deps

@@ -5,7 +5,7 @@ module Handler.UpdateProfilesTask
 
 import Import
 
-import qualified Control.Exception.Lifted as EL
+import UnliftIO.Exception (try)
 import Croniker.Types (OauthCredentials(OauthCredentials), OauthReader, runOauthReader)
 
 import Model.Profile (allProfilesForUpdate)
@@ -29,7 +29,7 @@ updateAllProfiles = do
     mapM_ updateWithErrorHandling profiles
 
 updateWithErrorHandling :: Entity Profile -> Handler ()
-updateWithErrorHandling profile = EL.try (updateProfile profile)
+updateWithErrorHandling profile = try (updateProfile profile)
     >>= handleHttpException
 
 updateProfile :: Entity Profile -> Handler ()
