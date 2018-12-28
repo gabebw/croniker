@@ -1,3 +1,5 @@
+{-# LANGUAGE InstanceSigs #-}
+
 module Foundation where
 
 import Import.NoFoundation
@@ -116,7 +118,7 @@ instance Yesod App where
         genFileName lbs = "autogen-" ++ base64md5 lbs
 
     -- Log messages only if app settings allow the message's log level.
-    shouldLog App{appSettings} _source level = appSettings `allowsLevel` level
+    shouldLogIO App{appSettings} _source level = return $ appSettings `allowsLevel` level
 
     makeLogger = return . appLogger
 
@@ -139,9 +141,11 @@ instance YesodAuth App where
     -- Override the above two destinations when a Referer: header is present
     redirectToReferer _ = True
 
+    authenticate :: (MonadHandler m, HandlerSite m ~ App)
+                 => Creds App -> m (AuthenticationResult App)
     authenticate Creds{credsIdent, credsExtra} = do
         App{appSettings} <- getYesod
-        case appUseDummyAuth appSettings of
+        liftHandler $ case appUseDummyAuth appSettings of
             True -> runDB $ authenticateUser (Just credsIdent) []
             False -> runDB $ authenticateUser (lookup "user_id" credsExtra) credsExtra
 
@@ -149,10 +153,6 @@ instance YesodAuth App where
         case appUseDummyAuth $ appSettings app of
             True -> [authDummy]
             False -> [authTwitterUsingUserId (twitterConsumerKey app) (twitterConsumerSecret app)]
-
-    authHttpManager = getHttpManager
-
-    loginHandler = lift $ redirect RootR
 
 isSignedIn :: Handler AuthResult
 isSignedIn = do
@@ -172,6 +172,7 @@ instance RenderMessage App FormMessage where
 -- An example is background jobs that send email.
 -- This can also be useful for writing code that works across multiple Yesod applications.
 instance HasHttpManager App where
+    getHttpManager :: App -> Manager
     getHttpManager = appHttpManager
 
 unsafeHandler :: App -> Handler a -> IO a

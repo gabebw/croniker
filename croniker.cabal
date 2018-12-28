@@ -70,11 +70,11 @@ library
                 NamedFieldPuns
 
     build-depends: base                          >= 4          && < 5
-                 , yesod                         >= 1.4.1      && < 1.5
-                 , yesod-core                    >= 1.4.17     && < 1.5
-                 , yesod-auth                    >= 1.4.0      && < 1.5
-                 , yesod-static                  >= 1.4.0.3    && < 1.6
-                 , yesod-form                    >= 1.4.0      && < 1.5
+                 , yesod                         >= 1.4.1      && <= 1.7
+                 , yesod-core                    >= 1.4.17     && <= 1.7
+                 , yesod-auth                    >= 1.4.0      && <= 1.7
+                 , yesod-static                  >= 1.4.0.3    && <= 1.7
+                 , yesod-form                    >= 1.4.0      && <= 1.7
                  , classy-prelude                >= 0.10.2
                  , classy-prelude-conduit        >= 0.10.2
                  , classy-prelude-yesod          >= 0.10.2
@@ -88,8 +88,8 @@ library
                  , hjsmin                        >= 0.1
                  , monad-control                 >= 0.3        && < 1.1
                  , wai-extra                     >= 3.0        && < 3.1
-                 , yaml                          >= 0.8        && < 0.9
-                 , http-conduit                  >= 2.1        && < 2.3
+                 , yaml
+                 , http-conduit                  >= 2.1        && < 2.4
                  , directory
                  , warp                          >= 3.0        && < 3.3
                  , data-default
@@ -188,7 +188,7 @@ test-suite test
 
     build-depends: base
                  , croniker
-                 , yesod-test >= 1.5.0.1 && < 1.6
+                 , yesod-test >= 1.5.0.1 && < 1.7
                  , yesod-core
                  , yesod
                  , persistent
