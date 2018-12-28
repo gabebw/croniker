@@ -13,10 +13,10 @@ RUN stack setup --install-ghc
 RUN stack install yesod-bin
 RUN stack install cabal-install
 
-RUN stack build --dependencies-only
+RUN stack build --dependencies-only --no-test
 
 COPY . /app/croniker
-RUN stack --local-bin-path=. install
+RUN stack --local-bin-path=. install --no-test
 
 # Clean up
 RUN rm -rf /app/croniker/.stack-work
