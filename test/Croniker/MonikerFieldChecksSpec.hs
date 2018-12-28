@@ -9,7 +9,6 @@ import Test.Hspec
 import Croniker.MonikerFieldChecks
 import Data.Char (chr)
 import Data.Either (isLeft)
-import qualified Data.Text as T (replicate)
 import Text.Printf (printf)
 
 main :: IO ()
