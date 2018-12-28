@@ -27,6 +27,8 @@ if ! psql -l | egrep --quiet "${app}_test.*$app"; then
   createdb --owner="$app" "${app}_test" || true
 fi
 
+stack test
+
 heroku git:remote --remote staging --app croniker-staging
 heroku git:remote --remote production --app croniker-production
 
