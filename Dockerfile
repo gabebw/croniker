@@ -20,7 +20,7 @@ RUN stack --local-bin-path=. install --no-test
 
 FROM ubuntu:16.04
 
-RUN apt-get update && apt-get install -y libpq-dev netbase
+RUN apt-get update && apt-get install -y libpq-dev netbase ca-certificates
 RUN mkdir -p /app/croniker
 WORKDIR /app/croniker
 
