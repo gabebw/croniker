@@ -30,7 +30,6 @@ jobs:
         - v1-stack-{{ checksum "stack.yaml" }}-{{ checksum "croniker.cabal" }}-{{ .Branch }}
         - v1-stack-{{ checksum "stack.yaml" }}-{{ checksum "croniker.cabal" }}-
         - v1-stack-
-    - run: apt-get update || true
     - run:
         name: Install dockerize
         command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
