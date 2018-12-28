@@ -37,5 +37,5 @@ valuesArePresent FormProfile{profileMoniker, profilePicture, profileDescription}
 base64Bytes :: Maybe FileInfo -> Handler (Maybe Text)
 base64Bytes Nothing = return Nothing
 base64Bytes (Just fi) = do
-    fileBytes <- runResourceT $ fileSource fi $$ sinkLbs
+    fileBytes <- runConduit $ fileSource fi .| sinkLbs
     return $ Just $ base64Encode fileBytes
