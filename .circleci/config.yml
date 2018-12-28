@@ -42,7 +42,7 @@ jobs:
     - run:
         name: Remove leftover stack files
         command: rm -rf $(stack path --dist-dir) $(stack path --local-install-root)
-    - run: stack install yesod-bin cabal-install --install-ghc
+    - run: stack install yesod-bin cabal-install
     - run:
         name: Build dependencies
         command: stack build --only-dependencies
