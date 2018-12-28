@@ -25,6 +25,7 @@ RUN rm -rf /app/croniker/.stack-work
 #
 # > When deployed to Heroku, we also run your container as a non-root user
 # > (although we do not use the USER specified in the Dockerfile).
+# - https://devcenter.heroku.com/articles/container-registry-and-runtime
 RUN useradd -m myuser
 USER myuser
 
