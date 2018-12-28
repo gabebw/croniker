@@ -15,12 +15,7 @@ if [ "$old_ref" = "$new_ref" ]; then
   exit 0
 fi
 
-if [ "$(docker info --format '{{.OperatingSystem}}' 2>/dev/null)" != 'Docker for Mac' ]; then
-  # Docker for Mac is not running, or we're not on a Mac.
-  # Either way, quit.
-  echo "!! Can't connect to Docker. Please start Docker for Mac."
-  exit 1
-fi
+bin/ensure-docker-is-running
 
 heroku container:login
 heroku container:push web --remote "$1"

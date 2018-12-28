@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Build the Docker image that gets deployed to Heroku.
+# (You might do this if you want to test something.)
+
+set -e
+
+bin/ensure-docker-is-running
+docker build -t croniker:"$(date +%Y-%m-%d-%H.%M.%S)" .
