@@ -20,6 +20,12 @@ RUN stack --local-bin-path=. install --no-test
 
 FROM alpine:3.8
 
+RUN mkdir -p /app/croniker
+WORKDIR /app/croniker
+
+COPY --from=fpco /app/croniker/config ./config
+COPY --from=fpco /app/croniker/static ./static
+COPY --from=fpco /app/croniker/templates ./templates
 COPY --from=fpco /app/croniker/croniker .
 COPY --from=fpco /app/croniker/todays-profiles .
 COPY --from=fpco /app/croniker/all-profiles .
