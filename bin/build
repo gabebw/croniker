@@ -6,7 +6,15 @@
 set -e
 
 bin/ensure-docker-is-running
-tag=$(date +%Y-%m-%d-%H.%M.%S)
+
+time=$(date +%Y-%m-%d-%H.%M.%S)
+
+if [ $# = 0 ]; then
+  tag=$time
+else
+  tag="$*-$time"
+fi
+
 image="croniker:$tag"
 docker build -t "$image" .
 docker tag "$image" croniker:latest
