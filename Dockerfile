@@ -18,8 +18,9 @@ RUN stack build --dependencies-only --no-test
 COPY . /app/croniker
 RUN stack --local-bin-path=. install --no-test
 
-FROM alpine:3.8
+FROM ubuntu:16.04
 
+RUN apt-get update && apt-get install -y libpq-dev
 RUN mkdir -p /app/croniker
 WORKDIR /app/croniker
 
@@ -35,7 +36,7 @@ COPY --from=fpco /app/croniker/all-profiles .
 # > When deployed to Heroku, we also run your container as a non-root user
 # > (although we do not use the USER specified in the Dockerfile).
 # - https://devcenter.heroku.com/articles/container-registry-and-runtime
-RUN adduser -D myuser
+RUN useradd -m myuser
 USER myuser
 
 CMD ./croniker
