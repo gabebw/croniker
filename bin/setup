@@ -19,11 +19,11 @@ psql template1 >/dev/null <<SQL
 SQL
 
 # Ensure that the DB is owned by the user named $app
-if ! psql -l | egrep "${app}_development.*$app"; then
+if ! psql -l | egrep --quiet "${app}_development.*$app"; then
   createdb --owner="$app" "${app}_development" || true
 fi
 
-if ! psql -l | egrep "${app}_test.*$app"; then
+if ! psql -l | egrep --quiet "${app}_test.*$app"; then
   createdb --owner="$app" "${app}_test" || true
 fi
 
