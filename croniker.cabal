@@ -162,6 +162,7 @@ test-suite test
     other-modules: Croniker.MonikerFieldChecksSpec
                  , Croniker.UrlParserSpec
                  , Handler.FeedSpec
+                 , Handler.ProfileSpec
                  , Handler.RootSpec
                  , TestImport
 

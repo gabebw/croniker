@@ -67,7 +67,8 @@ spec = withApp $ do
                 get $ FeedR userId
 
                 statusIs 303
-                assertHeader "Location" "/auth/login"
+                void followRedirect
+                assertHeader "Location" "/"
 
         describe "when signed in as that user" $ do
             it "displays the feed" $ do

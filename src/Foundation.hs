@@ -154,6 +154,8 @@ instance YesodAuth App where
             True -> [authDummy]
             False -> [authTwitterUsingUserId (twitterConsumerKey app) (twitterConsumerSecret app)]
 
+    loginHandler = liftHandler $ redirect RootR
+
 isSignedIn :: Handler AuthResult
 isSignedIn = do
     maid <- maybeAuthId
