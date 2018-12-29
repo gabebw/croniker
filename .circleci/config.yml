@@ -1,4 +1,56 @@
-version: 2
+version: 2.1
+
+commands:
+  build_docker_image:
+    parameters:
+      tag:
+        type: string
+
+    steps:
+      - run:
+          name: Build image for << parameters.tag >>
+          command: |
+            docker build \
+              --tag << parameters.tag >> \
+              .
+
+  push_to_heroku:
+    parameters:
+      environment:
+        type: string
+      tag:
+        type: string
+
+    steps:
+      - run:
+          name: Log in to Heroku Docker registry
+          command: |
+            docker login \
+              --username=_ \
+              --password="$HEROKU_API_KEY" \
+              registry.heroku.com
+      - run:
+          name: Tag image for << parameters.environment >>
+          command: |
+            docker tag << parameters.tag >> \
+              registry.heroku.com/croniker-<< parameters.environment >>/web
+      - run:
+          name: Push image for << parameters.environment >>
+          command: |
+            docker push \
+              registry.heroku.com/croniker-<< parameters.environment >>/web
+      - run:
+          name: Release container to Heroku << parameters.environment >>
+          command: |
+            heroku container:release web \
+              --app croniker-<< parameters.environment >>
+      - run:
+          name: Set DEPLOYED_GIT_SHA environment variable for << parameters.environment >>
+          command: |
+            heroku config:set \
+              DEPLOYED_GIT_SHA="$CIRCLE_SHA1" \
+              --app croniker-<<parameters.environment >>
+
 jobs:
   build:
     working_directory: ~/gabebw/croniker
@@ -68,3 +120,45 @@ jobs:
     - run:
         name: Run tests
         command: stack test
+
+  deploy:
+    machine:
+      # List of images:
+      # https://circleci.com/docs/2.0/configuration-reference/#machine
+      image: circleci/classic:latest
+    steps:
+      - checkout
+      - run:
+          name: Store Heroku credentials for Heroku command-line
+          command: echo "machine api.heroku.com login gabebw@gabebw.com password $HEROKU_API_KEY" >> ~/.netrc
+      - run:
+          # Upgrade because `heroku container:release` isn't available in the
+          # version of Heroku pre-installed by Circle.
+          name: Update Heroku
+          command: curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
+      - run:
+          name: Show Heroku version
+          command: heroku --version
+      - run:
+          name: Log in to Heroku Container Registry
+          command: heroku container:login
+      - build_docker_image:
+          tag: croniker:final
+      - push_to_heroku:
+          environment: staging
+          tag: croniker:final
+      - push_to_heroku:
+          environment: production
+          tag: croniker:final
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
