@@ -27,9 +27,8 @@ jobs:
         keys:
         # First entry gets preference; keys are used as a prefix so `v1-` would
         # match anything starting with `v1-`.
-        - v1-stack-{{ checksum "stack.yaml" }}-{{ checksum "croniker.cabal" }}-{{ .Branch }}
-        - v1-stack-{{ checksum "stack.yaml" }}-{{ checksum "croniker.cabal" }}-
-        - v1-stack-
+        - v2-stack-{{ checksum "stack.yaml" }}-{{ checksum "croniker.cabal" }}-{{ .Branch }}
+        - v2-stack-{{ checksum "stack.yaml" }}-{{ checksum "croniker.cabal" }}-
     - run:
         name: Install dockerize
         command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
@@ -51,7 +50,7 @@ jobs:
         command: stack build --test --no-run-tests
 
     - save_cache:
-        key: v1-stack-{{ checksum "stack.yaml" }}-{{ checksum "croniker.cabal" }}-{{ .Branch }}
+        key: v2-stack-{{ checksum "stack.yaml" }}-{{ checksum "croniker.cabal" }}-{{ .Branch }}
         paths:
         - ~/.stack
         - .stack-work
