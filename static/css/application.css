@@ -430,22 +430,22 @@ form .errors {
 .page-profiles .profile-form {
   float: left;
   display: block;
-  margin-right: 2.35765%;
-  width: 31.76157%; }
+  margin-right: 2.3576515979%;
+  width: 31.7615656014%; }
   .page-profiles .profile-form:last-child {
     margin-right: 0; }
 .page-profiles .profiles {
-  margin-left: 8.5298%;
+  margin-left: 8.5298042998%;
   float: left;
   display: block;
-  margin-right: 2.35765%;
-  width: 40.29137%; }
+  margin-right: 2.3576515979%;
+  width: 40.2913699012%; }
   .page-profiles .profiles:last-child {
     margin-right: 0; }
 .page-profiles .profile {
   float: left;
   display: block;
-  margin-right: 5.85151%;
+  margin-right: 5.8515051827%;
   width: 100%;
   margin-bottom: 3em; }
   .page-profiles .profile:last-child {
@@ -469,8 +469,8 @@ form .errors {
 .page-profiles .profile-picture {
   float: left;
   display: block;
-  margin-right: 5.85151%;
-  width: 15.3188%; }
+  margin-right: 5.8515051827%;
+  width: 15.3187958539%; }
   .page-profiles .profile-picture:last-child {
     margin-right: 0; }
   .page-profiles .profile-picture img {
@@ -480,26 +480,26 @@ form .errors {
 .page-profiles .updated-fields-with-picture {
   float: left;
   display: block;
-  margin-right: 5.85151%;
-  width: 78.8297%;
+  margin-right: 5.8515051827%;
+  width: 78.8296989635%;
   margin-right: 0; }
   .page-profiles .updated-fields-with-picture:last-child {
     margin-right: 0; }
 .page-profiles .updated-fields-without-picture {
   float: left;
   display: block;
-  margin-right: 2.35765%;
-  width: 40.29137%;
+  margin-right: 2.3576515979%;
+  width: 40.2913699012%;
   margin-right: 0; }
   .page-profiles .updated-fields-without-picture:last-child {
     margin-right: 0; }
 
 .settings-form {
-  margin-left: 17.05961%;
+  margin-left: 17.0596085997%;
   float: left;
   display: block;
-  margin-right: 2.35765%;
-  width: 40.29137%;
+  margin-right: 2.3576515979%;
+  width: 40.2913699012%;
   margin-top: 1.5em; }
   .settings-form:last-child {
     margin-right: 0; }
