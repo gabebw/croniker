@@ -5,14 +5,46 @@ commands:
     parameters:
       tag:
         type: string
+      cache_path:
+        type: string
+      arguments:
+        type: string
+        default: ""
 
     steps:
       - run:
+          # The cache directory might not exist if:
+          # 1) The Dockerfile changed, invalidating the cache, and thus the
+          #    `restore_cache` didn't do anything
+          # 2) This is the first time running a build with this cache, and thus
+          #    there's no cache at all.
+          # 3) Caches only last for 30 days, so a matching cache may expire,
+          #    leading back to situation (2).
+          name: Ensure Docker cache directory exists
+          command: mkdir -p ~/docker-cache
+      - run:
+          name: Rehydrate Docker cache for << parameters.tag >>
+          command: |
+            if [[ -r ~/docker-cache/<< parameters.cache_path >> ]]; then
+              docker load --input ~/docker-cache/<< parameters.cache_path >>
+            else
+              true
+            fi
+      - run:
+          # Always load the cache of this tagged image (`--cache-from`)
           name: Build image for << parameters.tag >>
           command: |
             docker build \
+              --cache-from << parameters.tag >> \
               --tag << parameters.tag >> \
+              << parameters.arguments >> \
               .
+      - run:
+          name: Save Docker cache for << parameters.tag >>
+          command: |
+            docker save \
+              --output ~/docker-cache/<< parameters.cache_path >> \
+              << parameters.tag >>
 
   push_to_heroku:
     parameters:
@@ -35,6 +67,9 @@ commands:
             docker tag << parameters.tag >> \
               registry.heroku.com/croniker-<< parameters.environment >>/web
       - run:
+          # Q: Why not use `heroku container:push`?
+          # A: Because it builds the container from scratch, without the
+          #    `--cache-from` speedup.
           name: Push image for << parameters.environment >>
           command: |
             docker push \
@@ -142,8 +177,22 @@ jobs:
       - run:
           name: Log in to Heroku Container Registry
           command: heroku container:login
+      - restore_cache:
+          keys:
+            - v3-docker-{{ checksum "Dockerfile" }}-{{ .Branch }}
+            - v3-docker-{{ checksum "Dockerfile" }}
+      - build_docker_image:
+          tag: croniker:fpco
+          cache_path: fpco.tar
+          arguments: --target fpco
       - build_docker_image:
           tag: croniker:final
+          cache_path: final.tar
+          arguments: --cache-from croniker:fpco
+      - save_cache:
+          key: v3-docker-{{ checksum "Dockerfile" }}-{{ .Branch }}
+          paths:
+            - ~/docker-cache
       - push_to_heroku:
           environment: staging
           tag: croniker:final
