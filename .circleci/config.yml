@@ -31,7 +31,10 @@ jobs:
         - v2-stack-{{ checksum "stack.yaml" }}-{{ checksum "croniker.cabal" }}-
     - run:
         name: Install dockerize
-        command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+        command: |
+          wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+            sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+            rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
         environment:
           DOCKERIZE_VERSION: v0.6.1
     - run:
@@ -40,7 +43,10 @@ jobs:
     - run: stack setup
     - run:
         name: Remove leftover stack files
-        command: rm -rf $(stack path --dist-dir) $(stack path --local-install-root)
+        command: |
+          rm -rf \
+            "$(stack path --dist-dir)" \
+            "$(stack path --local-install-root)"
     - run: stack install yesod-bin cabal-install
     - run:
         name: Build dependencies
