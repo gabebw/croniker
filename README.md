@@ -59,10 +59,9 @@ Yesod pick up the routes for the new files.
 
 ## Deploying
 
-To deploy to staging:
+Circle will auto-deploy to staging and production after a successful build on
+the master branch.
 
-    ./bin/deploy staging
+To deploy manually:
 
-To deploy to production:
-
-    ./bin/deploy production
+  ./bin/deploy [ staging | production ]
