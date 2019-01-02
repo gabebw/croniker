@@ -13,6 +13,18 @@ commands:
 
     steps:
       - run:
+          name: Set $DOCKER_CACHE_FOUND variable
+          command: |
+            if [[ -d ~/docker-cache ]]; then
+              export DOCKER_CACHE_FOUND=true
+            else
+              export DOCKER_CACHE_FOUND=false
+            fi
+      - run:
+          name: Show value of $DOCKER_CACHE_FOUND
+          command:
+            $DOCKER_CACHE_FOUND && echo "Found" || echo "Not found"
+      - run:
           # The cache directory might not exist if:
           # 1) The Dockerfile changed, invalidating the cache, and thus the
           #    `restore_cache` didn't do anything
@@ -40,11 +52,12 @@ commands:
               << parameters.arguments >> \
               .
       - run:
-          name: Save Docker cache for << parameters.tag >>
+          name: Save new Docker cache for << parameters.tag >>
           command: |
-            docker save \
-              --output ~/docker-cache/<< parameters.cache_path >> \
-              << parameters.tag >>
+            $DOCKER_CACHE_FOUND ||
+              docker save \
+                --output ~/docker-cache/<< parameters.cache_path >> \
+                << parameters.tag >>
 
   push_to_heroku:
     parameters:
