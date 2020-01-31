@@ -26,6 +26,9 @@ To update all of the unsent profiles scheduled for today:
 
     stack exec todays-profiles
 
+(This can be run every few hours via the Heroku Scheduler add-on with just
+`./todays-profiles`.)
+
 To update all of the profiles, regardless of when they're scheduled or whether
 they've been sent:
 
